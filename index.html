@@ -1,0 +1,653 @@
+<!-- ZetaCard v24.1: no-key smart copy -->
+<!-- ZetaCard v22 Studio Upgrade: integrated 3D controls, AR preview, hotspots, premium catalog -->
+<!-- ZetaCard v21 integrated 3D Studio built on stable v13 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZetaCard — Experience Cards</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.3.1/model-viewer.min.js"></script>
+<style>
+*{box-sizing:border-box}
+:root{--ink:#14213d;--muted:#6c7890;--line:#dce4ef;--soft:#f5f7fb;--brand:#536dfe;--brand2:#7c4dff;--ok:#1f8f5b;--danger:#b33d4a}
+body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,#f8faff,#eef2f8);color:var(--ink)}
+button,input,textarea,select{font:inherit}button{cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.55}
+.container{width:min(1160px,94%);margin:auto;padding:20px 0 50px}
+.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;background:linear-gradient(180deg,rgba(248,250,255,.98),rgba(248,250,255,.90));backdrop-filter:blur(12px);border-bottom:1px solid rgba(220,228,239,.8)}
+.topbar .brand{font-weight:950;letter-spacing:.4px;color:var(--brand)}
+.nav-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border:1px solid var(--line);border-radius:11px;background:#fff;color:#26335f;font-weight:900;box-shadow:0 6px 18px #27364d0a}
+.nav-btn:hover{border-color:#9eacd0;transform:translateY(-1px)}
+.nav-btn:active{transform:translateY(0)}
+.header{text-align:center;padding:30px 0 24px}.eyebrow{color:var(--brand);font-size:11px;font-weight:950;letter-spacing:2.4px}.header h1{margin:11px 0 8px;font-size:clamp(34px,5vw,54px);letter-spacing:-1.7px;line-height:1.03}.header p{margin:0;color:var(--muted);line-height:1.6}
+.step-card,.preview-box,.shared-card-shell{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:0 18px 50px #27364d10}
+.step-card{padding:24px}.step-title{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:18px}.step-title h2{margin:0 0 5px;font-size:19px}.step-title p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}.pill{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border-radius:999px;background:#eef2ff;color:#3d51b5;font-size:12px;font-weight:900;white-space:nowrap}
+.type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.type-option{position:relative;text-align:left;border:1px solid #dbe3ef;background:#fff;border-radius:18px;padding:16px;min-height:125px;transition:.15s ease;color:var(--ink)}.type-option:hover{transform:translateY(-2px);border-color:#aebbd0;box-shadow:0 10px 24px #27364d0d}.type-option.selected{border:2px solid var(--brand);background:#eef2ff;box-shadow:0 0 0 4px #536dfe16}.type-icon{display:block;font-size:30px;margin-bottom:9px}.type-option strong{display:block;font-size:15px}.type-option span:not(.type-icon):not(.type-check){display:block;color:var(--muted);font-size:11px;line-height:1.4;margin-top:4px}.type-check{position:absolute;right:10px;top:10px;width:23px;height:23px;display:grid;place-items:center;border-radius:50%;background:var(--brand);color:#fff;font-size:12px;opacity:0}.type-option.selected .type-check{opacity:1}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border:0;border-radius:12px;font-weight:900}.primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 10px 24px #536dfe2c}.secondary{background:#eef2ff;color:#3d51b5}.ghost{background:#fff;color:#26335f;border:1px solid var(--line)}.status{min-height:20px;margin-top:10px;color:var(--brand);font-size:13px}.status.error{color:var(--danger)}
+#builderGrid{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(370px,.98fr);gap:22px;align-items:start}.preview-box{padding:18px;position:sticky;top:74px}.preview-box h2{margin:4px 2px 12px;font-size:17px}.preview-note{color:var(--muted);font-size:11px;line-height:1.5;margin-top:10px}
+.step-pane{display:none}.step-pane.active{display:block}
+.form-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 13px;border:1px solid #dfe6f0;border-radius:15px;background:#f8faff;margin-bottom:14px}.form-head strong{font-size:13px}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.field{margin:12px 0}.field.full{grid-column:1/-1}.field-label{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:7px}.field-label label{font-size:13px;font-weight:850}.req{color:var(--brand);font-size:10px;font-weight:900}.field input,.field textarea,.field select{width:100%;padding:12px 13px;border:1px solid #ccd7e6;border-radius:11px;background:#fbfcfe;outline:none}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--brand);box-shadow:0 0 0 4px #536dfe12;background:#fff}.field textarea{min-height:102px;resize:vertical}.help{color:var(--muted);font-size:11px;line-height:1.45;margin-top:5px}
+.optional-section{margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}.optional-section h3{margin:0 0 5px;font-size:15px}.optional-section>p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}.hidden{display:none!important}
+.style-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}.theme-btn{position:relative;padding:8px;border:2px solid #dce3ee;border-radius:15px;background:#fff;text-align:left;color:var(--ink)}.theme-btn.selected{border-color:var(--brand);box-shadow:0 0 0 3px #536dfe16}.theme-swatch{height:80px;border-radius:11px;padding:11px;color:#fff}.theme-swatch.midnight{background:linear-gradient(145deg,#101a36,#263969 55%,#536dfe)}.theme-swatch.ocean{background:linear-gradient(145deg,#062c3f,#086f7a 52%,#16b8c8)}.theme-swatch.forest{background:linear-gradient(145deg,#10291f,#20563b 52%,#4eaa73)}.theme-swatch.sunset{background:linear-gradient(145deg,#3a1736,#7a294e 48%,#ed7a48)}.theme-name{margin-top:8px;font-size:12px;font-weight:900}.theme-sub{margin-top:2px;font-size:10px;color:var(--muted)}.theme-mark{position:absolute;right:9px;bottom:9px;width:21px;height:21px;border-radius:50%;display:grid;place-items:center;background:var(--brand);color:#fff;font-size:11px;opacity:0}.theme-btn.selected .theme-mark{opacity:1}
+.identity-box{margin-top:12px;padding:14px;border:1px dashed #c6d1e1;border-radius:18px;background:#f8faff;display:grid;grid-template-columns:90px 1fr;gap:14px;align-items:center}.identity-preview{width:90px;height:90px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#e7ecf6;color:var(--brand);font-weight:950;font-size:27px;border:4px solid #fff;box-shadow:0 7px 20px #27364d1a}.identity-preview img{width:100%;height:100%;object-fit:cover}.identity-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.upload-btn,.remove-btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 12px;border-radius:10px;font-size:12px;font-weight:900}.upload-btn{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff}.remove-btn{border:1px solid var(--line);background:#fff;color:#4b5870}.file-input{display:none}.file-name{margin-top:7px;color:var(--muted);font-size:10px}
+/* Type-specific preview cards */
+.card-preview{min-height:510px;border-radius:24px;overflow:hidden;position:relative;box-shadow:0 22px 55px #27364d25}.preview-inner{min-height:510px;padding:30px;display:flex;flex-direction:column;position:relative}.preview-kicker{font-size:10px;letter-spacing:2.2px;font-weight:950;text-transform:uppercase;opacity:.72}.preview-title{font-size:35px;font-weight:950;line-height:1.04;letter-spacing:-1px;margin-top:10px}.preview-sub{line-height:1.5;margin-top:8px;opacity:.76}.preview-meta{display:grid;gap:9px;margin-top:22px}.preview-row{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid #dce2eb}.preview-row b{font-size:12px}.preview-row span{font-size:12px;text-align:right;opacity:.8}.preview-footer{margin-top:auto;padding-top:18px;font-size:11px;opacity:.72}.preview-logo{width:58px;height:58px;border-radius:18px;overflow:hidden;display:grid;place-items:center;background:#ffffff1a;border:1px solid #ffffff2b;font-weight:950}.preview-logo img{width:100%;height:100%;object-fit:cover}
+.card-visiting{background:radial-gradient(circle at 85% 10%,#ffffff20 0 10%,transparent 11%),linear-gradient(145deg,#101a36,#263969 55%,#536dfe);color:#fff}.card-visiting .preview-row{border-color:#ffffff30}
+.card-menu{background:linear-gradient(180deg,#fffaf0,#fff);color:#241f19}.card-menu .preview-inner{font-family:Georgia,serif}.card-menu .preview-title{text-align:center}.card-menu .preview-sub{text-align:center}.card-menu .preview-meta{border-top:2px solid #30271e}.card-menu .preview-row{border-bottom:1px dotted #c7bcae}.card-menu .preview-footer{font-family:Inter,system-ui,sans-serif}
+.card-wedding{background:radial-gradient(circle at 20% 15%,#fde1ea 0 12%,transparent 13%),linear-gradient(145deg,#fff7fa,#fff);color:#4a2d38}.card-wedding .preview-inner{text-align:center}.card-wedding .preview-title{font-family:Georgia,serif}.card-wedding .preview-meta{max-width:390px;width:100%;margin-left:auto;margin-right:auto}.card-wedding .preview-row{display:block;border:0;padding:7px}.card-wedding .preview-row span{display:block;margin-top:3px;text-align:center}
+.card-identity{background:linear-gradient(135deg,#edf3ff,#fff);color:#172033}.card-identity .preview-inner{border-left:10px solid #536dfe}.id-chip{display:inline-flex;padding:6px 9px;border-radius:999px;background:#dfe7ff;color:#3d51b5;font-size:10px;font-weight:950}
+.card-catalog{background:#f5f7fb;color:#172033}.catalog-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}.catalog-item{padding:13px;border:1px solid #e1e7ef;border-radius:14px;background:#fff;box-shadow:0 7px 18px #27364d0a}.catalog-item b{display:block;font-size:12px}.catalog-item span{display:block;margin-top:5px;color:#66748a;font-size:11px}
+.card-event{background:linear-gradient(145deg,#111827,#334155);color:#fff}.card-event .preview-row{border-color:#ffffff30}.ticket-box{margin-top:22px;padding:15px;border:1px dashed #ffffff55;border-radius:16px;background:#ffffff0a}
+.card-product{background:linear-gradient(145deg,#f6fbff,#fff);color:#172033}.product-hero{margin-top:18px;padding:16px;border-radius:18px;background:#fff;border:1px solid #dfe6ef}.product-price{font-size:29px;font-weight:950;margin-top:8px}.ar-badge{display:inline-flex;margin-top:14px;padding:8px 10px;border-radius:10px;background:#e9efff;color:#3d51b5;font-size:11px;font-weight:900}
+.card-property{background:linear-gradient(145deg,#eef9f4,#fff);color:#18352a}.property-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:22px}.stat{padding:13px;border:1px solid #d9e9e1;border-radius:13px;background:#ffffffaa}.stat b{display:block;font-size:11px;color:#5e766b}.stat span{display:block;margin-top:3px;font-weight:900}.property-cta{margin-top:14px;padding:11px 12px;border-radius:12px;background:#def3e7;color:#216144;font-weight:900;font-size:11px}
+.card-preview .theme-overlay{position:absolute;inset:0;pointer-events:none}.theme-midnight{}.theme-ocean .card-preview{background:linear-gradient(145deg,#062c3f,#086f7a 52%,#16b8c8)!important}.theme-forest .card-preview{background:linear-gradient(145deg,#10291f,#20563b 52%,#4eaa73)!important}.theme-sunset .card-preview{background:linear-gradient(145deg,#3a1736,#7a294e 48%,#ed7a48)!important}
+/* Only use theme variants where the type's design supports recoloring. */
+.recolorable.card-menu.theme-ocean{background:linear-gradient(180deg,#f3fbff,#fff);color:#17333d}.recolorable.card-menu.theme-forest{background:linear-gradient(180deg,#f2fbf4,#fff);color:#18352a}.recolorable.card-menu.theme-sunset{background:linear-gradient(180deg,#fff4f0,#fff);color:#4b2b25}
+.recolorable.card-wedding.theme-ocean{background:linear-gradient(145deg,#f1fbff,#fff);color:#24404c}.recolorable.card-wedding.theme-forest{background:linear-gradient(145deg,#f1faf3,#fff);color:#294333}.recolorable.card-wedding.theme-sunset{background:linear-gradient(145deg,#fff0f0,#fff);color:#512e38}
+.recolorable.card-identity.theme-ocean .preview-inner{border-left-color:#0b8ea0}.recolorable.card-identity.theme-forest .preview-inner{border-left-color:#2d8656}.recolorable.card-identity.theme-sunset .preview-inner{border-left-color:#cf6b53}
+.recolorable.card-catalog.theme-ocean{background:#f1f8fb;color:#18333c}.recolorable.card-catalog.theme-forest{background:#f1f8f3;color:#1d3928}.recolorable.card-catalog.theme-sunset{background:#fff3ef;color:#412722}
+.recolorable.card-product.theme-ocean{background:linear-gradient(145deg,#eefbff,#fff)}.recolorable.card-product.theme-forest{background:linear-gradient(145deg,#effaf3,#fff)}.recolorable.card-product.theme-sunset{background:linear-gradient(145deg,#fff1ed,#fff)}
+.recolorable.card-property.theme-ocean{background:linear-gradient(145deg,#edf9fb,#fff);color:#173740}.recolorable.card-property.theme-forest{background:linear-gradient(145deg,#edf9f0,#fff);color:#203f2e}.recolorable.card-property.theme-sunset{background:linear-gradient(145deg,#fff2ed,#fff);color:#4d2b22}
+.card-visiting.theme-ocean{background:linear-gradient(145deg,#062c3f,#086f7a 52%,#16b8c8);}
+.card-visiting.theme-forest{background:linear-gradient(145deg,#10291f,#20563b 52%,#4eaa73);}
+.card-visiting.theme-sunset{background:linear-gradient(145deg,#3a1736,#7a294e 48%,#ed7a48);}
+.card-event.theme-ocean{background:linear-gradient(145deg,#123e4b,#0b7480 55%,#1da6b1);}
+.card-event.theme-forest{background:linear-gradient(145deg,#15382a,#2b6747 55%,#559a6d);}
+.card-event.theme-sunset{background:linear-gradient(145deg,#45223c,#7f3f52 55%,#d97753);}
+.card-menu.theme-midnight{background:linear-gradient(180deg,#f4f6fb,#fff);color:#20283b}
+.card-wedding.theme-midnight{background:linear-gradient(145deg,#f4f6fb,#fff);color:#28334c}
+.card-identity.theme-midnight{background:linear-gradient(135deg,#eef2ff,#fff);}
+.card-catalog.theme-midnight{background:#f4f6fa;}
+.card-product.theme-midnight{background:linear-gradient(145deg,#f5f8ff,#fff);}
+.card-property.theme-midnight{background:linear-gradient(145deg,#eef7f3,#fff);}
+
+/* Landing */
+#landing{min-height:100vh}.landing-nav{width:min(1180px,94%);margin:auto;padding:20px 0;display:flex;align-items:center;justify-content:space-between;gap:12px}.landing-brand{font-size:20px;font-weight:950}.landing-brand span{color:var(--brand)}.landing-wrap{width:min(1180px,94%);margin:55px auto 75px;display:grid;grid-template-columns:1fr 1fr;gap:45px;align-items:center}.hero-kicker{color:var(--brand);font-weight:950;letter-spacing:2.3px;font-size:11px}.hero h1{font-size:clamp(46px,6vw,78px);line-height:.97;letter-spacing:-3px;margin:14px 0 18px}.hero p{font-size:18px;color:var(--muted);line-height:1.7;max-width:590px}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}.hero-points{display:flex;gap:14px;flex-wrap:wrap;margin-top:17px;font-size:12px;color:#5d6880;font-weight:800}.hero-stage{min-height:420px;display:grid;place-items:center;position:relative}.landing-demo{width:min(88%,470px);min-height:320px;padding:28px;border-radius:28px;background:linear-gradient(145deg,#101a36,#263969 55%,#536dfe);color:#fff;box-shadow:0 30px 80px #1d2d5430;position:relative;z-index:2}.landing-demo h2{font-size:34px;margin:35px 0 5px}.landing-demo p{font-size:14px;color:#eef1ff;margin:0}.landing-demo .demo-lines{display:grid;gap:7px;margin-top:30px;font-size:12px;opacity:.85}.floating-type{position:absolute;right:0;bottom:10px;z-index:3;width:160px;padding:15px;border-radius:18px;background:#fff;border:1px solid var(--line);box-shadow:0 18px 40px #27364d20;font-size:11px}.floating-type strong{display:block;font-size:13px;margin-bottom:6px}.features{width:min(1180px,94%);margin:0 auto 55px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.feature{padding:21px;border:1px solid var(--line);border-radius:18px;background:#ffffffdd}.feature h3{margin:12px 0 6px}.feature p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}
+
+/* Shared public card */
+#shared{display:none;min-height:100vh;padding:24px 14px 50px}.shared-wrap{width:min(900px,100%);margin:auto}.shared-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:17px}.shared-brand{color:var(--brand);font-weight:950;letter-spacing:2px;font-size:11px}.shared-layout{display:grid;grid-template-columns:minmax(0,1fr) 165px;gap:15px}.qr-box{background:#fff;border:1px solid var(--line);border-radius:20px;padding:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 18px 45px #27364d10}.qr-box strong{font-size:12px}.qr{margin-top:10px;min-width:140px;min-height:140px;display:grid;place-items:center}.shared-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}.shared-status{min-height:20px;margin-top:8px;color:var(--brand);font-size:13px}.owner-actions{display:none;gap:9px;flex-wrap:wrap;margin-top:12px}.owner-note{display:none;margin-top:7px;color:var(--muted);font-size:11px;line-height:1.45}.analytics{display:none;margin-top:15px;padding:16px;background:#fff;border:1px solid var(--line);border-radius:18px}.analytics.show{display:block}.analytics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:11px}.metric{padding:12px;border:1px solid var(--line);border-radius:12px;background:#f8faff}.metric b{display:block;font-size:22px}.metric span{font-size:10px;color:var(--muted);font-weight:800}.public-ar{margin-top:16px}.ar-viewer{width:100%;height:330px;border-radius:16px;background:#eef2f8}.ar-action{display:inline-flex;margin-top:8px;padding:10px 12px;border-radius:10px;background:#536dfe;color:#fff;font-size:11px;font-weight:900}
+
+@media(max-width:900px){.type-grid{grid-template-columns:1fr 1fr}.features{grid-template-columns:1fr}.landing-wrap{grid-template-columns:1fr;gap:20px}.hero-stage{min-height:350px}#builderGrid{grid-template-columns:1fr}.preview-box{position:static}}
+@media(max-width:620px){.field-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.type-grid{grid-template-columns:1fr}.shared-layout{grid-template-columns:1fr}.qr-box{min-height:185px}.analytics-grid{grid-template-columns:1fr 1fr}.step-title{flex-direction:column}.form-head{align-items:flex-start;flex-direction:column}.topbar{top:0}.identity-box{grid-template-columns:1fr;text-align:center}.identity-preview{margin:auto}.identity-actions{justify-content:center}.hero h1{font-size:48px}.landing-demo{width:94%}.floating-type{right:2%}.style-grid{grid-template-columns:1fr 1fr}}
+
+/* ===== ZetaCard Studio v21 ===== */
+.threeD-studio{margin-top:20px;padding:18px;border:1px solid #dfe6f0;border-radius:20px;background:linear-gradient(180deg,#fbfcff,#f6f8ff)}
+.threeD-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.threeD-head h3{margin:0;font-size:16px}.threeD-head p{margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.45}
+.threeD-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.threeD-tab{padding:9px 12px;border-radius:11px;border:1px solid var(--line);background:#fff;color:#35415f;font-size:11px;font-weight:900}
+.threeD-tab.active{background:#eef2ff;border-color:#9ca8ff;color:#3948ad}
+.threeD-pane{display:none}.threeD-pane.active{display:block}
+.model-template-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.model-template{border:1px solid #dbe3ef;background:#fff;border-radius:15px;padding:11px;text-align:left;cursor:pointer;transition:.16s}
+.model-template:hover{transform:translateY(-1px);border-color:#a9b4e9}
+.model-template.selected{border:2px solid var(--brand);background:#eef2ff;box-shadow:0 0 0 3px #536dfe14}
+.model-template strong{font-size:12px;display:block}.model-template span{font-size:10px;color:var(--muted);display:block;margin-top:4px}
+.template-check{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--brand);color:#fff;font-size:10px;opacity:0;margin-top:8px}
+.model-template.selected .template-check{opacity:1}
+.model-search{display:flex;gap:8px}.model-search input{flex:1}
+.model-results{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:10px}
+.model-result{border:1px solid var(--line);border-radius:15px;padding:10px;background:#fff}
+.model-result-thumb{height:100px;border-radius:10px;background:#eef2f8;display:grid;place-items:center;overflow:hidden;margin-bottom:8px}
+.model-result-thumb img{width:100%;height:100%;object-fit:cover}
+.model-result strong{display:block;font-size:12px}.model-result small{display:block;color:var(--muted);font-size:10px;line-height:1.35;margin:4px 0 8px}
+.threeD-mini-viewer{margin-top:12px;border:1px solid var(--line);border-radius:17px;overflow:hidden;background:#eef2f8}
+.threeD-mini-viewer model-viewer{width:100%;height:280px}
+.threeD-toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.threeD-toolbar .btn-mini{padding:9px 11px;border-radius:10px;border:1px solid var(--line);background:#fff;color:#2f3a58;font-size:11px;font-weight:900}
+.threeD-toolbar .btn-mini.primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border:0}
+.threeD-status{min-height:18px;margin-top:8px;font-size:11px;color:var(--muted)}
+.threeD-status.error{color:var(--danger)}.threeD-status.ok{color:var(--ok)}
+.hotspot-editor{margin-top:13px;padding-top:13px;border-top:1px solid var(--line)}
+.hotspot-editor h4,.ai-box h4{margin:0 0 5px;font-size:13px}.hotspot-editor p,.ai-box p{margin:0;color:var(--muted);font-size:10px;line-height:1.4}
+.hotspot-list-editor{display:grid;gap:7px;margin-top:9px}
+.hotspot-row{display:grid;grid-template-columns:1fr auto;gap:7px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.hotspot-row b{font-size:11px}.hotspot-row span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.ai-box{margin-top:13px;padding-top:13px;border-top:1px solid var(--line)}
+@media(max-width:620px){.model-template-grid,.model-results{grid-template-columns:1fr 1fr}}
+
+
+/* ZetaCard Studio v22 */
+.threeD-studio{margin-top:22px;padding:20px;border:1px solid #dfe5f2;border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(247,249,255,.98));box-shadow:0 18px 45px rgba(22,34,70,.08)}
+.threeD-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:14px}.threeD-head h3{margin:0;font-size:17px;letter-spacing:-.02em}.threeD-head p{margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.5}
+.threeD-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.threeD-tab{padding:10px 13px;border-radius:12px;border:1px solid var(--line);background:#fff;color:#2f3a58;font-size:11px;font-weight:900}.threeD-tab.active{background:#eef2ff;border-color:#9ca8ff;color:#3848b1}
+.threeD-pane{display:none}.threeD-pane.active{display:block}.model-template-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.model-template{min-height:78px;border:1px solid #dbe3ef;background:#fff;border-radius:16px;padding:12px;text-align:left;cursor:pointer;transition:.18s}.model-template:hover{transform:translateY(-1px);border-color:#9eabff}.model-template.selected{border:2px solid var(--brand);background:#eef2ff;box-shadow:0 0 0 4px rgba(83,102,254,.10)}.model-template strong{font-size:12px;display:block}.model-template span{font-size:10px;color:var(--muted);display:block;margin-top:4px}.template-check{display:inline-grid;place-items:center;width:21px;height:21px;border-radius:50%;background:var(--brand);color:#fff;font-size:10px;opacity:0;margin-top:8px}.model-template.selected .template-check{opacity:1}
+.model-search{display:flex;gap:8px}.model-search input{flex:1}.model-results{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:11px}.model-result{border:1px solid var(--line);border-radius:16px;padding:10px;background:#fff;box-shadow:0 6px 18px rgba(22,34,70,.04)}.model-result-thumb{height:110px;border-radius:12px;background:linear-gradient(145deg,#eff2f8,#e5e9f3);display:grid;place-items:center;overflow:hidden;margin-bottom:9px}.model-result-thumb img{width:100%;height:100%;object-fit:cover}.model-result strong{display:block;font-size:12px;line-height:1.35}.model-result small{display:block;color:var(--muted);font-size:10px;line-height:1.35;margin:5px 0 9px}
+.threeD-mini-viewer{margin-top:14px;border:1px solid #dfe5f0;border-radius:18px;overflow:hidden;background:radial-gradient(circle at 50% 35%,#fff,#edf2f9)}.threeD-mini-viewer model-viewer{width:100%;height:330px;background:transparent}.threeD-toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px}.threeD-toolbar .btn-mini{padding:9px 11px;border-radius:11px;border:1px solid var(--line);background:#fff;color:#2f3a58;font-size:11px;font-weight:900}.threeD-toolbar .btn-mini.primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border:0}.threeD-size{margin-top:12px;padding:12px;border-radius:14px;background:#f7f8fd;border:1px solid var(--line)}.threeD-size-head{display:flex;justify-content:space-between;gap:10px;font-size:11px;font-weight:900}.threeD-size input[type=range]{width:100%;margin-top:9px;accent-color:#5a67ef}.threeD-status{min-height:18px;margin-top:8px;font-size:11px;color:var(--muted)}.threeD-status.ok{color:#0f8b60}.threeD-status.error{color:#c2414e}
+.hotspot-editor,.ai-box{margin-top:15px;padding-top:15px;border-top:1px solid var(--line)}.hotspot-editor h4,.ai-box h4{margin:0 0 5px;font-size:13px}.hotspot-editor p,.ai-box p{margin:0;color:var(--muted);font-size:10px;line-height:1.45}.hotspot-list-editor{display:grid;gap:7px;margin-top:10px}.hotspot-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:9px 11px;border:1px solid var(--line);border-radius:12px;background:#fff}.hotspot-row b{font-size:11px}.hotspot-row span{display:block;color:var(--muted);font-size:10px;margin-top:2px}.public-ar{margin-top:16px;border:1px solid rgba(98,112,150,.15);border-radius:18px;padding:10px;background:linear-gradient(145deg,#f7f8fc,#edf1f8)}.public-ar .ar-viewer{width:100%;height:320px;border-radius:14px;background:transparent}.ar-action{padding:10px 14px;border:0;border-radius:12px;background:#111b38;color:#fff;font-weight:900;font-size:12px}
+.premium-catalog{margin-top:12px;padding:12px;border:1px solid rgba(98,112,150,.12);border-radius:16px;background:linear-gradient(145deg,rgba(255,255,255,.88),rgba(245,248,255,.88))}.premium-catalog-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.premium-catalog-head strong{font-size:12px}.premium-catalog-head span{font-size:10px;color:var(--muted)}.premium-catalog-items{display:grid;gap:7px}.premium-catalog-item{display:flex;justify-content:space-between;gap:10px;padding:9px 10px;border-radius:11px;background:#fff;border:1px solid #e7ebf4;font-size:11px}.premium-catalog-item b{font-weight:900}.premium-catalog-item span{color:#4d5a75}
+@media(max-width:620px){.model-template-grid,.model-results{grid-template-columns:1fr}.threeD-mini-viewer model-viewer{height:290px}}
+
+
+/* v23 Premium Catalog Experience */
+.premium-catalog-studio{margin-top:18px;padding:18px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,#fff,#f8f9ff)}
+.premium-catalog-studio h3{margin:0;font-size:16px}.premium-catalog-studio .sub{margin-top:4px}
+.catalog-builder-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+.catalog-builder-count{font-size:11px;color:var(--muted);font-weight:800}
+.catalog-products-editor{display:grid;gap:10px;margin-top:12px}
+.catalog-product-editor{padding:13px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.catalog-product-editor .topline{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.catalog-product-editor .topline strong{font-size:12px}
+.catalog-product-editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px}
+.catalog-product-editor-grid .full{grid-column:1/-1}
+.catalog-preview-shell{margin-top:12px;border:1px solid var(--line);border-radius:18px;padding:14px;background:#fff}
+.catalog-preview-shell .cp-toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.catalog-preview-shell .cp-filter{display:flex;gap:7px;flex-wrap:wrap}
+.catalog-filter{padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:10px;font-weight:800;cursor:pointer}
+.catalog-filter.active{background:#eef2ff;border-color:#a7b2ff;color:#3c48ad}
+.catalog-live-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.catalog-live-card{border:1px solid var(--line);border-radius:15px;padding:10px;background:linear-gradient(180deg,#fff,#fbfcff);overflow:hidden}
+.catalog-live-image{height:110px;border-radius:11px;background:linear-gradient(135deg,#e9edfa,#dfe5f7);display:grid;place-items:center;overflow:hidden;margin-bottom:9px}
+.catalog-live-image img{width:100%;height:100%;object-fit:cover}
+.catalog-live-card h4{margin:0;font-size:13px}.catalog-live-card .price{font-weight:900;color:#313f77;font-size:12px;margin-top:4px}
+.catalog-live-card .desc{color:var(--muted);font-size:10px;line-height:1.4;margin-top:5px;min-height:28px}
+.catalog-live-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.catalog-live-actions button,.catalog-live-actions a{font-size:10px;font-weight:900;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;text-decoration:none;color:#2c385a;cursor:pointer}
+.catalog-live-actions .primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border:0}
+.catalog-empty{padding:22px;text-align:center;color:var(--muted);font-size:11px}
+.catalog-public-wrap{margin-top:16px;padding:16px;border-radius:20px;background:linear-gradient(180deg,#ffffff,#f5f7ff);border:1px solid var(--line)}
+.catalog-public-wrap .public-catalog-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:12px}
+.catalog-public-wrap .public-catalog-title{font-size:20px;font-weight:900;letter-spacing:-.03em}
+.catalog-public-wrap .public-catalog-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.catalog-public-search{display:flex;gap:8px;margin-bottom:12px}
+.catalog-public-search input{flex:1}
+.catalog-public-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.catalog-public-card{padding:11px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.catalog-public-card .name{font-size:13px;font-weight:900}.catalog-public-card .cat{font-size:10px;color:#5966a7;margin-top:3px}.catalog-public-card .price{font-size:12px;font-weight:900;margin-top:5px}.catalog-public-card .desc{font-size:10px;line-height:1.4;color:var(--muted);margin-top:5px;min-height:28px}
+.catalog-public-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.catalog-public-actions a,.catalog-public-actions button{padding:8px 10px;border-radius:10px;font-size:10px;font-weight:900;text-decoration:none;border:1px solid var(--line);background:#fff;color:#2d395e;cursor:pointer}
+.catalog-public-actions .primary{background:linear-gradient(135deg,var(--brand),var(--brand2));border:0;color:#fff}
+.catalog-detail-modal{position:fixed;inset:0;background:rgba(17,24,39,.55);display:none;place-items:center;padding:20px;z-index:9999}
+.catalog-detail-modal.show{display:grid}
+.catalog-detail-card{max-width:620px;width:100%;background:#fff;border-radius:22px;padding:20px;box-shadow:0 30px 100px rgba(0,0,0,.2)}
+.catalog-detail-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.catalog-detail-card h3{margin:0;font-size:20px}.catalog-detail-card p{color:var(--muted);font-size:12px;line-height:1.55}
+.catalog-detail-model{margin-top:12px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#f2f5fb}
+.catalog-detail-model model-viewer{width:100%;height:320px}
+@media(max-width:700px){.catalog-product-editor-grid,.catalog-live-grid,.catalog-public-grid{grid-template-columns:1fr}}
+
+
+.ai-box{padding:14px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#fbfcff,#f4f6ff);margin-top:12px}
+.ai-box h4{margin:0 0 5px;font-size:13px}
+.ai-box p{margin:0;color:var(--muted);font-size:10px;line-height:1.45}
+</style>
+</head>
+<body>
+
+<section id="landing">
+  <nav class="landing-nav">
+    <div class="landing-brand"><span>●</span> ZetaCard</div>
+    <button id="landingCreateTop" class="btn ghost" type="button">Create your card</button>
+  </nav>
+  <div class="landing-wrap">
+    <div class="hero">
+      <div class="hero-kicker">DIGITAL CARD EXPERIENCE STUDIO</div>
+      <h1>One platform. Many kinds of cards.</h1>
+      <p>Choose the card you need first. ZetaCard then builds the right form, the right visual layout, and the right tools for that card.</p>
+      <div class="hero-actions"><button id="landingCreate" class="btn primary" type="button">Create my card</button></div>
+      <div class="hero-points"><span>✓ Type-specific forms</span><span>✓ Type-specific designs</span><span>✓ QR + share</span><span>✓ 3D / AR ready</span></div>
+    </div>
+    <div class="hero-stage">
+      <div class="landing-demo"><div class="hero-kicker" style="color:#cbd4ff">PRODUCT CARD</div><h2>See it in 3D.</h2><p>Different cards can become different digital experiences.</p><div class="demo-lines"><div>📦 Product information</div><div>✨ Interactive 3D / AR</div><div>↗ Share one memorable link</div></div></div>
+      <div class="floating-type"><strong>Card types</strong>💼 Visiting<br>🍽️ Menu<br>💍 Wedding<br>🛍️ Catalog<br>📦 Product<br>🏠 Property</div>
+    </div>
+  </div>
+  <div class="features"><div class="feature"><div>🧩</div><h3>Form follows type</h3><p>No generic giant form. Users see only fields that belong to the selected card.</p></div><div class="feature"><div>🎨</div><h3>Design follows type</h3><p>A menu looks like a menu, a wedding invitation looks like an invitation, and a catalog looks like a catalog.</p></div><div class="feature"><div>✨</div><h3>Experience layer</h3><p>Product and property cards can carry interactive 3D and AR experiences.</p></div></div>
+</section>
+
+<main id="builder" class="container" style="display:none">
+  <div class="topbar"><button id="builderBack" class="nav-btn" type="button">← Home</button><div class="brand">ZetaCard</div><div style="font-size:11px;color:var(--muted);font-weight:850" id="stepIndicator">Step 1 of 2</div></div>
+  <div class="header"><div class="eyebrow">ZETACARD STUDIO</div><h1 id="builderTitle">Choose your card</h1><p id="builderSubtitle">Start with the card type. ZetaCard will build the rest for you.</p></div>
+  <div id="builderGrid">
+    <section class="step-card">
+      <div id="typeStep" class="step-pane active">
+        <div class="step-title"><div><h2>1. Choose card type</h2><p>Your selection controls the form and the design.</p></div><span id="typePill" class="pill">Choose a type</span></div>
+        <div id="typeGrid" class="type-grid"></div>
+        <div class="actions"><button id="continueBtn" class="btn primary" type="button" disabled>Continue →</button></div>
+        <div id="typeStatus" class="status"></div>
+      </div>
+
+      <div id="formStep" class="step-pane">
+        <div class="form-head"><div><strong id="formTypeTitle">Build your card</strong><div id="formTypeHint" class="help">Only relevant fields are shown.</div></div><button id="backToTypes" class="nav-btn" type="button">← Card types</button></div>
+        <div id="dynamicForm"></div>
+        <div id="visualSection" class="optional-section hidden"><h3>Visual identity</h3><p id="visualHint">Add the image that belongs to this card.</p><div class="identity-box"><div id="identityPreview" class="identity-preview">Z</div><div><div style="font-weight:900;font-size:13px">Photo / image</div><div class="help" style="margin-top:3px">JPG, PNG or WebP · max 5 MB</div><div class="identity-actions"><label class="upload-btn" for="cardPhoto">Choose image</label><button id="removePhoto" class="remove-btn" type="button">Remove</button><input id="cardPhoto" class="file-input" type="file" accept="image/jpeg,image/png,image/webp"></div><div id="fileName" class="file-name">No image selected</div></div></div></div>
+        <div id="styleSection" class="optional-section hidden"><h3>Card style</h3><p>Choose a theme for this card type.</p><div id="styleGrid" class="style-grid"></div><input id="theme" type="hidden" value="midnight"></div>
+        <div class="actions"><button id="createBtn" class="btn primary" type="button">Create share link</button><button id="clearBtn" class="btn ghost" type="button">Clear form</button></div><div id="formStatus" class="status"></div>
+      </div>
+    </section>
+    <aside id="previewBox" class="preview-box"><h2>Live preview</h2><div id="mainCard" class="card-preview card-visiting theme-midnight"></div><div class="preview-note">The preview uses the actual selected card type and updates as you fill the form.</div></aside>
+  </div>
+</main>
+
+<section id="shared">
+  <div class="shared-wrap">
+    <div class="shared-top"><button id="sharedHome" class="nav-btn" type="button">← Home</button><div class="shared-brand">ZETACARD</div></div>
+    <div id="sharedError" class="status error"></div>
+    <div class="shared-layout"><div id="sharedCard" class="card-preview card-visiting theme-midnight"></div><div class="qr-box"><strong>Scan to open</strong><div id="qr" class="qr"></div></div></div>
+    <div class="shared-actions"><button id="copyLinkBtn" class="btn primary" type="button">Copy link</button><button id="shareBtn" class="btn ghost" type="button">Share</button><button id="saveContactBtn" class="btn ghost" type="button">Save contact</button><button id="createOwnBtn" class="btn secondary" type="button">Create your own card</button></div>
+    <div id="sharedStatus" class="shared-status"></div>
+    <div id="ownerActions" class="owner-actions"><button id="editBtn" class="btn ghost" type="button">Edit card</button><button id="copyEditBtn" class="btn ghost" type="button">Copy edit link</button></div>
+    <div id="ownerNote" class="owner-note">Owner controls are visible only after opening the private edit link.</div>
+    <div id="analytics" class="analytics"><div style="display:flex;justify-content:space-between;align-items:center"><strong>Analytics</strong><button id="refreshAnalytics" class="btn ghost" type="button">Refresh</button></div><div class="analytics-grid"><div class="metric"><b id="viewsCount">0</b><span>Views</span></div><div class="metric"><b id="phoneCount">0</b><span>Phone clicks</span></div><div class="metric"><b id="emailCount">0</b><span>Email clicks</span></div><div class="metric"><b id="shareCount">0</b><span>Shares</span></div></div><div id="analyticsStatus" class="status"></div></div>
+  </div>
+</section>
+
+<script>
+"use strict";
+const SUPABASE_URL="https://sojuhiuydumpouknkmat.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_--O6hnERwb8RwEa-VFHnUw_SRUE54C-";
+const SITE_BASE="/";
+const dbClient=()=>window.supabase&&window.supabase.createClient?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY):null;
+let db=null,currentProfile=null,selectedType="",ownerSession=false,editToken="",mainTheme="midnight",imageFile=null,imageObjectUrl=null,createBusy=false,editing=false;
+const $=id=>document.getElementById(id);
+const escapeHtml=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const clean=v=>String(v??"").trim();
+const uname=v=>clean(v).toLowerCase();
+const validUsername=u=>/^[a-z0-9][a-z0-9-]{2,29}$/.test(u);
+const safeTheme=t=>["midnight","ocean","forest","sunset"].includes(t)?t:"midnight";
+const TYPES={
+ visiting:{label:"Visiting Card",icon:"💼",desc:"Professional identity, contact and business details.",theme:true,photo:true},
+ menu:{label:"Menu Card",icon:"🍽️",desc:"Restaurant menu, dishes, prices and ordering.",theme:true,photo:false},
+ wedding:{label:"Wedding Card",icon:"💍",desc:"Invitation, couple, date, venue and RSVP.",theme:true,photo:true},
+ identity:{label:"Identity Card",icon:"🪪",desc:"Person, organization, designation and ID details.",theme:true,photo:true},
+ catalog:{label:"Catalog",icon:"🛍️",desc:"Products or services, pricing and enquiries.",theme:true,photo:false},
+ event:{label:"Event Pass",icon:"🎟️",desc:"Event, schedule, venue and registration.",theme:true,photo:false},
+ product:{label:"Product Card",icon:"📦",desc:"Product details, buying, 3D and AR.",theme:true,photo:true},
+ property:{label:"Property Showcase",icon:"🏠",desc:"Property, location, pricing and virtual/AR media.",theme:true,photo:true}
+};
+const SCHEMAS={
+ visiting:[
+  ["name","Full name","e.g. Alex Morgan","text",true],["username","Username","e.g. alex-morgan","text",true],["job_title","Job title","e.g. Founder"],["company","Company / brand","e.g. Zeta Studio"],["phone","Phone","+91 98765 43210"],["email","Email","hello@example.com","email"],["website","Website","https://example.com"],["address","Address","City, state or business address"],["bio","About you","What do you do?","textarea",false,true]
+ ],
+ menu:[
+  ["restaurant_name","Restaurant / business name","e.g. The Zeta Kitchen","text",true],["username","Username","e.g. zeta-kitchen","text",true],["tagline","Tagline","Fresh food. Great moments."],["phone","Phone","+91 98765 43210"],["email","Email","hello@restaurant.com","email"],["address","Address","Restaurant address"],["opening_hours","Opening hours","Mon–Sun · 11 AM–11 PM"],["currency","Currency","₹"],["menu_items","Menu items","Paneer Tikka — ₹280\nButter Chicken — ₹360\nVeg Biryani — ₹260","textarea",false,true],["order_url","Order online URL","https://..."],["reservation_url","Reservation URL","https://..."],["description","About the restaurant","Tell guests about your food and experience.","textarea",false,true]
+ ],
+ wedding:[
+  ["bride_name","Bride name","e.g. Ananya","text",true],["groom_name","Groom name","e.g. Arjun","text",true],["username","Username","e.g. ananya-arjun","text",true],["date","Wedding date","e.g. 18 December 2026"],["time","Time","e.g. 7:00 PM"],["venue","Venue","e.g. The Grand Palace"],["address","Venue address","Full venue address"],["rsvp_name","RSVP contact","e.g. Priya"],["rsvp_phone","RSVP phone","+91 98765 43210"],["rsvp_url","RSVP / response URL","https://..."],["map_url","Google Maps URL","https://maps.google.com/..."],["dress_code","Dress code","Traditional / Formal"],["message","Invitation message","We would love to celebrate this special day with you...","textarea",false,true]
+ ],
+ identity:[
+  ["name","Full name","e.g. Alex Morgan","text",true],["username","Username","e.g. alex-morgan","text",true],["organization","Organization","e.g. Zeta Corporation"],["designation","Designation","e.g. Product Manager"],["id_number","ID number","e.g. ZC-2026-0042"],["department","Department","e.g. Operations"],["issue_date","Issue date","e.g. 01 Jan 2026"],["expiry_date","Expiry date","e.g. 31 Dec 2027"],["phone","Phone","+91 98765 43210"],["email","Email","name@organization.com","email"],["emergency_contact","Emergency contact","Name · phone"],["bio","Additional information","Any useful identity information.","textarea",false,true]
+ ],
+ catalog:[
+  ["business_name","Business / brand name","e.g. Zeta Home","text",true],["username","Username","e.g. zeta-home","text",true],["tagline","Tagline","Modern products for modern living"],["phone","Phone","+91 98765 43210"],["email","Email","sales@example.com","email"],["website","Website","https://example.com"],["catalog_items","Catalog items","Product A — ₹1,999\nProduct B — ₹2,499\nProduct C — ₹3,299","textarea",false,true],["enquiry_url","Enquiry / WhatsApp URL","https://..."],["description","Catalog description","Introduce this collection.","textarea",false,true]
+ ],
+ event:[
+  ["event_name","Event name","e.g. Zeta Future Expo","text",true],["username","Username","e.g. zeta-future-expo","text",true],["organizer","Organizer","e.g. Zeta Events"],["date","Date","e.g. 20 March 2027"],["time","Time","e.g. 10:00 AM – 6:00 PM"],["venue","Venue","e.g. Convention Centre"],["address","Address","Full venue address"],["registration_url","Registration URL","https://..."],["ticket_info","Ticket information","Free / ₹499 / VIP","text",false,true],["contact_phone","Contact phone","+91 98765 43210"],["contact_email","Contact email","events@example.com","email"],["description","Event description","What should attendees know?","textarea",false,true]
+ ],
+ product:[
+  ["product_name","Product name","e.g. Zeta Chair Pro","text",true],["username","Username","e.g. zeta-chair-pro","text",true],["brand","Brand","e.g. Zeta Living"],["sku","SKU / model number","e.g. ZC-PRO-01"],["price","Price","e.g. ₹12,999"],["currency","Currency","₹"],["buy_url","Buy / enquiry URL","https://..."],["support_url","Support / specifications URL","https://..."],["ar_model_url","3D model URL (.glb/.gltf)","https://.../product.glb"],["ar_usdz_url","iPhone/iPad USDZ URL","https://.../product.usdz"],["description","Product description","Explain the product, materials and use cases.","textarea",false,true],["features","Key features","Feature 1\nFeature 2\nFeature 3","textarea",false,true]
+ ],
+ property:[
+  ["property_title","Property title","e.g. 3 BHK Modern Villa","text",true],["username","Username","e.g. modern-villa-patna","text",true],["property_type","Property type","Villa / Apartment / Office / Land"],["price","Price","e.g. ₹85 lakh"],["location","Location","Area, city"],["area","Area","e.g. 1,850 sq ft"],["bedrooms","Bedrooms","e.g. 3"],["bathrooms","Bathrooms","e.g. 3"],["contact_phone","Contact phone","+91 98765 43210"],["contact_email","Contact email","sales@example.com","email"],["map_url","Map URL","https://maps.google.com/..."],["tour_url","Virtual tour URL","https://..."],["ar_model_url","3D model URL (.glb/.gltf)","https://.../property.glb"],["ar_usdz_url","iPhone/iPad USDZ URL","https://.../property.usdz"],["description","Property description","Describe the property.","textarea",false,true],["amenities","Amenities","Parking\nPool\nSecurity\nGarden","textarea",false,true]
+ ]
+};
+function initDb(){if(db)return true;if(!window.supabase)return false;try{db=dbClient();return !!db}catch(e){console.error(e);return false}}
+function msg(id,text,isError=false){const el=$(id);if(!el)return;el.textContent=text;el.classList.toggle("error",!!isError)}
+function homeUrl(){return new URL(SITE_BASE,location.origin).href}
+function profileUrl(u){return new URL(SITE_BASE+encodeURIComponent(u),location.origin).href}
+function editUrl(u,t){return homeUrl()+"#edit="+encodeURIComponent(u)+"&key="+encodeURIComponent(t)}
+function editKey(u){return "zetaEditToken:"+u}
+function storeToken(u,t){try{localStorage.setItem(editKey(u),t)}catch(e){}}
+function getToken(u){try{return localStorage.getItem(editKey(u))||""}catch(e){return ""}}
+function makeToken(){const a=new Uint8Array(24);crypto.getRandomValues(a);return Array.from(a,b=>b.toString(16).padStart(2,"0")).join("")}
+async function hash(v){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(v));return Array.from(new Uint8Array(b),x=>x.toString(16).padStart(2,"0")).join("")}
+async function verifyOwner(u,t){if(!initDb()||!u||!t)return false;try{const r=await db.rpc("verify_profile_owner",{p_username:u,p_token_hash:await hash(t)});return !r.error&&r.data===true}catch(e){console.warn(e);return false}}
+function showOnly(id){["landing","builder","shared"].forEach(x=>$(x).style.display=x===id?(id==="landing"?"block":id==="builder"?"block":"block"):"none");if(id==="shared")$("shared").style.display="block"}
+function showLanding(){showOnly("landing");window.scrollTo(0,0)}
+function showBuilder(){showOnly("builder");window.scrollTo(0,0)}
+function showShared(){showOnly("shared");window.scrollTo(0,0)}
+function typeCards(){return Object.entries(TYPES).map(([key,t])=>'<button type="button" class="type-option" data-type="'+key+'"><span class="type-icon">'+t.icon+'</span><strong>'+t.label+'</strong><span>'+t.desc+'</span><span class="type-check">✓</span></button>').join("")}
+function setSelectedType(type){if(!TYPES[type])return;selectedType=type;document.querySelectorAll(".type-option").forEach(b=>{const on=b.dataset.type===type;b.classList.toggle("selected",on);b.setAttribute("aria-pressed",on?"true":"false")});$("typePill").textContent=TYPES[type].icon+" "+TYPES[type].label;$("continueBtn").disabled=false;updateBackButton();updatePreview()}
+function clearImage(){if(imageObjectUrl)URL.revokeObjectURL(imageObjectUrl);imageObjectUrl=null;imageFile=null;$('cardPhoto').value="";$('fileName').textContent="No image selected";renderIdentityPreview()}
+function renderIdentityPreview(){const el=$("identityPreview");if(!el)return;if(imageObjectUrl){el.innerHTML='<img alt="Card image" src="'+imageObjectUrl+'">';return}el.textContent="Z"}
+function setupTypeGrid(){
+  $("typeGrid").innerHTML=typeCards();
+  $("typeGrid").addEventListener("click",e=>{const b=e.target.closest(".type-option");if(b)setSelectedType(b.dataset.type)});
+}
+function showTypeStep(){$("typeStep").classList.add("active");$("formStep").classList.remove("active");$("previewBox").style.display="none";$("stepIndicator").textContent="Step 1 of 2";$("builderTitle").textContent="Choose your card";$("builderSubtitle").textContent="Start with the card type. ZetaCard will build the rest for you.";$("builderBack").textContent="← Home";updateBackButton();window.scrollTo(0,0)}
+function showFormStep(){if(!selectedType){msg("typeStatus","Please select a card type first.",true);return false}$("typeStep").classList.remove("active");$("formStep").classList.add("active");$("previewBox").style.display="block";$("stepIndicator").textContent="Step 2 of 2";$("builderTitle").textContent="Build your "+TYPES[selectedType].label;$("builderSubtitle").textContent=TYPES[selectedType].desc;$("builderBack").textContent="← Card types";renderForm();updateBackButton();updatePreview();window.scrollTo(0,0);return false}
+function backAction(){if($("formStep").classList.contains("active")){showTypeStep();return}showLanding()}
+function updateBackButton(){$("builderBack").textContent=$("formStep").classList.contains("active")?"← Card types":"← Home"}
+function clearDynamicValues(){document.querySelectorAll("#dynamicForm [data-key]").forEach(e=>{e.value=""})}
+function formFieldId(k){return "f_"+k}
+function renderForm(prefill={}){
+  const t=TYPES[selectedType];const schema=SCHEMAS[selectedType];let html='<div class="field-grid">';
+  schema.forEach(([k,label,placeholder,type="text",required=false,full=false])=>{const id=formFieldId(k);const val=escapeHtml(prefill[k]??"");const req=required?'<span class="req">Required</span>':'';const attrs='id="'+id+'" data-key="'+k+'" '+(required?'required ':'');const control=type==="textarea"?'<textarea '+attrs+' placeholder="'+escapeHtml(placeholder)+'">'+val+'</textarea>':'<input '+attrs+' type="'+type+'" value="'+val+'" placeholder="'+escapeHtml(placeholder)+'">';html+='<div class="field '+(full?'full':'')+'"><div class="field-label"><label for="'+id+'">'+escapeHtml(label)+'</label>'+req+'</div>'+control;if(k==="username")html+='<div class="help">3–30 lowercase letters, numbers and hyphens.</div><div id="userStatus" class="status"></div>';if(k==="ar_model_url")html+='<div class="help">Optional. Adds interactive 3D/AR when a compatible model is available.</div>';if(k==="ar_usdz_url")html+='<div class="help">Optional iPhone/iPad AR model.</div>';html+='</div>'});html+='</div>';$('dynamicForm').innerHTML=html;
+  document.querySelectorAll('#dynamicForm [data-key]').forEach(el=>el.addEventListener('input',()=>{if(el.dataset.key==="username")checkUser(el.value);updatePreview()}));
+  $("visualSection").classList.toggle("hidden",!t.photo);$("styleSection").classList.toggle("hidden",!t.theme);
+  if(t.photo){$("visualHint").textContent=selectedType==="product"?"Add the main product image.":selectedType==="property"?"Add the main property image.":selectedType==="wedding"?"Add a couple or invitation image.":selectedType==="identity"?"Add the ID photo.":"Add your profile photo or logo."}
+  buildThemeButtons();renderIdentityPreview();mountThreeDStudio(prefill);mountCatalogStudio(prefill);
+}
+async function checkUser(v){const u=uname(v);if(!u){msg("userStatus","");return}if(!validUsername(u)){msg("userStatus","Use 3–30 lowercase letters, numbers or hyphens.",true);return}if(!initDb()){msg("userStatus","Database unavailable.",true);return}const r=await db.from("profiles").select("username").eq("username",u).maybeSingle();if(r.error){msg("userStatus","Could not check username.",true);return}msg("userStatus",r.data?"Username already taken":"✓ Username available",!!r.data)}
+function buildThemeButtons(){const el=$("styleGrid");el.innerHTML=[["midnight","Midnight","Bold & modern"],["ocean","Ocean","Fresh & clean"],["forest","Forest","Calm & natural"],["sunset","Sunset","Warm & creative"]].map(([k,n,s])=>'<button type="button" class="theme-btn '+(mainTheme===k?'selected':'')+'" data-theme="'+k+'"><div class="theme-swatch '+k+'"><b style="font-size:12px">'+n+'</b></div><div class="theme-name">'+n+'</div><div class="theme-sub">'+s+'</div><span class="theme-mark">✓</span></button>').join("");el.onclick=e=>{const b=e.target.closest(".theme-btn");if(!b)return;mainTheme=safeTheme(b.dataset.theme);document.querySelectorAll(".theme-btn").forEach(x=>x.classList.toggle("selected",x===b));updatePreview()}}
+function values(){const o={};document.querySelectorAll('#dynamicForm [data-key]').forEach(el=>o[el.dataset.key]=clean(el.value));return o}
+function baseProfile(c){
+  if(selectedType==="visiting"||selectedType==="identity")return {name:c.name||"",job_title:c.job_title||c.designation||"",company:c.company||c.organization||"",phone:c.phone||"",email:c.email||"",bio:c.bio||""};
+  if(selectedType==="menu")return {name:c.restaurant_name||"",job_title:"",company:c.restaurant_name||"",phone:c.phone||"",email:c.email||"",bio:c.description||c.tagline||""};
+  if(selectedType==="wedding")return {name:[c.bride_name,c.groom_name].filter(Boolean).join(" & "),job_title:"",company:"",phone:c.rsvp_phone||"",email:"",bio:c.message||""};
+  if(selectedType==="catalog")return {name:c.business_name||"",job_title:"",company:c.business_name||"",phone:c.phone||"",email:c.email||"",bio:c.description||c.tagline||""};
+  if(selectedType==="event")return {name:c.event_name||"",job_title:c.organizer||"",company:c.organizer||"",phone:c.contact_phone||"",email:c.contact_email||"",bio:c.description||""};
+  if(selectedType==="product")return {name:c.product_name||"",job_title:c.brand||"",company:c.brand||"",phone:"",email:"",bio:c.description||""};
+  return {name:c.property_title||"",job_title:c.property_type||"",company:"",phone:c.contact_phone||"",email:c.contact_email||"",bio:c.description||""};
+}
+function imageForPreview(){return imageObjectUrl||currentProfile?.avatar_url||""}
+function themeClass(){return safeTheme(mainTheme)}
+function heroImage(){const url=imageForPreview();return url&&url.startsWith("http")?'<img style="width:100%;height:100%;object-fit:cover" alt="" src="'+escapeHtml(url)+'">':null}
+function renderCardMarkup(type,c,photoUrl){
+  const img=photoUrl&&String(photoUrl).startsWith("http")?'<div class="preview-logo"><img alt="" src="'+escapeHtml(photoUrl)+'"></div>':'';
+  const line=(label,key,fallback="—")=>'<div class="preview-row"><b>'+escapeHtml(label)+'</b><span>'+escapeHtml(c[key]||fallback)+'</span></div>';
+  if(type==="visiting")return '<div class="preview-inner">'+(img||'<div class="preview-logo">'+escapeHtml((c.name||"Z").slice(0,2).toUpperCase())+'</div>')+'<div class="preview-kicker" style="margin-top:28px">Digital visiting card</div><div class="preview-title">'+escapeHtml(c.name||"Your Name")+'</div><div class="preview-sub">'+escapeHtml(c.job_title||"Your role")+' · '+escapeHtml(c.company||"Your company")+'</div><p class="preview-sub">'+escapeHtml(c.bio||"Your short introduction")+'</p><div class="preview-meta">'+line("Phone","phone")+line("Email","email")+line("Website","website")+'</div><div class="preview-footer">'+escapeHtml(c.address||"Share your professional identity")+'</div></div>';
+  if(type==="menu")return '<div class="preview-inner"><div class="preview-kicker">'+escapeHtml(c.restaurant_name||"YOUR RESTAURANT")+'</div><div class="preview-title">'+escapeHtml(c.tagline||"Our Menu")+'</div><div class="preview-sub">'+escapeHtml(c.description||"Fresh dishes, made for sharing.")+'</div><div class="preview-meta">'+menuItems(c.menu_items,c.currency)+'</div><div class="preview-footer">'+escapeHtml(c.opening_hours||"Open daily")+' · '+escapeHtml(c.order_url||"Order online")+'</div></div>';
+  if(type==="wedding")return '<div class="preview-inner"><div class="preview-kicker">Wedding invitation</div><div class="preview-title">'+escapeHtml(c.bride_name||"Bride")+' &amp; '+escapeHtml(c.groom_name||"Groom")+'</div><div class="preview-sub">'+escapeHtml(c.message||"Together with their families, we invite you to celebrate.")+'</div><div class="preview-meta">'+line("Date","date","Your wedding date")+line("Time","time","Your wedding time")+line("Venue","venue","Your venue")+'</div><div class="preview-footer">RSVP · '+escapeHtml(c.rsvp_phone||"Contact")+'</div></div>';
+  if(type==="identity")return '<div class="preview-inner">'+(img||'<span class="id-chip">IDENTITY</span>')+'<div class="preview-kicker" style="margin-top:16px">'+escapeHtml(c.organization||"ORGANIZATION")+'</div><div class="preview-title">'+escapeHtml(c.name||"Your Name")+'</div><div class="preview-sub">'+escapeHtml(c.designation||"Designation")+'</div><div class="preview-meta">'+line("ID number","id_number")+line("Department","department")+line("Valid until","expiry_date")+line("Phone","phone")+'</div><div class="preview-footer">'+escapeHtml(c.email||"Identity information")+'</div></div>';
+  if(type==="catalog")return '<div class="preview-inner"><div class="preview-kicker">Premium catalog experience</div><div class="preview-title">'+escapeHtml(c.business_name||"Your Brand")+'</div><div class="preview-sub">'+escapeHtml(c.tagline||c.description||"Browse the collection")+'</div>'+renderPremiumCatalog(type,c)+'<div class="preview-footer">'+escapeHtml(c.enquiry_url||"Enquire now")+'</div></div>';
+  if(type==="event")return '<div class="preview-inner"><div class="preview-kicker">Event pass</div><div class="preview-title">'+escapeHtml(c.event_name||"Your Event")+'</div><div class="preview-sub">'+escapeHtml(c.description||"Everything attendees need in one place.")+'</div><div class="preview-meta">'+line("Date","date")+line("Time","time")+line("Venue","venue")+'</div><div class="ticket-box"><b>Ticket</b><div style="margin-top:6px;font-size:12px;opacity:.8">'+escapeHtml(c.ticket_info||"Registration required")+'</div></div><div class="preview-footer">'+escapeHtml(c.registration_url||"Register")+'</div></div>';
+  if(type==="product")return '<div class="preview-inner">'+(img||'<div class="preview-logo">📦</div>')+'<div class="preview-kicker" style="margin-top:16px">'+escapeHtml(c.brand||"YOUR BRAND")+'</div><div class="preview-title">'+escapeHtml(c.product_name||"Your Product")+'</div><div class="preview-sub">'+escapeHtml(c.description||"Product description")+'</div><div class="product-hero"><div style="font-size:11px;color:#6d7a8e">SKU '+escapeHtml(c.sku||"PRODUCT-001")+'</div><div class="product-price">'+escapeHtml(c.currency||"₹")+' '+escapeHtml(c.price||"—")+'</div></div><div class="ar-badge">✨ '+(c.ar_model_url?"Interactive 3D / AR":"3D ready")+'</div><div class="preview-footer">'+escapeHtml(c.buy_url||"Buy / enquire")+'</div></div>';
+  return '<div class="preview-inner">'+(img||'<div class="preview-logo">🏠</div>')+'<div class="preview-kicker" style="margin-top:16px">Property showcase</div><div class="preview-title">'+escapeHtml(c.property_title||"Your Property")+'</div><div class="preview-sub">'+escapeHtml(c.location||"Your location")+'</div><div class="property-stats"><div class="stat"><b>Price</b><span>'+escapeHtml(c.price||"—")+'</span></div><div class="stat"><b>Area</b><span>'+escapeHtml(c.area||"—")+'</span></div><div class="stat"><b>Bedrooms</b><span>'+escapeHtml(c.bedrooms||"—")+'</span></div><div class="stat"><b>Bathrooms</b><span>'+escapeHtml(c.bathrooms||"—")+'</span></div></div><div class="property-cta">'+escapeHtml(c.tour_url||c.map_url||"View property details")+'</div><div class="preview-footer">'+(c.ar_model_url?"✨ 3D / AR ready":"Virtual tour / AR ready")+'</div></div>';
+}
+function menuItems(raw,currency){const arr=String(raw||"").split(/\n+/).map(x=>x.trim()).filter(Boolean).slice(0,5);if(!arr.length)return ['Chef Special — '+(currency||"₹")+'320','Signature Dish — '+(currency||"₹")+'280','Fresh Dessert — '+(currency||"₹")+'180'].map(x=>{const p=x.split(' — ');return '<div class="preview-row"><b>'+escapeHtml(p[0])+'</b><span>'+escapeHtml(p[1])+'</span></div>'}).join("");return arr.map(x=>{const p=x.split(/\s+—\s+|\s+-\s+/);return '<div class="preview-row"><b>'+escapeHtml(p[0])+'</b><span>'+escapeHtml(p[1]||"")+'</span></div>'}).join("")}
+function catalogItems(raw){const arr=String(raw||"").split(/\n+/).map(x=>x.trim()).filter(Boolean).slice(0,6);if(!arr.length)return ["Product One — ₹999","Product Two — ₹1,499","Product Three — Enquire","Product Four — ₹2,499"].map(x=>{const p=x.split(' — ');return '<div class="catalog-item"><b>'+escapeHtml(p[0])+'</b><span>'+escapeHtml(p[1]||"")+'</span></div>'}).join("");return arr.map(x=>{const p=x.split(/\s+—\s+|\s+-\s+/);return '<div class="catalog-item"><b>'+escapeHtml(p[0])+'</b><span>'+escapeHtml(p[1]||"")+'</span></div>'}).join("")}
+
+const THREE_D_LIBRARY={
+  product:[
+    ["Living Room Furniture","Free CC0 furniture scene","https://cdn.3dassets.dev/assets/38818/v1/model.glb"],
+    ["Retail Showroom","Free CC0 retail scene","https://cdn.3dassets.dev/assets/35078/v1/model.glb"],
+    ["Astronaut Demo","Model-viewer demo","https://modelviewer.dev/shared-assets/models/Astronaut.glb"],
+    ["Robot Demo","Model-viewer demo","https://modelviewer.dev/shared-assets/models/RobotExpressive.glb"]
+  ],
+  property:[
+    ["Office Lobby","Free CC0 building interior","https://cdn.3dassets.dev/assets/26326/v1/model.glb"],
+    ["Glasshouse","Free CC0 architecture scene","https://cdn.3dassets.dev/assets/38591/v1/model.glb"],
+    ["Architecture Kit","Free CC0 architecture kit","https://cdn.3dassets.dev/assets/22926/v1/model.glb"],
+    ["Signal House","Free CC0 house scene","https://cdn.3dassets.dev/assets/214/v1/model.glb"]
+  ]
+};
+let modelFile=null,modelObjectUrl="",threeDScale=2.8,threeDHotspots=[];
+function studioField(key){return document.querySelector('#dynamicForm [data-key="'+CSS.escape(key)+'"]')}
+function setStudioValue(key,value){const e=studioField(key);if(e)e.value=value}
+function getStudioValue(key){const e=studioField(key);return e?clean(e.value):""}
+function ensureStudioHiddenFields(){
+  [["model_name","f_model_name"],["model_scale","f_model_scale"],["hotspots","f_hotspots"]].forEach(([key,id])=>{
+    if(!studioField(key)){const h=document.createElement("input");h.type="hidden";h.id=id;h.dataset.key=key;$("dynamicForm").appendChild(h)}
+  });
+}
+function threeDStudioHtml(){
+  const list=(THREE_D_LIBRARY[selectedType]||[]).map((m,i)=>'<button type="button" class="model-template" data-template="'+i+'"><strong>'+escapeHtml(m[0])+'</strong><span>'+escapeHtml(m[1])+'</span><span class="template-check">✓</span></button>').join("");
+  return '<div id="threeDStudio" class="threeD-studio">'+
+    '<div class="threeD-head"><div><h3>✨ 3D + AR Studio</h3><p>Drag the model to rotate it. Choose a free template, search the free library, or upload your own GLB.</p></div><span class="pill">AR ready</span></div>'+ 
+    '<div class="threeD-tabs"><button type="button" class="threeD-tab active" data-pane="templates">Templates</button><button type="button" class="threeD-tab" data-pane="online">Online search</button><button type="button" class="threeD-tab" data-pane="upload">Upload</button></div>'+ 
+    '<div class="threeD-pane active" data-pane-view="templates"><div class="model-template-grid">'+list+'</div></div>'+ 
+    '<div class="threeD-pane" data-pane-view="online"><div class="model-search"><input id="threeDSearch" placeholder="Search chair, laptop, sofa..."><button type="button" id="threeDSearchBtn" class="btn primary">Search</button></div><div id="threeDSearchStatus" class="threeD-status"></div><div id="threeDResults" class="model-results"></div></div>'+ 
+    '<div class="threeD-pane" data-pane-view="upload"><input id="threeDFile" type="file" accept=".glb,model/gltf-binary" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:12px;background:#fff"><div id="threeDUploadStatus" class="threeD-status">Your GLB is previewed immediately and uploaded when you create the card.</div></div>'+ 
+    '<div class="threeD-mini-viewer"><model-viewer id="threeDViewer" camera-controls auto-rotate ar ar-modes="webxr scene-viewer quick-look" shadow-intensity="1" exposure="1" touch-action="pan-y"><button slot="ar-button" type="button" class="ar-action">View in AR</button></model-viewer></div>'+ 
+    '<div class="threeD-toolbar"><button type="button" id="threeDRotateLeft" class="btn-mini">↶ Rotate</button><button type="button" id="threeDRotateRight" class="btn-mini">Rotate ↷</button><button type="button" id="threeDAuto" class="btn-mini primary">Auto-rotate on</button><button type="button" id="threeDReset" class="btn-mini">Reset view</button><button type="button" id="threeDAR" class="btn-mini primary">Open AR</button></div>'+ 
+    '<div class="threeD-size"><div class="threeD-size-head"><span>Model size / zoom</span><span id="threeDSizeValue">100%</span></div><input id="threeDSize" type="range" min="50" max="180" value="100" step="5" aria-label="Model size"></div>'+ 
+    '<div id="threeDSelected" class="threeD-status">No 3D model selected.</div>'+ 
+    '<div class="hotspot-editor"><h4>Product hotspots</h4><p>Add labeled points to highlight features, price, materials or actions.</p><div class="row" style="margin-top:8px"><input id="hotspotTitle" placeholder="Hotspot title"><input id="hotspotText" placeholder="Short detail"></div><div class="row" style="margin-top:8px"><input id="hotspotPos" value="0m 1m 0m" placeholder="Position x y z"><input id="hotspotNormal" value="0m 1m 0m" placeholder="Normal x y z"></div><div class="controls"><button type="button" id="addHotspotBtn" class="btn secondary">Add hotspot</button></div><div id="hotspotList" class="hotspot-list-editor"></div></div>'+ 
+    '<div class="ai-box"><h4>✨ Smart Copy Studio</h4><p>Generate polished product copy locally from the facts you entered. No API key, account, or external AI service is required.</p><div class="controls"><button type="button" id="smartDescriptionBtn" class="btn primary">✨ Generate description</button></div><div id="smartDescriptionStatus" class="threeD-status"></div></div>'+ 
+    '</div>';
+}
+function applyThreeDCamera(){const v=$("threeDViewer");if(!v)return;const pct=Math.max(50,Math.min(180,Number(threeDScale)||100));const radius=5.4-(pct/100)*2.6;v.cameraOrbit=`0deg 75deg ${Math.max(1.2,Math.min(5.2,radius))}m`;const e=$("threeDSizeValue");if(e)e.textContent=Math.round(pct)+"%";updateThreeDHidden()}
+function updateThreeDHidden(){ensureStudioHiddenFields();setStudioValue("model_scale",String(Math.round(threeDScale)));setStudioValue("hotspots",JSON.stringify(threeDHotspots))}
+function renderThreeDHotspots(){
+  const v=$("threeDViewer");if(!v)return;[...v.querySelectorAll(".zc-hotspot")].forEach(x=>x.remove());const list=$("hotspotList");
+  if(list)list.innerHTML=threeDHotspots.length?threeDHotspots.map((h,i)=>'<div class="hotspot-row"><div><b>'+escapeHtml(h.title)+'</b><span>'+escapeHtml(h.text)+'</span></div><button type="button" class="btn ghost remove-hotspot" data-index="'+i+'">Remove</button></div>').join(""):"<div class=\"help\">No hotspots yet.</div>";
+  threeDHotspots.forEach((h,i)=>{const b=document.createElement("button");b.type="button";b.className="zc-hotspot";b.slot="hotspot-"+i;b.textContent=h.title;b.setAttribute("data-position",h.position);b.setAttribute("data-normal",h.normal);b.style.cssText="padding:6px 9px;border-radius:999px;border:2px solid #536dfe;background:#fff;color:#26335f;font-size:10px;font-weight:900;box-shadow:0 4px 14px rgba(0,0,0,.15)";v.appendChild(b)});
+  document.querySelectorAll(".remove-hotspot").forEach(b=>b.addEventListener("click",()=>{threeDHotspots.splice(Number(b.dataset.index),1);updateThreeDHidden();renderThreeDHotspots()}));
+}
+function selectThreeDModel(name,url,origin="template"){
+  if(!url){msg("threeDSelected","That model does not include a GLB URL.",true);return}
+  ensureStudioHiddenFields();setStudioValue("ar_model_url",url);setStudioValue("model_name",name);const v=$("threeDViewer");if(v)v.src=url;const s=$("threeDSelected");if(s){s.className="threeD-status ok";s.textContent="Selected: "+name}
+  document.querySelectorAll(".model-template").forEach(x=>x.classList.remove("selected"));const arr=THREE_D_LIBRARY[selectedType]||[];arr.forEach((m,i)=>{if(m[0]===name){const b=document.querySelector('.model-template[data-template="'+i+'"]');if(b)b.classList.add("selected")}});updateThreeDHidden();applyThreeDCamera();
+}
+function mountThreeDStudio(prefill={}){
+  const old=document.getElementById("threeDStudio");if(old)old.remove();if(selectedType!=="product"&&selectedType!=="property")return;ensureStudioHiddenFields();
+  const wrap=document.createElement("div");wrap.innerHTML=threeDStudioHtml(selectedType);$("dynamicForm").appendChild(wrap.firstElementChild);
+  threeDHotspots=[];try{threeDHotspots=JSON.parse(prefill.hotspots||getStudioValue("hotspots")||"[]")}catch(e){} threeDScale=Number(prefill.model_scale||getStudioValue("model_scale")||100);if(!Number.isFinite(threeDScale)||threeDScale<50||threeDScale>180)threeDScale=100;
+  const savedModel=prefill.ar_model_url||getStudioValue("ar_model_url");const savedName=prefill.model_name||"Saved model";
+  if(savedModel){setStudioValue("ar_model_url",savedModel);setStudioValue("model_name",savedName);$("threeDViewer").src=savedModel;$("threeDSelected").textContent="Selected: "+savedName}
+  updateThreeDHidden();renderThreeDHotspots();applyThreeDCamera();
+  document.querySelectorAll(".threeD-tab").forEach(tab=>tab.addEventListener("click",()=>{document.querySelectorAll(".threeD-tab").forEach(x=>x.classList.toggle("active",x===tab));document.querySelectorAll(".threeD-pane").forEach(x=>x.classList.toggle("active",x.dataset.paneView===tab.dataset.pane))}));
+  document.querySelectorAll(".model-template").forEach(b=>b.addEventListener("click",()=>{const m=THREE_D_LIBRARY[selectedType][Number(b.dataset.template)];if(m)selectThreeDModel(m[0],m[2],"template")}));
+  $("threeDSearchBtn").addEventListener("click",searchThreeDOnline);$("threeDSearch").addEventListener("keydown",e=>{if(e.key==="Enter")searchThreeDOnline()});
+  $("threeDFile").addEventListener("change",()=>{const f=$("threeDFile").files?.[0];if(!f)return;if(!/\.glb$/i.test(f.name)){msg("threeDUploadStatus","Please select a .glb file.",true);return}if(modelObjectUrl)URL.revokeObjectURL(modelObjectUrl);modelObjectUrl=URL.createObjectURL(f);modelFile=f;selectThreeDModel(f.name,modelObjectUrl,"upload");msg("threeDUploadStatus","Model loaded locally. Create the card to upload it to ZetaCard.")});
+  const v=$("threeDViewer");v.addEventListener("error",()=>{const s=$("threeDSelected");if(s){s.className="threeD-status error";s.textContent="The selected model could not be loaded."}});
+  let az=0;
+  const rotate=(delta)=>{az+=delta;const pct=Number(threeDScale)||100;const radius=5.4-(pct/100)*2.6;v.cameraOrbit=`${az}deg 75deg ${Math.max(1.2,Math.min(5.2,radius))}m`};
+  $("threeDRotateLeft").addEventListener("click",()=>rotate(-25));$("threeDRotateRight").addEventListener("click",()=>rotate(25));
+  $("threeDAuto").addEventListener("click",()=>{if(v.hasAttribute("auto-rotate")){v.removeAttribute("auto-rotate");$("threeDAuto").textContent="Auto-rotate off"}else{v.setAttribute("auto-rotate","");$("threeDAuto").textContent="Auto-rotate on"}});
+  $("threeDSize").addEventListener("input",()=>{threeDScale=Number($("threeDSize").value)||100;applyThreeDCamera()});
+  $("threeDReset").addEventListener("click",()=>{az=0;threeDScale=100;$("threeDSize").value="100";v.cameraOrbit="0deg 75deg 2.8m";applyThreeDCamera()});
+  $("threeDAR").addEventListener("click",()=>{if(typeof v.activateAR==="function")v.activateAR().catch(()=>msg("threeDSelected","AR could not be opened on this device/browser.",true));else msg("threeDSelected","AR is not available in this browser.",true)});
+  $("addHotspotBtn").addEventListener("click",()=>{threeDHotspots.push({title:$("hotspotTitle").value.trim()||"Detail",text:$("hotspotText").value.trim()||"Product information",position:$("hotspotPos").value.trim()||"0m 1m 0m",normal:$("hotspotNormal").value.trim()||"0m 1m 0m"});updateThreeDHidden();renderThreeDHotspots();$("hotspotTitle").value="";$("hotspotText").value=""});
+  $("smartDescriptionBtn").addEventListener("click",()=>{
+  if(selectedType!=="product")return;
+  const name=getStudioValue("product_name")||"This product";
+  const brand=getStudioValue("brand");
+  const features=getStudioValue("features");
+  const sku=getStudioValue("sku");
+  const price=getStudioValue("price");
+  const bullets=features.split(/\n+/).map(x=>x.trim()).filter(Boolean).slice(0,5);
+  const tone=brand?"Polished and presentation-ready":"Clear and presentation-ready";
+  let desc=`${brand?brand+" ":""}${name}${sku?" ("+sku+")":""} is presented in a ${tone} digital product experience.`;
+  if(bullets.length) desc+=` Key highlights include ${bullets.join(", ")}.`;
+  if(price) desc+=` Listed at ${price}.`;
+  desc+=" Explore the product, inspect the available 3D experience, and use AR on supported devices to see it in context.";
+  const e=studioField("description");
+  if(e){e.value=desc;e.dispatchEvent(new Event("input",{bubbles:true}))}
+  const s=$("smartDescriptionStatus"); if(s){s.className="threeD-status ok";s.textContent="Description generated locally. Edit it before publishing if needed."}
+  msg("threeDSelected","Smart description generated and placed into the form.");
+});
+}
+async function searchThreeDOnline(){
+  const q=$("threeDSearch").value.trim();if(!q){msg("threeDSearchStatus","Enter a model name first.",true);return}const status=$("threeDSearchStatus"),results=$("threeDResults");status.className="threeD-status";status.textContent="Searching free models…";results.innerHTML="";if(!initDb()){status.className="threeD-status error";status.textContent="Supabase is unavailable.";return}
+  try{const r=await db.functions.invoke("hyper-service",{body:{q,limit:8}});if(r.error)throw r.error;const list=Array.isArray(r.data?.results)?r.data.results:[];if(!list.length){status.textContent="No matching free models found.";return}status.className="threeD-status ok";status.textContent=`Found ${list.length} free model${list.length===1?"":"s"}.`;
+    results.innerHTML=list.map((m,i)=>'<div class="model-result"><div class="model-result-thumb">'+(m.thumbnail_url?'<img src="'+escapeHtml(m.thumbnail_url)+'" alt="">':'<span class="help">3D model</span>')+'</div><strong>'+escapeHtml(m.name||"3D model")+'</strong><small>'+escapeHtml(m.license||"CC0")+'</small><button type="button" class="btn secondary online-use" data-index="'+i+'">Use model</button></div>').join("");
+    document.querySelectorAll(".online-use").forEach(b=>b.addEventListener("click",()=>{const m=list[Number(b.dataset.index)];if(m?.cdn_url)selectThreeDModel(m.name||"Online model",m.cdn_url);else{status.className="threeD-status error";status.textContent="That result did not provide a GLB URL."}}));
+  }catch(e){status.className="threeD-status error";status.textContent="Online search failed. Make sure the Supabase hyper-service Edge Function is deployed and Verify JWT is OFF."}
+}
+
+
+let catalogProducts = [];
+
+function parseCatalogProducts(raw){
+  const s=String(raw||"").trim();
+  if(!s)return [];
+  try{
+    const arr=JSON.parse(s);
+    if(Array.isArray(arr)) return arr.map(x=>({
+      name:clean(x.name),price:clean(x.price),description:clean(x.description),
+      category:clean(x.category),url:clean(x.url),model_url:clean(x.model_url),image:clean(x.image)
+    })).filter(x=>x.name);
+  }catch(e){}
+  return s.split(/\n+/).map(line=>line.trim()).filter(Boolean).map(line=>{
+    const p=line.split(/\s+\|\s+|\s+—\s+/);
+    return {name:clean(p[0]),price:clean(p[1]),description:clean(p[2]),category:clean(p[3]),url:clean(p[4]),model_url:clean(p[5]),image:""};
+  }).filter(x=>x.name);
+}
+function syncCatalogField(){
+  const field=studioField("catalog_items");
+  if(field) field.value=JSON.stringify(catalogProducts);
+}
+function catalogEditorHtml(){
+  return `<div class="premium-catalog-studio" id="premiumCatalogStudio">
+    <h3>🛍️ Premium Catalog Studio</h3>
+    <div class="sub">Build product tiles with prices, descriptions, links, images and optional 3D models. The public catalog gets search, filters and quick product details.</div>
+    <div class="catalog-builder-toolbar">
+      <span class="catalog-builder-count" id="catalogBuilderCount">0 products</span>
+      <button type="button" id="addCatalogProduct" class="btn primary">+ Add product</button>
+    </div>
+    <div id="catalogProductsEditor" class="catalog-products-editor"></div>
+    <div class="catalog-preview-shell">
+      <div class="cp-toolbar">
+        <strong style="font-size:12px">Live catalog preview</strong>
+        <div class="cp-filter"><span class="small">Search and buttons are active in the public card.</span></div>
+      </div>
+      <div id="catalogLivePreview" class="catalog-live-grid"></div>
+    </div>
+  </div>`;
+}
+function mountCatalogStudio(prefill={}){
+  const old=document.getElementById("premiumCatalogStudio");if(old)old.remove();
+  if(selectedType!=="catalog")return;
+  const field=studioField("catalog_items");
+  if(field && field.closest(".field")) field.closest(".field").style.display="none";
+  catalogProducts=parseCatalogProducts(prefill.catalog_items||getStudioValue("catalog_items"));
+  if(!catalogProducts.length)catalogProducts=[
+    {name:"Product One",price:"₹999",description:"A polished featured product.",category:"Featured",url:"",model_url:"",image:""},
+    {name:"Product Two",price:"₹1,499",description:"Another collection highlight.",category:"Featured",url:"",model_url:"",image:""}
+  ];
+  syncCatalogField();
+  const holder=document.createElement("div");holder.innerHTML=catalogEditorHtml();$("dynamicForm").appendChild(holder.firstElementChild);
+  renderCatalogEditor();
+}
+function renderCatalogEditor(){
+  const list=$("catalogProductsEditor");if(!list)return;
+  $("catalogBuilderCount").textContent=`${catalogProducts.length} product${catalogProducts.length===1?"":"s"}`;
+  list.innerHTML=catalogProducts.map((p,i)=>`<div class="catalog-product-editor" data-ci="${i}">
+    <div class="topline"><strong>Product ${i+1}</strong><button type="button" class="btn ghost remove-cat" data-ci="${i}">Remove</button></div>
+    <div class="catalog-product-editor-grid">
+      <input data-cat-key="name" value="${escapeHtml(p.name)}" placeholder="Product name">
+      <input data-cat-key="price" value="${escapeHtml(p.price)}" placeholder="Price">
+      <input data-cat-key="category" value="${escapeHtml(p.category)}" placeholder="Category">
+      <input data-cat-key="url" value="${escapeHtml(p.url)}" placeholder="Buy / enquiry URL">
+      <input class="full" data-cat-key="description" value="${escapeHtml(p.description)}" placeholder="Short description">
+      <input class="full" data-cat-key="image" value="${escapeHtml(p.image)}" placeholder="Image URL (optional)">
+      <input class="full" data-cat-key="model_url" value="${escapeHtml(p.model_url)}" placeholder="3D GLB URL (optional)">
+    </div>
+  </div>`).join("");
+  list.querySelectorAll("[data-cat-key]").forEach(inp=>inp.addEventListener("input",e=>{
+    const card=e.target.closest(".catalog-product-editor");const i=Number(card.dataset.ci);catalogProducts[i][e.target.dataset.catKey]=e.target.value;syncCatalogField();renderCatalogLivePreview();updatePreview();
+  }));
+  list.querySelectorAll(".remove-cat").forEach(b=>b.addEventListener("click",()=>{
+    catalogProducts.splice(Number(b.dataset.ci),1);syncCatalogField();renderCatalogEditor();renderCatalogLivePreview();updatePreview();
+  }));
+  $("addCatalogProduct")?.addEventListener("click",()=>{
+    catalogProducts.push({name:"New product",price:"₹0",description:"Add a short description.",category:"",url:"",model_url:"",image:""});
+    syncCatalogField();renderCatalogEditor();renderCatalogLivePreview();updatePreview();
+  });
+  renderCatalogLivePreview();
+}
+function renderCatalogLivePreview(){
+  const box=$("catalogLivePreview");if(!box)return;
+  const items=catalogProducts.filter(x=>x.name);
+  box.innerHTML=items.length?items.map((p,i)=>`<article class="catalog-live-card">
+    <div class="catalog-live-image">${p.image?`<img src="${escapeHtml(p.image)}" alt="">`:"🛍️"}</div>
+    <h4>${escapeHtml(p.name)}</h4>
+    <div class="price">${escapeHtml(p.price||"Price on request")}</div>
+    <div class="desc">${escapeHtml(p.description||"Explore this product.")}</div>
+    <div class="catalog-live-actions">${p.model_url?`<button type="button" class="primary catalog-preview-3d" data-ci="${i}">View 3D</button>`:""}${p.url?`<a href="${escapeHtml(p.url)}" target="_blank" rel="noopener">Open link</a>`:""}</div>
+  </article>`).join(""):'<div class="catalog-empty">Add your first product.</div>';
+  box.querySelectorAll(".catalog-preview-3d").forEach(b=>b.addEventListener("click",()=>{
+    const p=items[Number(b.dataset.ci)];const viewer=$("threeDViewer");if(viewer&&p?.model_url){ensureStudioHiddenFields();setStudioValue("ar_model_url",p.model_url);setStudioValue("model_name",p.name);viewer.src=p.model_url;msg("threeDSelected","Catalog 3D preview: "+p.name)}else msg("formStatus","This catalog product has no GLB URL.",true);
+  }));
+}
+function catalogPayload(raw){return parseCatalogProducts(raw)}
+function renderPremiumCatalog(type,c){
+  const products=catalogPayload(c.catalog_items);
+  return `<div class="catalog-public-wrap" id="publicCatalog"><div class="public-catalog-head"><div><div class="public-catalog-title">${escapeHtml(c.business_name||"Your Catalog")}</div><div class="public-catalog-sub">${escapeHtml(c.tagline||c.description||"Explore the collection.")}</div></div><span class="pill">${products.length} item${products.length===1?"":"s"}</span></div><div class="catalog-public-search"><input id="publicCatalogSearch" placeholder="Search products..."><button type="button" class="btn primary" id="publicCatalogSearchBtn">Search</button></div><div class="catalog-public-grid" id="publicCatalogGrid"></div></div>`;
+}
+function renderPublicCatalogItems(c){
+  const products=catalogPayload(c.catalog_items);
+  const grid=$("publicCatalogGrid");if(!grid)return;
+  const q=clean($("publicCatalogSearch")?.value||"").toLowerCase();
+  const filtered=products.filter(p=>(p.name+" "+p.category+" "+p.description).toLowerCase().includes(q));
+  grid.innerHTML=filtered.length?filtered.map((p,i)=>`<article class="catalog-public-card">
+    <div class="name">${escapeHtml(p.name)}</div>
+    <div class="cat">${escapeHtml(p.category||"Featured")}</div>
+    <div class="price">${escapeHtml(p.price||"Price on request")}</div>
+    <div class="desc">${escapeHtml(p.description||"Explore this product.")}</div>
+    <div class="catalog-public-actions">${p.model_url?`<button type="button" class="primary public-cat-3d" data-index="${i}">View 3D</button>`:""}${p.url?`<a href="${escapeHtml(p.url)}" target="_blank" rel="noopener">Enquire</a>`:""}<button type="button" class="public-cat-details" data-index="${i}">Details</button></div>
+  </article>`).join(""):'<div class="catalog-empty">No matching products.</div>';
+  grid.querySelectorAll(".public-cat-details").forEach(b=>b.addEventListener("click",()=>openCatalogDetails(filtered[Number(b.dataset.index)])));
+  grid.querySelectorAll(".public-cat-3d").forEach(b=>b.addEventListener("click",()=>openCatalogDetails(filtered[Number(b.dataset.index)],true)));
+}
+function openCatalogDetails(p,showModel=false){
+  if(!p)return;
+  let modal=$("catalogDetailModal");
+  if(!modal){modal=document.createElement("div");modal.id="catalogDetailModal";modal.className="catalog-detail-modal";modal.innerHTML='<div class="catalog-detail-card"><div class="catalog-detail-head"><div><h3 id="catalogDetailTitle"></h3><div id="catalogDetailPrice" class="price"></div></div><button type="button" id="catalogDetailClose" class="btn ghost">Close</button></div><p id="catalogDetailText"></p><div id="catalogDetailModel" class="catalog-detail-model"></div><div class="controls" id="catalogDetailActions"></div></div>';document.body.appendChild(modal);$("catalogDetailClose").addEventListener("click",()=>modal.classList.remove("show"));modal.addEventListener("click",e=>{if(e.target===modal)modal.classList.remove("show")})}
+  $("catalogDetailTitle").textContent=p.name||"Product";$("catalogDetailPrice").textContent=p.price||"Price on request";$("catalogDetailText").textContent=p.description||"";
+  const modelBox=$("catalogDetailModel");modelBox.innerHTML="";
+  if(showModel&&p.model_url){const v=document.createElement("model-viewer");v.setAttribute("camera-controls","");v.setAttribute("auto-rotate","");v.setAttribute("ar","");v.setAttribute("ar-modes","webxr scene-viewer quick-look");v.src=p.model_url;modelBox.appendChild(v)}
+  $("catalogDetailActions").innerHTML=p.url?`<a class="btn primary" href="${escapeHtml(p.url)}" target="_blank" rel="noopener">Open product link</a>`:"";
+  modal.classList.add("show");
+}
+function setupPublicCatalog(c){
+  const shell=$("publicCatalog");if(!shell)return;
+  const search=()=>renderPublicCatalogItems(c);
+  $("publicCatalogSearchBtn")?.addEventListener("click",search);
+  $("publicCatalogSearch")?.addEventListener("keydown",e=>{if(e.key==="Enter")search()});
+  renderPublicCatalogItems(c);
+}
+
+function updatePreview(){if(!selectedType)return;const c=values();let photo=imageObjectUrl||"";const el=$("mainCard");el.className="card-preview card-"+selectedType+" theme-"+themeClass()+(TYPES[selectedType].theme?" recolorable":"");el.innerHTML=renderCardMarkup(selectedType,c,photo);if((selectedType==="product"||selectedType==="property")&&c.ar_model_url){el.innerHTML+='<div class="public-ar"><model-viewer class="ar-viewer" src="'+escapeHtml(c.ar_model_url)+'" ar ar-modes="webxr scene-viewer quick-look" camera-controls auto-rotate alt="Interactive 3D experience"><button slot="ar-button" class="ar-action">View in your space</button></model-viewer></div>'}if(selectedType==="catalog"){const wrap=$("mainCard").querySelector("#publicCatalog");if(wrap){const run=()=>{const c2=values();renderPublicCatalogItems(c2)};$("mainCard").querySelector("#publicCatalogSearchBtn")?.addEventListener("click",run);$("mainCard").querySelector("#publicCatalogSearch")?.addEventListener("keydown",e=>{if(e.key==="Enter")run()});}}}
+function experienceData(profile){const content=profile.card_data||{};return {...content}}
+function normalizedProfile(p){const q={...p};q.card_type=TYPES[p.card_type]?p.card_type:"visiting";q.card_data=q.card_data||{};q.theme=safeTheme(p.theme);q.avatar_url=p.avatar_url||"";q.ar_model_url=p.ar_model_url||q.card_data.ar_model_url||"";q.ar_usdz_url=p.ar_usdz_url||q.card_data.ar_usdz_url||"";q.model_name=p.model_name||q.card_data.model_name||"";q.model_scale=Number(p.model_scale||q.card_data.model_scale||100);q.hotspots=p.hotspots||q.card_data.hotspots||[];return q}
+async function createProfile(){
+  if(createBusy)return;createBusy=true;$("createBtn").disabled=true;msg("formStatus","Preparing your card...");
+  try{
+    const c=values();if(!selectedType){throw new Error("Choose a card type first.")}
+    const required=SCHEMAS[selectedType].filter(x=>x[4]).map(x=>x[0]);const missing=required.find(k=>!clean(c[k]));if(missing){const label=SCHEMAS[selectedType].find(x=>x[0]===missing)[1];throw new Error("Please complete: "+label)}
+    const u=uname(c.username||"");if(!validUsername(u))throw new Error("Username must be 3–30 lowercase letters, numbers or hyphens.");
+    if(!initDb())throw new Error("Database connection is unavailable. Refresh and try again.");
+    const taken=await db.from("profiles").select("username").eq("username",u).maybeSingle();if(taken.error)throw taken.error;if(taken.data)throw new Error("Username already taken. Choose another.");
+    let avatarUrl="avatar:initials";if(imageFile){msg("formStatus","Uploading image...");avatarUrl=await uploadImage(imageFile,u)}if(modelFile){msg("formStatus","Uploading 3D model...");c.ar_model_url=await uploadModel(modelFile,u)}
+    const token=makeToken();msg("formStatus","Creating your card...");
+    const r=await db.rpc("create_card_with_owner",{p_username:u,p_name:baseProfile(c).name,p_job_title:baseProfile(c).job_title,p_company:baseProfile(c).company,p_phone:baseProfile(c).phone,p_email:baseProfile(c).email,p_bio:baseProfile(c).bio,p_theme:mainTheme,p_avatar_url:avatarUrl,p_token_hash:await hash(token),p_card_type:selectedType,p_card_data:c,p_ar_model_url:c.ar_model_url||"",p_ar_usdz_url:c.ar_usdz_url||""});
+    if(r.error)throw new Error(r.error.message||"Could not create the card.");
+    const saved=normalizedProfile(r.data);storeToken(u,token);currentProfile=saved;ownerSession=true;editToken=token;msg("formStatus","");openShared(saved);history.replaceState(null,"",profileUrl(u));
+  }catch(e){console.error(e);msg("formStatus","Could not create your card: "+(e.message||"Unknown error"),true)}finally{createBusy=false;$("createBtn").disabled=false}
+}
+async function uploadModel(file,u){
+  if(file.size>15*1024*1024)throw new Error("3D model must be under 15 MB.");
+  if(!/\.glb$/i.test(file.name))throw new Error("Use a GLB 3D model.");
+  const safe=file.name.toLowerCase().replace(/[^a-z0-9._-]+/g,"-");
+  const path="public/"+u+"-"+Date.now()+"-"+safe;
+  const r=await db.storage.from("ar-models").upload(path,file,{contentType:"model/gltf-binary",cacheControl:"3600",upsert:false});
+  if(r.error)throw r.error;
+  return db.storage.from("ar-models").getPublicUrl(path).data.publicUrl;
+}
+async function uploadImage(file,u){if(file.size>5*1024*1024)throw new Error("Image must be under 5 MB.");if(!["image/jpeg","image/png","image/webp"].includes(file.type))throw new Error("Use JPG, PNG or WebP.");const ext=file.type==="image/png"?"png":file.type==="image/webp"?"webp":"jpg";const path="public/"+u+"-"+Date.now()+"."+ext;const r=await db.storage.from("avatars").upload(path,file,{contentType:file.type,cacheControl:"3600",upsert:false});if(r.error)throw r.error;return db.storage.from("avatars").getPublicUrl(path).data.publicUrl}
+function openBuilder(){showBuilder();if(modelObjectUrl)URL.revokeObjectURL(modelObjectUrl);modelObjectUrl="";modelFile=null;threeDHotspots=[];threeDScale=2.8;selectedType="";mainTheme="midnight";currentProfile=null;ownerSession=false;editToken="";editing=false;$("typeStatus").textContent="";$("continueBtn").disabled=true;$("typePill").textContent="Choose a type";document.querySelectorAll(".type-option").forEach(b=>b.classList.remove("selected"));$("dynamicForm").innerHTML="";$("previewBox").style.display="none";showTypeStep()}
+function clearForm(){const keepType=selectedType;const keepTheme="midnight";renderForm();mainTheme=keepTheme;$("theme").value=keepTheme;clearImage();msg("formStatus","");updatePreview();if(keepType){$("builder").scrollIntoView({block:"start"})}}
+async function shareCurrent(){const url=profileUrl(currentProfile.username);try{if(navigator.share){await navigator.share({title:"ZetaCard",text:"Open this digital card",url});recordEvent(currentProfile.username,"share")}else{await navigator.clipboard.writeText(url);msg("sharedStatus","Link copied to clipboard.");recordEvent(currentProfile.username,"share")}}catch(e){msg("sharedStatus","Share cancelled or unavailable.")}}
+async function copyLink(){if(!currentProfile)return;try{await navigator.clipboard.writeText(profileUrl(currentProfile.username));msg("sharedStatus","Share link copied.");recordEvent(currentProfile.username,"share")}catch(e){msg("sharedStatus","Copy unavailable. Use the address bar.")}}
+function saveContact(){if(!currentProfile)return;const b=currentProfile;const lines=["BEGIN:VCARD","VERSION:3.0","FN:"+(b.name||""),"TITLE:"+(b.job_title||""),"ORG:"+(b.company||""),b.phone?"TEL;TYPE=CELL:"+b.phone:"",b.email?"EMAIL;TYPE=INTERNET:"+b.email:"",b.bio?"NOTE:"+b.bio.replace(/\r?\n/g," "):"","URL:"+profileUrl(b.username),"END:VCARD"].filter(Boolean).join("\r\n");const blob=new Blob([lines],{type:"text/vcard;charset=utf-8"});const a=document.createElement("a");const u=URL.createObjectURL(blob);a.href=u;a.download=(b.username||"zetacard")+".vcf";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),900);msg("sharedStatus","Contact file created.")}
+function renderPublicCard(p){
+  const el=$("sharedCard");const c=experienceData(p);const photo=(p.avatar_url&&p.avatar_url.startsWith("http"))?p.avatar_url:"";
+  el.className="card-preview card-"+p.card_type+" theme-"+safeTheme(p.theme)+(TYPES[p.card_type].theme?" recolorable":"");
+  el.innerHTML=renderCardMarkup(p.card_type,c,photo);if(p.card_type==="catalog")setupPublicCatalog(c);
+  if((p.card_type==="product"||p.card_type==="property")&&p.ar_model_url){
+    const box=document.createElement("div");box.className="public-ar";
+    const v=document.createElement("model-viewer");v.className="ar-viewer";v.setAttribute("camera-controls","");v.setAttribute("auto-rotate","");v.setAttribute("ar","");v.setAttribute("ar-modes","webxr scene-viewer quick-look");v.setAttribute("shadow-intensity","1");v.setAttribute("exposure","1");v.setAttribute("alt","Interactive 3D experience");v.src=p.ar_model_url;
+    if(p.ar_usdz_url)v.setAttribute("ios-src",p.ar_usdz_url);
+    const scale=Number(p.model_scale||100);const radius=5.4-(scale/100)*2.6;v.cameraOrbit=`0deg 75deg ${Math.max(1.2,Math.min(5.2,radius))}m`;
+    (Array.isArray(p.hotspots)?p.hotspots:[]).forEach((h,i)=>{const b=document.createElement("button");b.type="button";b.className="zc-hotspot";b.slot="hotspot-"+i;b.textContent=h.title||("Detail "+(i+1));b.setAttribute("data-position",h.position||"0m 1m 0m");b.setAttribute("data-normal",h.normal||"0m 1m 0m");b.style.cssText="padding:6px 9px;border-radius:999px;border:2px solid #536dfe;background:#fff;color:#26335f;font-size:10px;font-weight:900;box-shadow:0 4px 14px rgba(0,0,0,.15)";v.appendChild(b)});
+    const ar=document.createElement("button");ar.slot="ar-button";ar.type="button";ar.className="ar-action";ar.textContent="View in your space";v.appendChild(ar);
+    box.appendChild(v);el.appendChild(box);
+  }
+}
+function openShared(p){currentProfile=p;showShared();renderPublicCard(p);const url=profileUrl(p.username);$("qr").innerHTML="";if(window.QRCode)new QRCode($("qr"),{text:url,width:140,height:140});else $("qr").textContent="QR unavailable";$("saveContactBtn").style.display=(p.card_type==="visiting"||p.card_type==="identity")?"inline-flex":"none";syncOwnerUi();}
+async function syncOwnerUi(){const show=!!(ownerSession&&currentProfile&&editToken&&await verifyOwner(currentProfile.username,editToken));$("ownerActions").style.display=show?"flex":"none";$("ownerNote").style.display=show?"block":"none";$("analytics").classList.toggle("show",show);if(show)loadAnalytics()}
+async function loadAnalytics(){if(!currentProfile||!editToken)return;msg("analyticsStatus","Loading...");try{const r=await db.rpc("get_profile_analytics",{p_username:currentProfile.username,p_token_hash:await hash(editToken)});if(r.error)throw r.error;const counts={view:0,phone_click:0,email_click:0,share:0};(r.data||[]).forEach(x=>counts[x.event_type]=Number(x.event_count)||0);$("viewsCount").textContent=counts.view;$("phoneCount").textContent=counts.phone_click;$("emailCount").textContent=counts.email_click;$("shareCount").textContent=counts.share;msg("analyticsStatus","")}catch(e){msg("analyticsStatus","Could not load analytics.",true)}}
+async function openProfileFromUrl(){const params=new URLSearchParams(location.search);let u=uname(params.get("u")||"");let privateEdit=false;let key="";if(location.hash.startsWith("#edit=")){const h=new URLSearchParams(location.hash.slice(1));u=uname(h.get("edit"));key=h.get("key")||"";privateEdit=true}if(!u)return false;if(!initDb())return false;try{const r=await db.from("profiles").select("id,username,name,job_title,company,phone,email,bio,theme,avatar_url,card_type,card_data,ar_model_url,ar_usdz_url,model_name,model_scale,hotspots").eq("username",u).maybeSingle();if(r.error)throw r.error;if(!r.data)throw new Error("Profile not found.");const p=normalizedProfile(r.data);ownerSession=false;editToken="";if(privateEdit&&key){storeToken(u,key);editToken=key;ownerSession=await verifyOwner(u,key)}openShared(p);recordEvent(p.username,"view");history.replaceState(null,"",profileUrl(u));if(privateEdit&&ownerSession){startEdit(p)}return true}catch(e){showShared();msg("sharedError",e.message||"Could not load this card.",true);return true}}
+function startEdit(p){editing=true;selectedType=p.card_type;mainTheme=p.theme;showBuilder();showFormStep();renderForm(p.card_data||{});document.querySelectorAll(".type-option").forEach(b=>b.classList.toggle("selected",b.dataset.type===selectedType));$("typePill").textContent=TYPES[selectedType].icon+" "+TYPES[selectedType].label;Object.entries(p.card_data||{}).forEach(([k,v])=>{const el=document.querySelector('#dynamicForm [data-key="'+CSS.escape(k)+'"]');if(el)el.value=v});if(TYPES[selectedType].photo&&p.avatar_url&&p.avatar_url.startsWith("http")){$("identityPreview").innerHTML='<img alt="Card image" src="'+escapeHtml(p.avatar_url)+'">'}updatePreview();msg("formStatus","You are editing this card.")}
+async function saveEdit(){if(!currentProfile||!editToken||!ownerSession)return;const c=values();const base=baseProfile(c);const required=SCHEMAS[selectedType].filter(x=>x[4]).map(x=>x[0]);const missing=required.find(k=>!clean(c[k]));if(missing){msg("formStatus","Please complete: "+missing,true);return}try{msg("formStatus","Saving changes...");let avatarUrl=currentProfile.avatar_url||"avatar:initials";if(imageFile)avatarUrl=await uploadImage(imageFile,currentProfile.username);const r=await db.rpc("update_card_with_owner",{p_token_hash:await hash(editToken),p_username:currentProfile.username,p_name:base.name,p_job_title:base.job_title,p_company:base.company,p_phone:base.phone,p_email:base.email,p_bio:base.bio,p_theme:mainTheme,p_avatar_url:avatarUrl,p_card_type:selectedType,p_card_data:c,p_ar_model_url:c.ar_model_url||"",p_ar_usdz_url:c.ar_usdz_url||""});if(r.error)throw r.error;const saved=normalizedProfile(r.data);currentProfile=saved;openShared(saved);history.replaceState(null,"",profileUrl(saved.username));msg("sharedStatus","Card updated successfully.");}catch(e){msg("formStatus",e.message||"Could not update the card.",true)}}
+function editOrCreate(){if(editing)saveEdit();else createProfile()}
+async function recordEvent(u,type){if(!u||!initDb())return;try{await db.rpc("record_profile_event",{p_username:u,p_event_type:type})}catch(e){}}
+window.addEventListener("DOMContentLoaded",async()=>{
+  setupTypeGrid();
+  $("landingCreate").onclick=openBuilder;$("landingCreateTop").onclick=openBuilder;$("createOwnBtn").onclick=openBuilder;$("sharedHome").onclick=showLanding;
+  $("builderBack").onclick=backAction;$("backToTypes").onclick=showTypeStep;$("continueBtn").onclick=()=>showFormStep();$("createBtn").onclick=editOrCreate;$("clearBtn").onclick=clearForm;
+  $("copyLinkBtn").onclick=copyLink;$("shareBtn").onclick=shareCurrent;$("saveContactBtn").onclick=saveContact;$("refreshAnalytics").onclick=loadAnalytics;
+  $("editBtn").onclick=()=>{if(currentProfile&&editToken)startEdit(currentProfile)};$("copyEditBtn").onclick=async()=>{if(!currentProfile||!editToken)return;try{await navigator.clipboard.writeText(editUrl(currentProfile.username,editToken));msg("sharedStatus","Private edit link copied. Keep it secret.")}catch(e){msg("sharedStatus","Copy unavailable. Your private edit link is in the current browser hash.")}};
+  $("cardPhoto").onchange=()=>{const f=$("cardPhoto").files&&$("cardPhoto").files[0];if(!f)return;imageFile=f;if(imageObjectUrl)URL.revokeObjectURL(imageObjectUrl);imageObjectUrl=URL.createObjectURL(f);$("fileName").textContent=f.name;renderIdentityPreview();updatePreview()};$("removePhoto").onclick=()=>{clearImage();updatePreview()};
+  initDb();showLanding();
+  await openProfileFromUrl();
+  window.addEventListener("popstate",()=>openProfileFromUrl());
+});
+</script>
+</body>
+</html>

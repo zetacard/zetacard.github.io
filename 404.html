@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ZetaCard</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+<script>
+(function () {
+  const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
+  const valid = /^[a-z0-9][a-z0-9-]{2,29}$/;
+  if (path && !path.includes("/") && valid.test(path)) {
+    window.location.replace("/?u=" + encodeURIComponent(path) + window.location.hash);
+    return;
+  }
+  window.location.replace("/");
+})();
+</script>
+</body>
+</html>
