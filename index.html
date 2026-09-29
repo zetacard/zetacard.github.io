@@ -1,3 +1,4 @@
+<!-- ZetaCard v27: Account Dashboard + Multiple Cards -->
 <!-- ZetaCard v26: Supabase Auth required before new card creation; username field removed -->
 <!-- ZetaCard v24.1: no-key smart copy -->
 <!-- ZetaCard v22 Studio Upgrade: integrated 3D controls, AR preview, hotspots, premium catalog -->
@@ -186,6 +187,13 @@ button:disabled{cursor:not-allowed;opacity:.55}
 .auth-note{margin-top:12px;padding:10px 12px;border-radius:12px;background:#f7f8fc;color:#5d6982;font-size:10px;line-height:1.45}
 .account-required{margin-top:14px;padding:11px 13px;border:1px solid #dde5f2;border-radius:13px;background:#f7f9ff;color:#4b5770;font-size:11px;line-height:1.45}
 
+
+.dashboard-page{display:none}.dashboard-page.show{display:block}
+.dashboard-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin:24px 0 16px}.dashboard-head h2{margin:0;font-size:28px;letter-spacing:-.8px}.dashboard-head p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.5}.dashboard-actions{display:flex;gap:8px;flex-wrap:wrap}
+.dashboard-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}.dash-stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 12px 35px #27364d0a}.dash-stat b{display:block;font-size:24px;letter-spacing:-.5px}.dash-stat span{display:block;margin-top:4px;color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.dashboard-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:0 12px 35px #27364d0a;min-height:190px;display:flex;flex-direction:column}.dashboard-card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.dashboard-card-icon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:#eef2ff;font-size:22px}.dashboard-card-type{font-size:10px;color:#56627d;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.dashboard-card h3{margin:12px 0 4px;font-size:16px}.dashboard-card p{margin:0;color:var(--muted);font-size:11px;line-height:1.4}.dashboard-url{margin-top:9px;padding:8px 10px;border-radius:10px;background:#f7f9ff;color:#42518c;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dashboard-card-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto;padding-top:14px}.dashboard-card-actions .btn{padding:9px 11px;font-size:11px}.dashboard-empty{background:#fff;border:1px dashed #cbd5e1;border-radius:20px;padding:34px;text-align:center;color:var(--muted)}.dashboard-empty h3{margin:0 0 6px;color:var(--ink)}.dashboard-empty p{margin:0 0 14px;font-size:12px;line-height:1.5}
+@media(max-width:900px){.cards-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:640px){.dashboard-stats{grid-template-columns:1fr 1fr}.cards-grid{grid-template-columns:1fr}.dashboard-head h2{font-size:24px}}
+
 </style>
 </head>
 <body>
@@ -197,6 +205,7 @@ button:disabled{cursor:not-allowed;opacity:.55}
       <div id="signedInState" class="auth-state"><span class="auth-dot"></span><span id="signedInEmail" class="account-email"></span></div>
       <button id="authNavBtn" class="btn ghost" type="button">Sign in / Sign up</button>
       <button id="signOutBtn" class="btn ghost" type="button" style="display:none">Sign out</button>
+      <button id="dashboardNavBtn" class="btn ghost" type="button" style="display:none">My Cards</button>
       <button id="landingCreateTop" class="btn primary" type="button">Create your card</button>
     </div>
   </nav>
@@ -214,6 +223,13 @@ button:disabled{cursor:not-allowed;opacity:.55}
     </div>
   </div>
   <div class="features"><div class="feature"><div>🧩</div><h3>Form follows type</h3><p>No generic giant form. Users see only fields that belong to the selected card.</p></div><div class="feature"><div>🎨</div><h3>Design follows type</h3><p>A menu looks like a menu, a wedding invitation looks like an invitation, and a catalog looks like a catalog.</p></div><div class="feature"><div>✨</div><h3>Experience layer</h3><p>Product and property cards can carry interactive 3D and AR experiences.</p></div></div>
+</section>
+
+<section id="dashboardPage" class="container dashboard-page">
+  <div class="topbar"><button id="dashboardBack" class="nav-btn" type="button">← Home</button><div class="brand">ZetaCard</div><div id="dashboardAccountEmail" style="font-size:11px;color:var(--muted);font-weight:850"></div></div>
+  <div class="dashboard-head"><div><div class="eyebrow">MY ZETACARDS</div><h2>Your card dashboard</h2><p>Manage every ZetaCard from one account. Create multiple cards for different roles, products, menus and campaigns.</p></div><div class="dashboard-actions"><button id="dashboardCreateBtn" class="btn primary" type="button">+ Create new card</button><button id="dashboardRefreshBtn" class="btn ghost" type="button">Refresh</button></div></div>
+  <div class="dashboard-stats"><div class="dash-stat"><b id="dashCardCount">0</b><span>Total cards</span></div><div class="dash-stat"><b id="dashTypeCount">0</b><span>Card types</span></div><div class="dash-stat"><b id="dashLatestType">—</b><span>Latest card</span></div></div>
+  <div id="dashboardStatus" class="status"></div><div id="dashboardCards" class="cards-grid"></div>
 </section>
 
 <main id="builder" class="container" style="display:none">
@@ -349,11 +365,13 @@ function renderAuthState(){
     if(email)email.textContent=authUser.email||"Signed in";
     btn.style.display="none";
     out.style.display="inline-flex";
+    if($("dashboardNavBtn"))$("dashboardNavBtn").style.display="inline-flex";
     if($("accountRequiredHint"))$("accountRequiredHint").textContent="Signed in as "+(authUser.email||"your account")+".";
   }else{
     state.classList.remove("show");
     btn.style.display="inline-flex";
     out.style.display="none";
+    if($("dashboardNavBtn"))$("dashboardNavBtn").style.display="none";
     if($("accountRequiredHint"))$("accountRequiredHint").textContent="You must be signed in to create a card. Public cards can still be viewed without an account.";
   }
 }
@@ -408,6 +426,16 @@ async function signOut(){
   authUser=null;renderAuthState();showLanding();
 }
 
+
+let dashboardCards=[];
+function showDashboard(){if(!authUser){openAuth("login");return}showOnly("dashboardPage");if($("dashboardAccountEmail"))$("dashboardAccountEmail").textContent=authUser.email||"Signed in";loadDashboard();window.scrollTo(0,0)}
+function dashboardCardText(p){const d=p.card_data||{};return d.product_name||d.restaurant_name||d.business_name||d.event_name||d.property_title||p.name||d.name||"Untitled card"}
+function dashboardSubtitle(p){const d=p.card_data||{};return d.tagline||d.job_title||d.property_type||d.brand||d.company||d.description||"Digital experience card"}
+function renderDashboardCards(cards){const box=$("dashboardCards");if(!box)return;if(!cards.length){box.innerHTML='<div class="dashboard-empty" style="grid-column:1/-1"><h3>No cards yet</h3><p>Create your first ZetaCard and then manage multiple cards from this dashboard.</p><button id="dashboardEmptyCreate" class="btn primary" type="button">Create your first card</button></div>';$(("dashboardEmptyCreate")).onclick=openBuilder;return}box.innerHTML=cards.map((p,i)=>{const t=TYPES[p.card_type]||TYPES.visiting;return `<article class="dashboard-card"><div class="dashboard-card-top"><div><div class="dashboard-card-type">${escapeHtml(t.label)}</div><h3>${escapeHtml(dashboardCardText(p))}</h3><p>${escapeHtml(dashboardSubtitle(p))}</p></div><div class="dashboard-card-icon">${t.icon}</div></div><div class="dashboard-url">${escapeHtml(profileUrl(p.username))}</div><div class="dashboard-card-actions"><button class="btn primary dash-open" type="button" data-di="${i}">Open</button><button class="btn ghost dash-edit" type="button" data-di="${i}">Edit</button><button class="btn ghost dash-copy" type="button" data-di="${i}">Copy link</button><button class="btn ghost dash-delete" type="button" data-di="${i}">Delete</button></div></article>`}).join("");box.querySelectorAll(".dash-open").forEach(b=>b.onclick=()=>{const p=dashboardCards[Number(b.dataset.di)];currentProfile=normalizedProfile(p);openShared(currentProfile);history.replaceState(null,"",profileUrl(p.username))});box.querySelectorAll(".dash-edit").forEach(b=>b.onclick=()=>{const p=normalizedProfile(dashboardCards[Number(b.dataset.di)]);currentProfile=p;editing=true;selectedType=p.card_type;mainTheme=p.theme;showBuilder();showFormStep();renderForm(p.card_data||{});document.querySelectorAll(".type-option").forEach(x=>x.classList.toggle("selected",x.dataset.type===selectedType));$("typePill").textContent=TYPES[selectedType].icon+" "+TYPES[selectedType].label;Object.entries(p.card_data||{}).forEach(([k,v])=>{const e=document.querySelector('#dynamicForm [data-key="'+CSS.escape(k)+'"]');if(e)e.value=v});updatePreview();updateBackButton();msg("formStatus","Editing your card from your account dashboard.");window.scrollTo(0,0)});box.querySelectorAll(".dash-copy").forEach(b=>b.onclick=async()=>{const p=dashboardCards[Number(b.dataset.di)];try{await navigator.clipboard.writeText(profileUrl(p.username));msg("dashboardStatus","Share link copied.")}catch(e){msg("dashboardStatus","Copy unavailable.",true)}});box.querySelectorAll(".dash-delete").forEach(b=>b.onclick=()=>deleteDashboardCard(Number(b.dataset.di)))}
+async function loadDashboard(){if(!authUser||!initDb())return;msg("dashboardStatus","Loading your cards...");try{await claimLocalOwnedCards();const r=await db.rpc("get_my_cards");if(r.error)throw r.error;dashboardCards=Array.isArray(r.data)?r.data:(r.data||[]);const types=new Set(dashboardCards.map(x=>x.card_type));$("dashCardCount").textContent=dashboardCards.length;$("dashTypeCount").textContent=types.size;const latest=dashboardCards[0];$("dashLatestType").textContent=latest?(TYPES[latest.card_type]?.label||latest.card_type):"—";renderDashboardCards(dashboardCards);msg("dashboardStatus","")}catch(e){console.error(e);msg("dashboardStatus","Could not load your cards: "+(e.message||"Unknown error"),true)}}
+async function claimLocalOwnedCards(){if(!initDb()||!authUser)return;try{const keys=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i)||"";if(k.startsWith("zetaEditToken:"))keys.push(k)}for(const k of keys){const u=k.slice("zetaEditToken:".length),t=localStorage.getItem(k)||"";if(validUsername(u)&&t){const ok=await verifyOwner(u,t);if(ok)await db.rpc("claim_my_profile",{p_username:u,p_token_hash:await hash(t)})}}}catch(e){console.warn("Claim existing cards skipped",e)}}
+async function deleteDashboardCard(index){const p=dashboardCards[index];if(!p)return;if(!confirm("Delete this card permanently?"))return;try{msg("dashboardStatus","Deleting card...");const r=await db.rpc("delete_my_card",{p_profile_id:p.id});if(r.error)throw r.error;dashboardCards.splice(index,1);renderDashboardCards(dashboardCards);$("dashCardCount").textContent=dashboardCards.length;$("dashTypeCount").textContent=new Set(dashboardCards.map(x=>x.card_type)).size;msg("dashboardStatus","Card deleted.")}catch(e){msg("dashboardStatus","Could not delete card: "+(e.message||"Unknown error"),true)}}
+
 function homeUrl(){return new URL(SITE_BASE,location.origin).href}
 function profileUrl(u){return new URL(SITE_BASE+encodeURIComponent(u),location.origin).href}
 function editUrl(u,t){return homeUrl()+"#edit="+encodeURIComponent(u)+"&key="+encodeURIComponent(t)}
@@ -417,7 +445,7 @@ function getToken(u){try{return localStorage.getItem(editKey(u))||""}catch(e){re
 function makeToken(){const a=new Uint8Array(24);crypto.getRandomValues(a);return Array.from(a,b=>b.toString(16).padStart(2,"0")).join("")}
 async function hash(v){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(v));return Array.from(new Uint8Array(b),x=>x.toString(16).padStart(2,"0")).join("")}
 async function verifyOwner(u,t){if(!initDb()||!u||!t)return false;try{const r=await db.rpc("verify_profile_owner",{p_username:u,p_token_hash:await hash(t)});return !r.error&&r.data===true}catch(e){console.warn(e);return false}}
-function showOnly(id){["landing","builder","shared"].forEach(x=>$(x).style.display=x===id?(id==="landing"?"block":id==="builder"?"block":"block"):"none");if(id==="shared")$("shared").style.display="block"}
+function showOnly(id){["landing","builder","shared","dashboardPage"].forEach(x=>{const el=$(x);if(el)el.style.display="none"});const el=$(id);if(el)el.style.display="block";if(id==="dashboardPage")el.classList.add("show")}
 function showLanding(){showOnly("landing");window.scrollTo(0,0)}
 function showBuilder(){showOnly("builder");window.scrollTo(0,0)}
 function showShared(){showOnly("shared");window.scrollTo(0,0)}
@@ -818,16 +846,20 @@ async function syncOwnerUi(){const show=!!(ownerSession&&currentProfile&&editTok
 async function loadAnalytics(){if(!currentProfile||!editToken)return;msg("analyticsStatus","Loading...");try{const r=await db.rpc("get_profile_analytics",{p_username:currentProfile.username,p_token_hash:await hash(editToken)});if(r.error)throw r.error;const counts={view:0,phone_click:0,email_click:0,share:0};(r.data||[]).forEach(x=>counts[x.event_type]=Number(x.event_count)||0);$("viewsCount").textContent=counts.view;$("phoneCount").textContent=counts.phone_click;$("emailCount").textContent=counts.email_click;$("shareCount").textContent=counts.share;msg("analyticsStatus","")}catch(e){msg("analyticsStatus","Could not load analytics.",true)}}
 async function openProfileFromUrl(){const params=new URLSearchParams(location.search);let u=uname(params.get("u")||"");let privateEdit=false;let key="";if(location.hash.startsWith("#edit=")){const h=new URLSearchParams(location.hash.slice(1));u=uname(h.get("edit"));key=h.get("key")||"";privateEdit=true}if(!u)return false;if(!initDb())return false;try{const r=await db.from("profiles").select("id,username,name,job_title,company,phone,email,bio,theme,avatar_url,card_type,card_data,ar_model_url,ar_usdz_url,model_name,model_scale,hotspots").eq("username",u).maybeSingle();if(r.error)throw r.error;if(!r.data)throw new Error("Profile not found.");const p=normalizedProfile(r.data);ownerSession=false;editToken="";if(privateEdit&&key){storeToken(u,key);editToken=key;ownerSession=await verifyOwner(u,key)}openShared(p);recordEvent(p.username,"view");history.replaceState(null,"",profileUrl(u));if(privateEdit&&ownerSession){startEdit(p)}return true}catch(e){showShared();msg("sharedError",e.message||"Could not load this card.",true);return true}}
 function startEdit(p){editing=true;selectedType=p.card_type;mainTheme=p.theme;showBuilder();showFormStep();renderForm(p.card_data||{});document.querySelectorAll(".type-option").forEach(b=>b.classList.toggle("selected",b.dataset.type===selectedType));$("typePill").textContent=TYPES[selectedType].icon+" "+TYPES[selectedType].label;Object.entries(p.card_data||{}).forEach(([k,v])=>{const el=document.querySelector('#dynamicForm [data-key="'+CSS.escape(k)+'"]');if(el)el.value=v});if(TYPES[selectedType].photo&&p.avatar_url&&p.avatar_url.startsWith("http")){$("identityPreview").innerHTML='<img alt="Card image" src="'+escapeHtml(p.avatar_url)+'">'}updatePreview();msg("formStatus","You are editing this card.")}
-async function saveEdit(){if(!currentProfile||!editToken||!ownerSession)return;const c=values();const base=baseProfile(c);const required=SCHEMAS[selectedType].filter(x=>x[4]).map(x=>x[0]);const missing=required.find(k=>!clean(c[k]));if(missing){msg("formStatus","Please complete: "+missing,true);return}try{msg("formStatus","Saving changes...");let avatarUrl=currentProfile.avatar_url||"avatar:initials";if(imageFile)avatarUrl=await uploadImage(imageFile,currentProfile.username);const r=await db.rpc("update_card_with_owner",{p_token_hash:await hash(editToken),p_username:currentProfile.username,p_name:base.name,p_job_title:base.job_title,p_company:base.company,p_phone:base.phone,p_email:base.email,p_bio:base.bio,p_theme:mainTheme,p_avatar_url:avatarUrl,p_card_type:selectedType,p_card_data:c,p_ar_model_url:c.ar_model_url||"",p_ar_usdz_url:c.ar_usdz_url||""});if(r.error)throw r.error;const saved=normalizedProfile(r.data);currentProfile=saved;openShared(saved);history.replaceState(null,"",profileUrl(saved.username));msg("sharedStatus","Card updated successfully.");}catch(e){msg("formStatus",e.message||"Could not update the card.",true)}}
+async function saveEdit(){if(!currentProfile)return;if(!authUser&&!editToken)return;const c=values();const base=baseProfile(c);const required=SCHEMAS[selectedType].filter(x=>x[4]).map(x=>x[0]);const missing=required.find(k=>!clean(c[k]));if(missing){msg("formStatus","Please complete: "+missing,true);return}try{msg("formStatus","Saving changes...");let avatarUrl=currentProfile.avatar_url||"avatar:initials";if(imageFile)avatarUrl=await uploadImage(imageFile,currentProfile.username);let r;if(authUser&&currentProfile.id){r=await db.rpc("update_my_card",{p_profile_id:currentProfile.id,p_name:base.name,p_job_title:base.job_title,p_company:base.company,p_phone:base.phone,p_email:base.email,p_bio:base.bio,p_theme:mainTheme,p_avatar_url:avatarUrl,p_card_type:selectedType,p_card_data:c,p_ar_model_url:c.ar_model_url||"",p_ar_usdz_url:c.ar_usdz_url||""});}else{r=await db.rpc("update_card_with_owner",{p_token_hash:await hash(editToken),p_username:currentProfile.username,p_name:base.name,p_job_title:base.job_title,p_company:base.company,p_phone:base.phone,p_email:base.email,p_bio:base.bio,p_theme:mainTheme,p_avatar_url:avatarUrl,p_card_type:selectedType,p_card_data:c,p_ar_model_url:c.ar_model_url||"",p_ar_usdz_url:c.ar_usdz_url||""});}if(r.error)throw r.error;const saved=normalizedProfile(r.data);currentProfile=saved;openShared(saved);history.replaceState(null,"",profileUrl(saved.username));msg("sharedStatus","Card updated successfully.");}catch(e){msg("formStatus",e.message||"Could not update the card.",true)}}
 function editOrCreate(){if(editing)saveEdit();else createProfile()}
 async function recordEvent(u,type){if(!u||!initDb())return;try{await db.rpc("record_profile_event",{p_username:u,p_event_type:type})}catch(e){}}
 window.addEventListener("DOMContentLoaded",async()=>{
   setupTypeGrid();
   initDb();
   await refreshAuth();
-  db?.auth?.onAuthStateChange((_event,session)=>{authUser=session?.user||null;renderAuthState()});
+  db?.auth?.onAuthStateChange(async(_event,session)=>{authUser=session?.user||null;renderAuthState();if(authUser&&$("dashboardPage")?.classList.contains("show"))await loadDashboard()});
   $("authNavBtn").onclick=()=>openAuth("signup");
   $("signOutBtn").onclick=signOut;
+  $("dashboardNavBtn").onclick=showDashboard;
+  $("dashboardBack").onclick=showLanding;
+  $("dashboardCreateBtn").onclick=openBuilder;
+  $("dashboardRefreshBtn").onclick=loadDashboard;
   $("closeAuthBtn").onclick=closeAuth;
   $("authCancelBtn").onclick=closeAuth;
   $("signupTab").onclick=()=>setAuthMode("signup");
