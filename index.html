@@ -1,3 +1,4 @@
+<!-- ZetaCard v26: Supabase Auth required before new card creation; username field removed -->
 <!-- ZetaCard v24.1: no-key smart copy -->
 <!-- ZetaCard v22 Studio Upgrade: integrated 3D controls, AR preview, hotspots, premium catalog -->
 <!-- ZetaCard v21 integrated 3D Studio built on stable v13 -->
@@ -172,6 +173,19 @@ button:disabled{cursor:not-allowed;opacity:.55}
 .ai-box{padding:14px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#fbfcff,#f4f6ff);margin-top:12px}
 .ai-box h4{margin:0 0 5px;font-size:13px}
 .ai-box p{margin:0;color:var(--muted);font-size:10px;line-height:1.45}
+
+.auth-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.auth-state{display:none;align-items:center;gap:7px;padding:8px 11px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#35415f;font-size:11px;font-weight:900}
+.auth-state.show{display:inline-flex}.auth-dot{width:8px;height:8px;border-radius:50%;background:var(--ok)}.account-email{max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.auth-modal{position:fixed;inset:0;z-index:9999;display:none;place-items:center;padding:18px;background:rgba(17,24,39,.58);backdrop-filter:blur(6px)}
+.auth-modal.show{display:grid}.auth-card{width:min(460px,100%);background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:0 32px 110px rgba(17,24,39,.24)}
+.auth-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.auth-head h2{margin:0;font-size:23px;letter-spacing:-.6px}.auth-head p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.5}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}.auth-tab{padding:10px;border:1px solid var(--line);border-radius:12px;background:#fff;color:#4a5570;font-weight:900}.auth-tab.active{background:#eef2ff;border-color:#a9b4ff;color:#4050b4}
+.auth-form{margin-top:14px}.auth-form .field-wrap{margin:12px 0}.auth-form label{display:block;font-size:12px;font-weight:900;margin-bottom:6px}.auth-form input{width:100%;padding:12px 13px;border:1px solid #ccd7e6;border-radius:12px;background:#fbfcfe;outline:none}.auth-form input:focus{border-color:var(--brand);box-shadow:0 0 0 4px #536dfe12;background:#fff}
+.auth-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.auth-status{min-height:20px;margin-top:10px;color:var(--muted);font-size:12px}.auth-status.error{color:var(--danger)}.auth-status.ok{color:var(--ok)}
+.auth-note{margin-top:12px;padding:10px 12px;border-radius:12px;background:#f7f8fc;color:#5d6982;font-size:10px;line-height:1.45}
+.account-required{margin-top:14px;padding:11px 13px;border:1px solid #dde5f2;border-radius:13px;background:#f7f9ff;color:#4b5770;font-size:11px;line-height:1.45}
+
 </style>
 </head>
 <body>
@@ -179,7 +193,12 @@ button:disabled{cursor:not-allowed;opacity:.55}
 <section id="landing">
   <nav class="landing-nav">
     <div class="landing-brand"><span>●</span> ZetaCard</div>
-    <button id="landingCreateTop" class="btn ghost" type="button">Create your card</button>
+    <div class="auth-bar">
+      <div id="signedInState" class="auth-state"><span class="auth-dot"></span><span id="signedInEmail" class="account-email"></span></div>
+      <button id="authNavBtn" class="btn ghost" type="button">Sign in / Sign up</button>
+      <button id="signOutBtn" class="btn ghost" type="button" style="display:none">Sign out</button>
+      <button id="landingCreateTop" class="btn primary" type="button">Create your card</button>
+    </div>
   </nav>
   <div class="landing-wrap">
     <div class="hero">
@@ -199,7 +218,7 @@ button:disabled{cursor:not-allowed;opacity:.55}
 
 <main id="builder" class="container" style="display:none">
   <div class="topbar"><button id="builderBack" class="nav-btn" type="button">← Home</button><div class="brand">ZetaCard</div><div style="font-size:11px;color:var(--muted);font-weight:850" id="stepIndicator">Step 1 of 2</div></div>
-  <div class="header"><div class="eyebrow">ZETACARD STUDIO</div><h1 id="builderTitle">Choose your card</h1><p id="builderSubtitle">Start with the card type. ZetaCard will build the rest for you.</p></div>
+  <div class="header"><div class="eyebrow">ZETACARD STUDIO</div><h1 id="builderTitle">Choose your card</h1><p id="builderSubtitle">Start with the card type. ZetaCard will build the rest for you.</p><div id="accountRequiredHint" class="account-required">You must be signed in to create a card. Public cards can still be viewed without an account.</div></div>
   <div id="builderGrid">
     <section class="step-card">
       <div id="typeStep" class="step-pane active">
@@ -221,6 +240,26 @@ button:disabled{cursor:not-allowed;opacity:.55}
   </div>
 </main>
 
+<div id="authModal" class="auth-modal" aria-hidden="true">
+  <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <div class="auth-head">
+      <div><h2 id="authTitle">Create your ZetaCard account</h2><p id="authSubtitle">Create an account first, then build and manage your cards.</p></div>
+      <button id="closeAuthBtn" type="button" class="btn ghost">✕</button>
+    </div>
+    <div class="auth-tabs">
+      <button id="signupTab" type="button" class="auth-tab active">Create account</button>
+      <button id="loginTab" type="button" class="auth-tab">Sign in</button>
+    </div>
+    <form id="authForm" class="auth-form" data-mode="signup">
+      <div class="field-wrap"><label for="authEmail">Email</label><input id="authEmail" type="email" autocomplete="email" placeholder="you@example.com" required></div>
+      <div class="field-wrap"><label for="authPassword">Password</label><input id="authPassword" type="password" autocomplete="new-password" minlength="6" placeholder="At least 6 characters" required></div>
+      <div class="auth-actions"><button id="authSubmitBtn" type="submit" class="btn primary">Create account</button><button id="authCancelBtn" type="button" class="btn ghost">Cancel</button></div>
+      <div id="authStatus" class="auth-status"></div>
+      <div class="auth-note">Supabase Authentication securely handles the password. ZetaCard does not store the password in the profiles table.</div>
+    </form>
+  </div>
+</div>
+
 <section id="shared">
   <div class="shared-wrap">
     <div class="shared-top"><button id="sharedHome" class="nav-btn" type="button">← Home</button><div class="shared-brand">ZETACARD</div></div>
@@ -240,7 +279,7 @@ const SUPABASE_URL="https://sojuhiuydumpouknkmat.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_--O6hnERwb8RwEa-VFHnUw_SRUE54C-";
 const SITE_BASE="/";
 const dbClient=()=>window.supabase&&window.supabase.createClient?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY):null;
-let db=null,currentProfile=null,selectedType="",ownerSession=false,editToken="",mainTheme="midnight",imageFile=null,imageObjectUrl=null,createBusy=false,editing=false;
+let db=null,currentProfile=null,selectedType="",ownerSession=false,editToken="",mainTheme="midnight",imageFile=null,imageObjectUrl=null,createBusy=false,editing=false,authUser=null,authBusy=false,authEmailMode="signup";
 const $=id=>document.getElementById(id);
 const escapeHtml=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 const clean=v=>String(v??"").trim();
@@ -283,8 +322,92 @@ const SCHEMAS={
   ["property_title","Property title","e.g. 3 BHK Modern Villa","text",true],["username","Username","e.g. modern-villa-patna","text",true],["property_type","Property type","Villa / Apartment / Office / Land"],["price","Price","e.g. ₹85 lakh"],["location","Location","Area, city"],["area","Area","e.g. 1,850 sq ft"],["bedrooms","Bedrooms","e.g. 3"],["bathrooms","Bathrooms","e.g. 3"],["contact_phone","Contact phone","+91 98765 43210"],["contact_email","Contact email","sales@example.com","email"],["map_url","Map URL","https://maps.google.com/..."],["tour_url","Virtual tour URL","https://..."],["ar_model_url","3D model URL (.glb/.gltf)","https://.../property.glb"],["ar_usdz_url","iPhone/iPad USDZ URL","https://.../property.usdz"],["description","Property description","Describe the property.","textarea",false,true],["amenities","Amenities","Parking\nPool\nSecurity\nGarden","textarea",false,true]
  ]
 };
+// Username is generated automatically from card details; it is not shown in the builder.
+Object.keys(SCHEMAS).forEach(k=>{SCHEMAS[k]=SCHEMAS[k].filter(x=>x[0]!=="username")});
 function initDb(){if(db)return true;if(!window.supabase)return false;try{db=dbClient();return !!db}catch(e){console.error(e);return false}}
 function msg(id,text,isError=false){const el=$(id);if(!el)return;el.textContent=text;el.classList.toggle("error",!!isError)}
+
+async function refreshAuth(){
+  if(!initDb())return null;
+  try{
+    const r=await db.auth.getSession();
+    authUser=r.data?.session?.user||null;
+    renderAuthState();
+    return authUser;
+  }catch(e){
+    console.warn(e);
+    authUser=null;
+    renderAuthState();
+    return null;
+  }
+}
+function renderAuthState(){
+  const state=$("signedInState"),email=$("signedInEmail"),btn=$("authNavBtn"),out=$("signOutBtn");
+  if(!state||!btn||!out)return;
+  if(authUser){
+    state.classList.add("show");
+    if(email)email.textContent=authUser.email||"Signed in";
+    btn.style.display="none";
+    out.style.display="inline-flex";
+    if($("accountRequiredHint"))$("accountRequiredHint").textContent="Signed in as "+(authUser.email||"your account")+".";
+  }else{
+    state.classList.remove("show");
+    btn.style.display="inline-flex";
+    out.style.display="none";
+    if($("accountRequiredHint"))$("accountRequiredHint").textContent="You must be signed in to create a card. Public cards can still be viewed without an account.";
+  }
+}
+function setAuthMode(mode){
+  authEmailMode=mode==="login"?"login":"signup";
+  $("signupTab").classList.toggle("active",authEmailMode==="signup");
+  $("loginTab").classList.toggle("active",authEmailMode==="login");
+  $("authSubmitBtn").textContent=authEmailMode==="signup"?"Create account":"Sign in";
+  $("authTitle").textContent=authEmailMode==="signup"?"Create your ZetaCard account":"Sign in to ZetaCard";
+  $("authSubtitle").textContent=authEmailMode==="signup"?"Create an account first, then build and manage your cards.":"Sign in to continue creating cards.";
+  $("authPassword").autocomplete=authEmailMode==="signup"?"new-password":"current-password";
+  $("authForm").dataset.mode=authEmailMode;
+  msg("authStatus","");
+}
+function openAuth(mode="signup"){
+  const modal=$("authModal");if(!modal)return;
+  modal.classList.add("show");modal.setAttribute("aria-hidden","false");
+  setAuthMode(mode);setTimeout(()=>$("authEmail")?.focus(),40);
+}
+function closeAuth(){
+  const modal=$("authModal");if(!modal)return;
+  modal.classList.remove("show");modal.setAttribute("aria-hidden","true");
+}
+async function handleAuthSubmit(e){
+  e.preventDefault();
+  if(authBusy||!initDb())return;
+  authBusy=true;$("authSubmitBtn").disabled=true;msg("authStatus","Working...");
+  const email=clean($("authEmail").value),password=$("authPassword").value;
+  try{
+    const r=authEmailMode==="signup"
+      ? await db.auth.signUp({email,password})
+      : await db.auth.signInWithPassword({email,password});
+    if(r.error)throw r.error;
+    authUser=r.data?.user||null;renderAuthState();
+    if(authEmailMode==="signup"&&!r.data?.session){
+      $("authPassword").value="";
+      setAuthMode("login");
+      msg("authStatus","Account created. Check your email for confirmation, then sign in.");
+    }else{
+      closeAuth();
+      openBuilder();
+    }
+  }catch(err){
+    msg("authStatus",err.message||"Authentication failed.",true);
+  }finally{
+    authBusy=false;$("authSubmitBtn").disabled=false;
+  }
+}
+async function signOut(){
+  if(!initDb())return;
+  await db.auth.signOut();
+  authUser=null;renderAuthState();showLanding();
+}
+
 function homeUrl(){return new URL(SITE_BASE,location.origin).href}
 function profileUrl(u){return new URL(SITE_BASE+encodeURIComponent(u),location.origin).href}
 function editUrl(u,t){return homeUrl()+"#edit="+encodeURIComponent(u)+"&key="+encodeURIComponent(t)}
@@ -315,7 +438,7 @@ function formFieldId(k){return "f_"+k}
 function renderForm(prefill={}){
   const t=TYPES[selectedType];const schema=SCHEMAS[selectedType];let html='<div class="field-grid">';
   schema.forEach(([k,label,placeholder,type="text",required=false,full=false])=>{const id=formFieldId(k);const val=escapeHtml(prefill[k]??"");const req=required?'<span class="req">Required</span>':'';const attrs='id="'+id+'" data-key="'+k+'" '+(required?'required ':'');const control=type==="textarea"?'<textarea '+attrs+' placeholder="'+escapeHtml(placeholder)+'">'+val+'</textarea>':'<input '+attrs+' type="'+type+'" value="'+val+'" placeholder="'+escapeHtml(placeholder)+'">';html+='<div class="field '+(full?'full':'')+'"><div class="field-label"><label for="'+id+'">'+escapeHtml(label)+'</label>'+req+'</div>'+control;if(k==="username")html+='<div class="help">3–30 lowercase letters, numbers and hyphens.</div><div id="userStatus" class="status"></div>';if(k==="ar_model_url")html+='<div class="help">Optional. Adds interactive 3D/AR when a compatible model is available.</div>';if(k==="ar_usdz_url")html+='<div class="help">Optional iPhone/iPad AR model.</div>';html+='</div>'});html+='</div>';$('dynamicForm').innerHTML=html;
-  document.querySelectorAll('#dynamicForm [data-key]').forEach(el=>el.addEventListener('input',()=>{if(el.dataset.key==="username")checkUser(el.value);updatePreview()}));
+  document.querySelectorAll('#dynamicForm [data-key]').forEach(el=>el.addEventListener('input',()=>updatePreview()));
   $("visualSection").classList.toggle("hidden",!t.photo);$("styleSection").classList.toggle("hidden",!t.theme);
   if(t.photo){$("visualHint").textContent=selectedType==="product"?"Add the main product image.":selectedType==="property"?"Add the main property image.":selectedType==="wedding"?"Add a couple or invitation image.":selectedType==="identity"?"Add the ID photo.":"Add your profile photo or logo."}
   buildThemeButtons();renderIdentityPreview();mountThreeDStudio(prefill);mountCatalogStudio(prefill);
@@ -585,20 +708,69 @@ function setupPublicCatalog(c){
 function updatePreview(){if(!selectedType)return;const c=values();let photo=imageObjectUrl||"";const el=$("mainCard");el.className="card-preview card-"+selectedType+" theme-"+themeClass()+(TYPES[selectedType].theme?" recolorable":"");el.innerHTML=renderCardMarkup(selectedType,c,photo);if((selectedType==="product"||selectedType==="property")&&c.ar_model_url){el.innerHTML+='<div class="public-ar"><model-viewer class="ar-viewer" src="'+escapeHtml(c.ar_model_url)+'" ar ar-modes="webxr scene-viewer quick-look" camera-controls auto-rotate alt="Interactive 3D experience"><button slot="ar-button" class="ar-action">View in your space</button></model-viewer></div>'}if(selectedType==="catalog"){const wrap=$("mainCard").querySelector("#publicCatalog");if(wrap){const run=()=>{const c2=values();renderPublicCatalogItems(c2)};$("mainCard").querySelector("#publicCatalogSearchBtn")?.addEventListener("click",run);$("mainCard").querySelector("#publicCatalogSearch")?.addEventListener("keydown",e=>{if(e.key==="Enter")run()});}}}
 function experienceData(profile){const content=profile.card_data||{};return {...content}}
 function normalizedProfile(p){const q={...p};q.card_type=TYPES[p.card_type]?p.card_type:"visiting";q.card_data=q.card_data||{};q.theme=safeTheme(p.theme);q.avatar_url=p.avatar_url||"";q.ar_model_url=p.ar_model_url||q.card_data.ar_model_url||"";q.ar_usdz_url=p.ar_usdz_url||q.card_data.ar_usdz_url||"";q.model_name=p.model_name||q.card_data.model_name||"";q.model_scale=Number(p.model_scale||q.card_data.model_scale||100);q.hotspots=p.hotspots||q.card_data.hotspots||[];return q}
+async function findAvailableUsername(base){
+  if(!initDb())throw new Error("Database connection is unavailable.");
+  let root=uname(base).replace(/[^a-z0-9-]/g,"-").replace(/-+/g,"-").replace(/^-|-$/g,"");
+  if(root.length<3)root=(root||"card")+"-card";
+  root=root.slice(0,30);
+  for(let i=0;i<100;i++){
+    const suffix=i===0?"":"-"+(i+1);
+    const candidate=(root.slice(0,30-suffix.length)+suffix).replace(/-+$/g,"");
+    const r=await db.from("profiles").select("username").eq("username",candidate).maybeSingle();
+    if(r.error)throw r.error;
+    if(!r.data)return candidate;
+  }
+  throw new Error("Could not generate a unique public card address.");
+}
+function autoUsernameBase(c){
+  if(selectedType==="visiting"||selectedType==="identity")return c.name||"my-card";
+  if(selectedType==="menu")return c.restaurant_name||"menu-card";
+  if(selectedType==="wedding")return [c.bride_name,c.groom_name].filter(Boolean).join("-")||"wedding-card";
+  if(selectedType==="catalog")return c.business_name||"catalog";
+  if(selectedType==="event")return c.event_name||"event";
+  if(selectedType==="product")return c.product_name||"product";
+  if(selectedType==="property")return c.property_title||"property";
+  return "my-card";
+}
 async function createProfile(){
-  if(createBusy)return;createBusy=true;$("createBtn").disabled=true;msg("formStatus","Preparing your card...");
+  if(createBusy)return;
+  createBusy=true;$("createBtn").disabled=true;msg("formStatus","Preparing your card...");
   try{
-    const c=values();if(!selectedType){throw new Error("Choose a card type first.")}
-    const required=SCHEMAS[selectedType].filter(x=>x[4]).map(x=>x[0]);const missing=required.find(k=>!clean(c[k]));if(missing){const label=SCHEMAS[selectedType].find(x=>x[0]===missing)[1];throw new Error("Please complete: "+label)}
-    const u=uname(c.username||"");if(!validUsername(u))throw new Error("Username must be 3–30 lowercase letters, numbers or hyphens.");
+    await refreshAuth();
+    if(!authUser)throw new Error("You must be signed in before creating a card.");
+    const c=values();
+    const required=SCHEMAS[selectedType].filter(x=>x[4]).map(x=>x[0]);
+    const missing=required.find(k=>!clean(c[k]));
+    if(missing){
+      const item=SCHEMAS[selectedType].find(x=>x[0]===missing);
+      throw new Error("Please complete: "+(item?item[1]:missing));
+    }
     if(!initDb())throw new Error("Database connection is unavailable. Refresh and try again.");
-    const taken=await db.from("profiles").select("username").eq("username",u).maybeSingle();if(taken.error)throw taken.error;if(taken.data)throw new Error("Username already taken. Choose another.");
-    let avatarUrl="avatar:initials";if(imageFile){msg("formStatus","Uploading image...");avatarUrl=await uploadImage(imageFile,u)}if(modelFile){msg("formStatus","Uploading 3D model...");c.ar_model_url=await uploadModel(modelFile,u)}
-    const token=makeToken();msg("formStatus","Creating your card...");
-    const r=await db.rpc("create_card_with_owner",{p_username:u,p_name:baseProfile(c).name,p_job_title:baseProfile(c).job_title,p_company:baseProfile(c).company,p_phone:baseProfile(c).phone,p_email:baseProfile(c).email,p_bio:baseProfile(c).bio,p_theme:mainTheme,p_avatar_url:avatarUrl,p_token_hash:await hash(token),p_card_type:selectedType,p_card_data:c,p_ar_model_url:c.ar_model_url||"",p_ar_usdz_url:c.ar_usdz_url||""});
-    if(r.error)throw new Error(r.error.message||"Could not create the card.");
-    const saved=normalizedProfile(r.data);storeToken(u,token);currentProfile=saved;ownerSession=true;editToken=token;msg("formStatus","");openShared(saved);history.replaceState(null,"",profileUrl(u));
-  }catch(e){console.error(e);msg("formStatus","Could not create your card: "+(e.message||"Unknown error"),true)}finally{createBusy=false;$("createBtn").disabled=false}
+    const u=await findAvailableUsername(autoUsernameBase(c));
+    const base=baseProfile(c);
+    const token=makeToken();
+    let avatarUrl="avatar:initials";
+    if(imageFile){msg("formStatus","Uploading image...");avatarUrl=await uploadImage(imageFile,u)}
+    if(typeof modelFile!=="undefined"&&modelFile){msg("formStatus","Uploading 3D model...");c.ar_model_url=await uploadModel(modelFile,u)}
+    c._card_url=profileUrl(u);
+    msg("formStatus","Creating your card...");
+    const r=await db.rpc("create_card_with_account",{
+      p_username:u,p_name:base.name,p_job_title:base.job_title,p_company:base.company,
+      p_phone:base.phone,p_email:base.email,p_bio:base.bio,p_theme:mainTheme,
+      p_avatar_url:avatarUrl,p_token_hash:await hash(token),p_card_type:selectedType,
+      p_card_data:c,p_ar_model_url:c.ar_model_url||"",p_ar_usdz_url:c.ar_usdz_url||""
+    });
+    if(r.error)throw r.error;
+    const saved=normalizedProfile(r.data);
+    storeToken(u,token);currentProfile=saved;ownerSession=true;editToken=token;editing=false;
+    openShared(saved);history.replaceState(null,"",profileUrl(saved.username));
+    msg("sharedStatus","Card created successfully.");
+  }catch(e){
+    console.error(e);ownerSession=false;
+    msg("formStatus","Could not create your card: "+(e.message||"Unknown error"),true);
+  }finally{
+    createBusy=false;$("createBtn").disabled=false;
+  }
 }
 async function uploadModel(file,u){
   if(file.size>15*1024*1024)throw new Error("3D model must be under 15 MB.");
@@ -610,7 +782,19 @@ async function uploadModel(file,u){
   return db.storage.from("ar-models").getPublicUrl(path).data.publicUrl;
 }
 async function uploadImage(file,u){if(file.size>5*1024*1024)throw new Error("Image must be under 5 MB.");if(!["image/jpeg","image/png","image/webp"].includes(file.type))throw new Error("Use JPG, PNG or WebP.");const ext=file.type==="image/png"?"png":file.type==="image/webp"?"webp":"jpg";const path="public/"+u+"-"+Date.now()+"."+ext;const r=await db.storage.from("avatars").upload(path,file,{contentType:file.type,cacheControl:"3600",upsert:false});if(r.error)throw r.error;return db.storage.from("avatars").getPublicUrl(path).data.publicUrl}
-function openBuilder(){showBuilder();if(modelObjectUrl)URL.revokeObjectURL(modelObjectUrl);modelObjectUrl="";modelFile=null;threeDHotspots=[];threeDScale=2.8;selectedType="";mainTheme="midnight";currentProfile=null;ownerSession=false;editToken="";editing=false;$("typeStatus").textContent="";$("continueBtn").disabled=true;$("typePill").textContent="Choose a type";document.querySelectorAll(".type-option").forEach(b=>b.classList.remove("selected"));$("dynamicForm").innerHTML="";$("previewBox").style.display="none";showTypeStep()}
+function openBuilder(){
+  if(!authUser){openAuth("signup");return}
+  showBuilder();
+  if(typeof modelObjectUrl!=="undefined"&&modelObjectUrl)URL.revokeObjectURL(modelObjectUrl);
+  if(typeof modelObjectUrl!=="undefined")modelObjectUrl="";
+  if(typeof modelFile!=="undefined")modelFile=null;
+  if(typeof threeDHotspots!=="undefined")threeDHotspots=[];
+  if(typeof threeDScale!=="undefined")threeDScale=2.8;
+  selectedType="";mainTheme="midnight";currentProfile=null;ownerSession=false;editToken="";editing=false;
+  $("typeStatus").textContent="";$("continueBtn").disabled=true;$("typePill").textContent="Choose a type";
+  document.querySelectorAll(".type-option").forEach(b=>b.classList.remove("selected"));
+  $("dynamicForm").innerHTML="";$("previewBox").style.display="none";showTypeStep()
+}
 function clearForm(){const keepType=selectedType;const keepTheme="midnight";renderForm();mainTheme=keepTheme;$("theme").value=keepTheme;clearImage();msg("formStatus","");updatePreview();if(keepType){$("builder").scrollIntoView({block:"start"})}}
 async function shareCurrent(){const url=profileUrl(currentProfile.username);try{if(navigator.share){await navigator.share({title:"ZetaCard",text:"Open this digital card",url});recordEvent(currentProfile.username,"share")}else{await navigator.clipboard.writeText(url);msg("sharedStatus","Link copied to clipboard.");recordEvent(currentProfile.username,"share")}}catch(e){msg("sharedStatus","Share cancelled or unavailable.")}}
 async function copyLink(){if(!currentProfile)return;try{await navigator.clipboard.writeText(profileUrl(currentProfile.username));msg("sharedStatus","Share link copied.");recordEvent(currentProfile.username,"share")}catch(e){msg("sharedStatus","Copy unavailable. Use the address bar.")}}
@@ -639,12 +823,22 @@ function editOrCreate(){if(editing)saveEdit();else createProfile()}
 async function recordEvent(u,type){if(!u||!initDb())return;try{await db.rpc("record_profile_event",{p_username:u,p_event_type:type})}catch(e){}}
 window.addEventListener("DOMContentLoaded",async()=>{
   setupTypeGrid();
+  initDb();
+  await refreshAuth();
+  db?.auth?.onAuthStateChange((_event,session)=>{authUser=session?.user||null;renderAuthState()});
+  $("authNavBtn").onclick=()=>openAuth("signup");
+  $("signOutBtn").onclick=signOut;
+  $("closeAuthBtn").onclick=closeAuth;
+  $("authCancelBtn").onclick=closeAuth;
+  $("signupTab").onclick=()=>setAuthMode("signup");
+  $("loginTab").onclick=()=>setAuthMode("login");
+  $("authForm").addEventListener("submit",handleAuthSubmit);
   $("landingCreate").onclick=openBuilder;$("landingCreateTop").onclick=openBuilder;$("createOwnBtn").onclick=openBuilder;$("sharedHome").onclick=showLanding;
   $("builderBack").onclick=backAction;$("backToTypes").onclick=showTypeStep;$("continueBtn").onclick=()=>showFormStep();$("createBtn").onclick=editOrCreate;$("clearBtn").onclick=clearForm;
   $("copyLinkBtn").onclick=copyLink;$("shareBtn").onclick=shareCurrent;$("saveContactBtn").onclick=saveContact;$("refreshAnalytics").onclick=loadAnalytics;
   $("editBtn").onclick=()=>{if(currentProfile&&editToken)startEdit(currentProfile)};$("copyEditBtn").onclick=async()=>{if(!currentProfile||!editToken)return;try{await navigator.clipboard.writeText(editUrl(currentProfile.username,editToken));msg("sharedStatus","Private edit link copied. Keep it secret.")}catch(e){msg("sharedStatus","Copy unavailable. Your private edit link is in the current browser hash.")}};
   $("cardPhoto").onchange=()=>{const f=$("cardPhoto").files&&$("cardPhoto").files[0];if(!f)return;imageFile=f;if(imageObjectUrl)URL.revokeObjectURL(imageObjectUrl);imageObjectUrl=URL.createObjectURL(f);$("fileName").textContent=f.name;renderIdentityPreview();updatePreview()};$("removePhoto").onclick=()=>{clearImage();updatePreview()};
-  initDb();showLanding();
+  showLanding();
   await openProfileFromUrl();
   window.addEventListener("popstate",()=>openProfileFromUrl());
 });
