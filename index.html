@@ -194,6 +194,41 @@ button:disabled{cursor:not-allowed;opacity:.55}
 .cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.dashboard-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:0 12px 35px #27364d0a;min-height:190px;display:flex;flex-direction:column}.dashboard-card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.dashboard-card-icon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:#eef2ff;font-size:22px}.dashboard-card-type{font-size:10px;color:#56627d;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.dashboard-card h3{margin:12px 0 4px;font-size:16px}.dashboard-card p{margin:0;color:var(--muted);font-size:11px;line-height:1.4}.dashboard-url{margin-top:9px;padding:8px 10px;border-radius:10px;background:#f7f9ff;color:#42518c;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dashboard-card-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto;padding-top:14px}.dashboard-card-actions .btn{padding:9px 11px;font-size:11px}.dashboard-empty{background:#fff;border:1px dashed #cbd5e1;border-radius:20px;padding:34px;text-align:center;color:var(--muted)}.dashboard-empty h3{margin:0 0 6px;color:var(--ink)}.dashboard-empty p{margin:0 0 14px;font-size:12px;line-height:1.5}
 @media(max-width:900px){.cards-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:640px){.dashboard-stats{grid-template-columns:1fr 1fr}.cards-grid{grid-template-columns:1fr}.dashboard-head h2{font-size:24px}}
 
+
+/* ZetaCard v28 — Lead Capture + Mini CRM */
+.dashboard-tabs{display:flex;gap:8px;margin:0 0 15px;flex-wrap:wrap}
+.dashboard-tab{border:1px solid var(--line);background:#fff;color:#4c5872;padding:9px 12px;border-radius:11px;font-size:11px;font-weight:900;cursor:pointer}
+.dashboard-tab.active{background:#eef2ff;border-color:#a7b1ff;color:#3948ab}
+.dashboard-view{display:none}.dashboard-view.show{display:block}
+.leads-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 13px}
+.leads-toolbar .lead-search{display:flex;gap:8px;flex:1;min-width:250px}
+.leads-toolbar input{flex:1}
+.leads-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.lead-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:0 12px 35px #27364d0a}
+.lead-card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.lead-name{font-size:15px;font-weight:950}.lead-company{font-size:10px;color:var(--muted);margin-top:3px}
+.lead-meta{display:grid;gap:5px;margin-top:11px;font-size:11px;color:#44516d}
+.lead-meta span{word-break:break-word}.lead-message{margin-top:10px;padding:10px;border-radius:12px;background:#f7f9ff;font-size:11px;line-height:1.5;color:#4a5670}
+.lead-card-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.lead-card-actions select{width:auto;padding:8px 9px;font-size:10px}.lead-card-actions button{padding:8px 10px;font-size:10px}
+.lead-note{width:100%;margin-top:9px;padding:9px;border:1px solid var(--line);border-radius:10px;font-size:10px}
+.lead-date{font-size:9px;color:var(--muted)}
+.lead-status{display:inline-flex;padding:6px 9px;border-radius:999px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
+.lead-status.new{background:#eef2ff;color:#4050b0}.lead-status.contacted{background:#eefaf5;color:#16734f}.lead-status.qualified{background:#fff8e7;color:#8b6500}.lead-status.archived{background:#f1f3f7;color:#6a7180}
+.leads-empty{background:#fff;border:1px dashed #cbd5e1;border-radius:20px;padding:32px;text-align:center;color:var(--muted)}
+.lead-capture{margin-top:16px;padding:16px;background:linear-gradient(180deg,#fff,#f8f9ff);border:1px solid var(--line);border-radius:20px}
+.lead-capture-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.lead-capture h3{margin:0;font-size:16px}.lead-capture p{margin:4px 0 0;font-size:11px;color:var(--muted);line-height:1.45}
+.lead-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px}
+.lead-form-grid .full{grid-column:1/-1}
+.lead-form-grid label{display:block;font-size:10px;font-weight:900;color:#3e4a66;margin-bottom:4px}
+.lead-form-grid input,.lead-form-grid textarea{width:100%;padding:10px 12px;border:1px solid #cfd7e6;border-radius:12px;background:#fff;font:inherit}
+.lead-consent{display:flex;gap:8px;align-items:flex-start;margin-top:10px;font-size:10px;color:#59657f;line-height:1.4}
+.lead-consent input{width:auto;margin-top:2px}
+.lead-capture-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.lead-privacy{margin-top:8px;color:#778198;font-size:9px;line-height:1.45}
+@media(max-width:700px){.leads-grid{grid-template-columns:1fr}.lead-form-grid{grid-template-columns:1fr}.lead-form-grid .full{grid-column:auto}.leads-toolbar .lead-search{min-width:100%}}
+
 </style>
 </head>
 <body>
@@ -228,8 +263,29 @@ button:disabled{cursor:not-allowed;opacity:.55}
 <section id="dashboardPage" class="container dashboard-page">
   <div class="topbar"><button id="dashboardBack" class="nav-btn" type="button">← Home</button><div class="brand">ZetaCard</div><div id="dashboardAccountEmail" style="font-size:11px;color:var(--muted);font-weight:850"></div></div>
   <div class="dashboard-head"><div><div class="eyebrow">MY ZETACARDS</div><h2>Your card dashboard</h2><p>Manage every ZetaCard from one account. Create multiple cards for different roles, products, menus and campaigns.</p></div><div class="dashboard-actions"><button id="dashboardCreateBtn" class="btn primary" type="button">+ Create new card</button><button id="dashboardRefreshBtn" class="btn ghost" type="button">Refresh</button></div></div>
-  <div class="dashboard-stats"><div class="dash-stat"><b id="dashCardCount">0</b><span>Total cards</span></div><div class="dash-stat"><b id="dashTypeCount">0</b><span>Card types</span></div><div class="dash-stat"><b id="dashLatestType">—</b><span>Latest card</span></div></div>
-  <div id="dashboardStatus" class="status"></div><div id="dashboardCards" class="cards-grid"></div>
+  <div class="dashboard-tabs">
+    <button id="dashboardCardsTab" class="dashboard-tab active" type="button">My Cards</button>
+    <button id="dashboardLeadsTab" class="dashboard-tab" type="button">Leads <span id="dashboardLeadBadge" style="margin-left:5px"></span></button>
+  </div>
+  <div id="dashboardCardsView" class="dashboard-view show">
+    <div class="dashboard-stats"><div class="dash-stat"><b id="dashCardCount">0</b><span>Total cards</span></div><div class="dash-stat"><b id="dashTypeCount">0</b><span>Card types</span></div><div class="dash-stat"><b id="dashLatestType">—</b><span>Latest card</span></div></div>
+    <div id="dashboardStatus" class="status"></div><div id="dashboardCards" class="cards-grid"></div>
+  </div>
+  <div id="dashboardLeadsView" class="dashboard-view">
+    <div class="leads-toolbar">
+      <div>
+        <div class="eyebrow">LEAD INBOX</div>
+        <strong style="font-size:17px">People who reached out</strong>
+        <div class="help" style="margin-top:3px">Leads are private to your account. Use the status and notes to manage follow-ups.</div>
+      </div>
+      <div class="dashboard-actions"><button id="exportLeadsBtn" class="btn ghost" type="button">Export CSV</button><button id="refreshLeadsBtn" class="btn ghost" type="button">Refresh leads</button></div>
+    </div>
+    <div class="leads-toolbar">
+      <div class="lead-search"><input id="leadSearchInput" placeholder="Search name, company, email or card..."><select id="leadStatusFilter"><option value="all">All statuses</option><option value="new">New</option><option value="contacted">Contacted</option><option value="qualified">Qualified</option><option value="archived">Archived</option></select></div>
+    </div>
+    <div id="leadStatusMessage" class="status"></div>
+    <div id="leadsGrid" class="leads-grid"></div>
+  </div>
 </section>
 
 <main id="builder" class="container" style="display:none">
@@ -282,6 +338,22 @@ button:disabled{cursor:not-allowed;opacity:.55}
     <div id="sharedError" class="status error"></div>
     <div class="shared-layout"><div id="sharedCard" class="card-preview card-visiting theme-midnight"></div><div class="qr-box"><strong>Scan to open</strong><div id="qr" class="qr"></div></div></div>
     <div class="shared-actions"><button id="copyLinkBtn" class="btn primary" type="button">Copy link</button><button id="shareBtn" class="btn ghost" type="button">Share</button><button id="saveContactBtn" class="btn ghost" type="button">Save contact</button><button id="createOwnBtn" class="btn secondary" type="button">Create your own card</button></div>
+    <div id="leadCapture" class="lead-capture">
+      <div class="lead-capture-head"><div><h3>Interested? Send a message</h3><p>Share your contact details with the card owner for a follow-up. Only submit information you are comfortable sharing.</p></div><span class="pill">Lead form</span></div>
+      <form id="leadForm">
+        <div class="lead-form-grid">
+          <div><label for="leadName">Name *</label><input id="leadName" required maxlength="120" placeholder="Your name"></div>
+          <div><label for="leadCompany">Company</label><input id="leadCompany" maxlength="120" placeholder="Company or organization"></div>
+          <div><label for="leadEmail">Email</label><input id="leadEmail" type="email" maxlength="160" placeholder="you@example.com"></div>
+          <div><label for="leadPhone">Phone</label><input id="leadPhone" maxlength="40" placeholder="+91 ..."></div>
+          <div class="full"><label for="leadMessage">Message</label><textarea id="leadMessage" rows="3" maxlength="1000" placeholder="What would you like to discuss?"></textarea></div>
+        </div>
+        <label class="lead-consent"><input id="leadConsent" type="checkbox" required><span>I agree to share these details with the owner of this ZetaCard so they can contact me about my message.</span></label>
+        <div class="lead-capture-actions"><button id="submitLeadBtn" class="btn primary" type="submit">Send message</button><button id="clearLeadBtn" class="btn ghost" type="button">Clear</button></div>
+        <div class="lead-privacy">ZetaCard stores this submission for the card owner. Do not submit passwords, financial information, government IDs, or other sensitive information.</div>
+        <div id="leadSubmitStatus" class="shared-status"></div>
+      </form>
+    </div>
     <div id="sharedStatus" class="shared-status"></div>
     <div id="ownerActions" class="owner-actions"><button id="editBtn" class="btn ghost" type="button">Edit card</button><button id="copyEditBtn" class="btn ghost" type="button">Copy edit link</button></div>
     <div id="ownerNote" class="owner-note">Owner controls are visible only after opening the private edit link.</div>
@@ -295,7 +367,7 @@ const SUPABASE_URL="https://sojuhiuydumpouknkmat.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_--O6hnERwb8RwEa-VFHnUw_SRUE54C-";
 const SITE_BASE="/";
 const dbClient=()=>window.supabase&&window.supabase.createClient?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY):null;
-let db=null,currentProfile=null,selectedType="",ownerSession=false,editToken="",mainTheme="midnight",imageFile=null,imageObjectUrl=null,createBusy=false,editing=false,authUser=null,authBusy=false,authEmailMode="signup";
+let db=null,currentProfile=null,selectedType="",ownerSession=false,editToken="",mainTheme="midnight",imageFile=null,imageObjectUrl=null,createBusy=false,editing=false,authUser=null,authBusy=false,authEmailMode="signup",dashboardLeads=[],dashboardMode="cards";
 const $=id=>document.getElementById(id);
 const escapeHtml=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 const clean=v=>String(v??"").trim();
@@ -428,10 +500,88 @@ async function signOut(){
 
 
 let dashboardCards=[];
-function showDashboard(){if(!authUser){openAuth("login");return}showOnly("dashboardPage");if($("dashboardAccountEmail"))$("dashboardAccountEmail").textContent=authUser.email||"Signed in";loadDashboard();window.scrollTo(0,0)}
+function showDashboard(){if(!authUser){openAuth("login");return}showOnly("dashboardPage");if($("dashboardAccountEmail"))$("dashboardAccountEmail").textContent=authUser.email||"Signed in";setDashboardMode("cards");loadDashboard();window.scrollTo(0,0)}
 function dashboardCardText(p){const d=p.card_data||{};return d.product_name||d.restaurant_name||d.business_name||d.event_name||d.property_title||p.name||d.name||"Untitled card"}
 function dashboardSubtitle(p){const d=p.card_data||{};return d.tagline||d.job_title||d.property_type||d.brand||d.company||d.description||"Digital experience card"}
 function renderDashboardCards(cards){const box=$("dashboardCards");if(!box)return;if(!cards.length){box.innerHTML='<div class="dashboard-empty" style="grid-column:1/-1"><h3>No cards yet</h3><p>Create your first ZetaCard and then manage multiple cards from this dashboard.</p><button id="dashboardEmptyCreate" class="btn primary" type="button">Create your first card</button></div>';$(("dashboardEmptyCreate")).onclick=openBuilder;return}box.innerHTML=cards.map((p,i)=>{const t=TYPES[p.card_type]||TYPES.visiting;return `<article class="dashboard-card"><div class="dashboard-card-top"><div><div class="dashboard-card-type">${escapeHtml(t.label)}</div><h3>${escapeHtml(dashboardCardText(p))}</h3><p>${escapeHtml(dashboardSubtitle(p))}</p></div><div class="dashboard-card-icon">${t.icon}</div></div><div class="dashboard-url">${escapeHtml(profileUrl(p.username))}</div><div class="dashboard-card-actions"><button class="btn primary dash-open" type="button" data-di="${i}">Open</button><button class="btn ghost dash-edit" type="button" data-di="${i}">Edit</button><button class="btn ghost dash-copy" type="button" data-di="${i}">Copy link</button><button class="btn ghost dash-delete" type="button" data-di="${i}">Delete</button></div></article>`}).join("");box.querySelectorAll(".dash-open").forEach(b=>b.onclick=()=>{const p=dashboardCards[Number(b.dataset.di)];currentProfile=normalizedProfile(p);openShared(currentProfile);history.replaceState(null,"",profileUrl(p.username))});box.querySelectorAll(".dash-edit").forEach(b=>b.onclick=()=>{const p=normalizedProfile(dashboardCards[Number(b.dataset.di)]);currentProfile=p;editing=true;selectedType=p.card_type;mainTheme=p.theme;showBuilder();showFormStep();renderForm(p.card_data||{});document.querySelectorAll(".type-option").forEach(x=>x.classList.toggle("selected",x.dataset.type===selectedType));$("typePill").textContent=TYPES[selectedType].icon+" "+TYPES[selectedType].label;Object.entries(p.card_data||{}).forEach(([k,v])=>{const e=document.querySelector('#dynamicForm [data-key="'+CSS.escape(k)+'"]');if(e)e.value=v});updatePreview();updateBackButton();msg("formStatus","Editing your card from your account dashboard.");window.scrollTo(0,0)});box.querySelectorAll(".dash-copy").forEach(b=>b.onclick=async()=>{const p=dashboardCards[Number(b.dataset.di)];try{await navigator.clipboard.writeText(profileUrl(p.username));msg("dashboardStatus","Share link copied.")}catch(e){msg("dashboardStatus","Copy unavailable.",true)}});box.querySelectorAll(".dash-delete").forEach(b=>b.onclick=()=>deleteDashboardCard(Number(b.dataset.di)))}
+
+function setDashboardMode(mode){
+  dashboardMode=mode==="leads"?"leads":"cards";
+  $("dashboardCardsView").classList.toggle("show",dashboardMode==="cards");
+  $("dashboardLeadsView").classList.toggle("show",dashboardMode==="leads");
+  $("dashboardCardsTab").classList.toggle("active",dashboardMode==="cards");
+  $("dashboardLeadsTab").classList.toggle("active",dashboardMode==="leads");
+  if(dashboardMode==="leads")loadLeads();
+}
+function leadStatusClass(s){return ["new","contacted","qualified","archived"].includes(s)?s:"new"}
+function leadDate(v){try{return new Date(v).toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"})}catch(e){return v||""}}
+function filteredLeads(){
+  const q=clean($("leadSearchInput")?.value||"").toLowerCase(), status=$("leadStatusFilter")?.value||"all";
+  return dashboardLeads.filter(l=>{
+    const text=[l.name,l.company,l.email,l.phone,l.message,l.card_name,l.username].join(" ").toLowerCase();
+    return (status==="all"||leadStatusClass(l.status)===status)&&(!q||text.includes(q));
+  });
+}
+function renderLeads(){
+  const box=$("leadsGrid");if(!box)return;
+  const items=filteredLeads();
+  const badge=$("dashboardLeadBadge"); if(badge)badge.textContent=dashboardLeads.filter(x=>leadStatusClass(x.status)==="new").length?`(${dashboardLeads.filter(x=>leadStatusClass(x.status)==="new").length})`:"";
+  if(!items.length){box.innerHTML='<div class="leads-empty" style="grid-column:1/-1"><h3>No leads found</h3><p>When someone submits the contact form on one of your public cards, the lead will appear here.</p></div>';return}
+  box.innerHTML=items.map((l,i)=>`<article class="lead-card" data-lead-id="${escapeHtml(l.id)}">
+    <div class="lead-card-head"><div><div class="lead-name">${escapeHtml(l.name||"Unnamed")}</div><div class="lead-company">${escapeHtml(l.company||"No company")}</div></div><span class="lead-status ${leadStatusClass(l.status)}">${escapeHtml(leadStatusClass(l.status))}</span></div>
+    <div class="lead-meta"><span>📇 ${escapeHtml(l.card_name||l.username||"Card")}</span>${l.email?`<span>✉️ ${escapeHtml(l.email)}</span>`:""}${l.phone?`<span>📞 ${escapeHtml(l.phone)}</span>`:""}<span class="lead-date">${escapeHtml(leadDate(l.created_at))}</span></div>
+    ${l.message?`<div class="lead-message">${escapeHtml(l.message)}</div>`:""}
+    <div class="lead-card-actions"><select class="lead-status-select"><option value="new" ${leadStatusClass(l.status)==="new"?"selected":""}>New</option><option value="contacted" ${leadStatusClass(l.status)==="contacted"?"selected":""}>Contacted</option><option value="qualified" ${leadStatusClass(l.status)==="qualified"?"selected":""}>Qualified</option><option value="archived" ${leadStatusClass(l.status)==="archived"?"selected":""}>Archived</option></select>${l.email?`<a class="btn ghost" href="mailto:${escapeHtml(l.email)}">Email</a>`:""}${l.phone?`<a class="btn ghost" href="tel:${escapeHtml(l.phone)}">Call</a>`:""}<button type="button" class="btn ghost lead-save">Save</button></div>
+    <input class="lead-note" maxlength="1000" value="${escapeHtml(l.notes||"")}" placeholder="Private follow-up note (optional)">
+  </article>`).join("");
+  box.querySelectorAll(".lead-card").forEach(card=>{
+    const id=card.dataset.leadId, lead=dashboardLeads.find(x=>x.id===id);
+    card.querySelector(".lead-save")?.addEventListener("click",()=>saveLead(id,card.querySelector(".lead-status-select")?.value||"new",card.querySelector(".lead-note")?.value||""));
+  });
+}
+async function loadLeads(){
+  if(!authUser||!initDb())return;
+  msg("leadStatusMessage","Loading leads...");
+  try{
+    const r=await db.rpc("get_my_leads");if(r.error)throw r.error;
+    dashboardLeads=Array.isArray(r.data)?r.data:(Array.isArray(r.data?.leads)?r.data.leads:[]);
+    renderLeads();msg("leadStatusMessage","");
+  }catch(e){console.error(e);msg("leadStatusMessage","Could not load leads: "+(e.message||"Unknown error"),true)}
+}
+async function saveLead(id,status,notes){
+  if(!authUser||!id)return;
+  try{
+    const r=await db.rpc("update_my_lead",{p_lead_id:id,p_status:status,p_notes:notes});
+    if(r.error)throw r.error;
+    const lead=dashboardLeads.find(x=>x.id===id);if(lead){lead.status=status;lead.notes=notes;lead.updated_at=new Date().toISOString()}
+    renderLeads();msg("leadStatusMessage","Lead updated.");
+  }catch(e){msg("leadStatusMessage","Could not update lead: "+(e.message||"Unknown error"),true)}
+}
+function exportLeadsCsv(){
+  if(!dashboardLeads.length){msg("leadStatusMessage","There are no leads to export.",true);return}
+  const headers=["name","company","email","phone","message","card_name","username","status","notes","created_at"];
+  const esc=v=>`"${String(v??"").replace(/"/g,'""').replace(/\r?\n/g," ")}"`;
+  const csv=[headers.join(","),...dashboardLeads.map(l=>headers.map(h=>esc(l[h])).join(","))].join("\n");
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download="zetacard-leads.csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),900);
+  msg("leadStatusMessage","CSV export created.");
+}
+async function submitLead(e){
+  e.preventDefault();
+  if(!currentProfile||!initDb())return;
+  const name=clean($("leadName").value),email=clean($("leadEmail").value),phone=clean($("leadPhone").value),company=clean($("leadCompany").value),message=clean($("leadMessage").value),consent=$("leadConsent").checked;
+  if(!name){msg("leadSubmitStatus","Please enter your name.",true);return}
+  if(!email&&!phone){msg("leadSubmitStatus","Please provide an email or phone number so the owner can reply.",true);return}
+  if(!consent){msg("leadSubmitStatus","Please give consent before sending your details.",true);return}
+  $("submitLeadBtn").disabled=true;msg("leadSubmitStatus","Sending...");
+  try{
+    const r=await db.rpc("submit_card_lead",{p_username:currentProfile.username,p_name:name,p_email:email,p_phone:phone,p_company:company,p_message:message,p_consent:consent});
+    if(r.error)throw r.error;
+    $("leadForm").reset();msg("leadSubmitStatus","Thanks — your message was sent to the card owner.");
+  }catch(e){msg("leadSubmitStatus",e.message||"Could not send your message.",true)}
+  finally{$("submitLeadBtn").disabled=false}
+}
+
 async function loadDashboard(){if(!authUser||!initDb())return;msg("dashboardStatus","Loading your cards...");try{await claimLocalOwnedCards();const r=await db.rpc("get_my_cards");if(r.error)throw r.error;dashboardCards=Array.isArray(r.data)?r.data:(r.data||[]);const types=new Set(dashboardCards.map(x=>x.card_type));$("dashCardCount").textContent=dashboardCards.length;$("dashTypeCount").textContent=types.size;const latest=dashboardCards[0];$("dashLatestType").textContent=latest?(TYPES[latest.card_type]?.label||latest.card_type):"—";renderDashboardCards(dashboardCards);msg("dashboardStatus","")}catch(e){console.error(e);msg("dashboardStatus","Could not load your cards: "+(e.message||"Unknown error"),true)}}
 async function claimLocalOwnedCards(){if(!initDb()||!authUser)return;try{const keys=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i)||"";if(k.startsWith("zetaEditToken:"))keys.push(k)}for(const k of keys){const u=k.slice("zetaEditToken:".length),t=localStorage.getItem(k)||"";if(validUsername(u)&&t){const ok=await verifyOwner(u,t);if(ok)await db.rpc("claim_my_profile",{p_username:u,p_token_hash:await hash(t)})}}}catch(e){console.warn("Claim existing cards skipped",e)}}
 async function deleteDashboardCard(index){const p=dashboardCards[index];if(!p)return;if(!confirm("Delete this card permanently?"))return;try{msg("dashboardStatus","Deleting card...");const r=await db.rpc("delete_my_card",{p_profile_id:p.id});if(r.error)throw r.error;dashboardCards.splice(index,1);renderDashboardCards(dashboardCards);$("dashCardCount").textContent=dashboardCards.length;$("dashTypeCount").textContent=new Set(dashboardCards.map(x=>x.card_type)).size;msg("dashboardStatus","Card deleted.")}catch(e){msg("dashboardStatus","Could not delete card: "+(e.message||"Unknown error"),true)}}
@@ -841,7 +991,7 @@ function renderPublicCard(p){
     box.appendChild(v);el.appendChild(box);
   }
 }
-function openShared(p){currentProfile=p;showShared();renderPublicCard(p);const url=profileUrl(p.username);$("qr").innerHTML="";if(window.QRCode)new QRCode($("qr"),{text:url,width:140,height:140});else $("qr").textContent="QR unavailable";$("saveContactBtn").style.display=(p.card_type==="visiting"||p.card_type==="identity")?"inline-flex":"none";syncOwnerUi();}
+function openShared(p){currentProfile=p;showShared();renderPublicCard(p);const url=profileUrl(p.username);$("qr").innerHTML="";if(window.QRCode)new QRCode($("qr"),{text:url,width:140,height:140});else $("qr").textContent="QR unavailable";$("saveContactBtn").style.display=(p.card_type==="visiting"||p.card_type==="identity")?"inline-flex":"none";$("leadSubmitStatus").textContent="";syncOwnerUi();}
 async function syncOwnerUi(){const show=!!(ownerSession&&currentProfile&&editToken&&await verifyOwner(currentProfile.username,editToken));$("ownerActions").style.display=show?"flex":"none";$("ownerNote").style.display=show?"block":"none";$("analytics").classList.toggle("show",show);if(show)loadAnalytics()}
 async function loadAnalytics(){if(!currentProfile||!editToken)return;msg("analyticsStatus","Loading...");try{const r=await db.rpc("get_profile_analytics",{p_username:currentProfile.username,p_token_hash:await hash(editToken)});if(r.error)throw r.error;const counts={view:0,phone_click:0,email_click:0,share:0};(r.data||[]).forEach(x=>counts[x.event_type]=Number(x.event_count)||0);$("viewsCount").textContent=counts.view;$("phoneCount").textContent=counts.phone_click;$("emailCount").textContent=counts.email_click;$("shareCount").textContent=counts.share;msg("analyticsStatus","")}catch(e){msg("analyticsStatus","Could not load analytics.",true)}}
 async function openProfileFromUrl(){const params=new URLSearchParams(location.search);let u=uname(params.get("u")||"");let privateEdit=false;let key="";if(location.hash.startsWith("#edit=")){const h=new URLSearchParams(location.hash.slice(1));u=uname(h.get("edit"));key=h.get("key")||"";privateEdit=true}if(!u)return false;if(!initDb())return false;try{const r=await db.from("profiles").select("id,username,name,job_title,company,phone,email,bio,theme,avatar_url,card_type,card_data,ar_model_url,ar_usdz_url,model_name,model_scale,hotspots").eq("username",u).maybeSingle();if(r.error)throw r.error;if(!r.data)throw new Error("Profile not found.");const p=normalizedProfile(r.data);ownerSession=false;editToken="";if(privateEdit&&key){storeToken(u,key);editToken=key;ownerSession=await verifyOwner(u,key)}openShared(p);recordEvent(p.username,"view");history.replaceState(null,"",profileUrl(u));if(privateEdit&&ownerSession){startEdit(p)}return true}catch(e){showShared();msg("sharedError",e.message||"Could not load this card.",true);return true}}
@@ -860,11 +1010,19 @@ window.addEventListener("DOMContentLoaded",async()=>{
   $("dashboardBack").onclick=showLanding;
   $("dashboardCreateBtn").onclick=openBuilder;
   $("dashboardRefreshBtn").onclick=loadDashboard;
+  $("dashboardCardsTab").onclick=()=>setDashboardMode("cards");
+  $("dashboardLeadsTab").onclick=()=>setDashboardMode("leads");
+  $("refreshLeadsBtn").onclick=loadLeads;
+  $("exportLeadsBtn").onclick=exportLeadsCsv;
+  $("leadSearchInput").oninput=renderLeads;
+  $("leadStatusFilter").onchange=renderLeads;
   $("closeAuthBtn").onclick=closeAuth;
   $("authCancelBtn").onclick=closeAuth;
   $("signupTab").onclick=()=>setAuthMode("signup");
   $("loginTab").onclick=()=>setAuthMode("login");
   $("authForm").addEventListener("submit",handleAuthSubmit);
+  $("leadForm").addEventListener("submit",submitLead);
+  $("clearLeadBtn").onclick=()=>$("leadForm").reset();
   $("landingCreate").onclick=openBuilder;$("landingCreateTop").onclick=openBuilder;$("createOwnBtn").onclick=openBuilder;$("sharedHome").onclick=showLanding;
   $("builderBack").onclick=backAction;$("backToTypes").onclick=showTypeStep;$("continueBtn").onclick=()=>showFormStep();$("createBtn").onclick=editOrCreate;$("clearBtn").onclick=clearForm;
   $("copyLinkBtn").onclick=copyLink;$("shareBtn").onclick=shareCurrent;$("saveContactBtn").onclick=saveContact;$("refreshAnalytics").onclick=loadAnalytics;
