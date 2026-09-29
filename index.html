@@ -230,8 +230,9 @@ button:disabled{cursor:not-allowed;opacity:.55}
 @media(max-width:700px){.leads-grid{grid-template-columns:1fr}.lead-form-grid{grid-template-columns:1fr}.lead-form-grid .full{grid-column:auto}.leads-toolbar .lead-search{min-width:100%}}
 
 
-/* v29 viewer / owner / lead fixes */
-#leadCapture{display:none}
+/* v30 viewer / owner / lead fixes */
+/* Viewer lead form is visible by default. Owner/private views explicitly hide it in openShared(). */
+#leadCapture{display:block}
 .viewer-back-row{display:flex;justify-content:flex-start;margin-bottom:10px}
 .viewer-back-row .nav-btn{min-width:150px}
 
@@ -575,6 +576,18 @@ function exportLeadsCsv(){
 async function submitLead(e){
   e.preventDefault();
   if(!currentProfile||!initDb())return;
+
+  /* Owners are never allowed to submit their own lead form. The UI hides it,
+     and this second check prevents normal client-side bypasses. */
+  let owner=!!(openedFromDashboard||ownerSession);
+  if(!owner&&authUser&&currentProfile.id){
+    try{owner=await isMyCard(currentProfile.id)}catch(e){owner=false}
+  }
+  if(owner){
+    msg("leadSubmitStatus","Card owners cannot submit leads from their own card.",true);
+    return;
+  }
+
   const name=clean($("leadName").value),email=clean($("leadEmail").value),phone=clean($("leadPhone").value),company=clean($("leadCompany").value),message=clean($("leadMessage").value),consent=$("leadConsent").checked;
   if(!name){msg("leadSubmitStatus","Please enter your name.",true);return}
   if(!email&&!phone){msg("leadSubmitStatus","Please provide an email or phone number so the owner can reply.",true);return}
@@ -1009,10 +1022,30 @@ async function openShared(p){
   $("qr").innerHTML="";
   if(window.QRCode)new QRCode($("qr"),{text:url,width:140,height:140});else $("qr").textContent="QR unavailable";
   $("saveContactBtn").style.display=(p.card_type==="visiting"||p.card_type==="identity")?"inline-flex":"none";
-  $("leadSubmitStatus").textContent="";
-  const owner = openedFromDashboard || ownerSession || await isMyCard(p.id);
   const leadBox=$("leadCapture");
-  if(leadBox)leadBox.style.display=owner?"none":"block";
+  const leadStatus=$("leadSubmitStatus");
+
+  /* Always reset to viewer mode first. This prevents a previous owner view from
+     leaving the form hidden when another public card is opened. */
+  if(leadBox){
+    leadBox.hidden=false;
+    leadBox.style.display="block";
+    leadBox.removeAttribute("aria-hidden");
+  }
+  if(leadStatus)leadStatus.textContent="";
+
+  /* Public viewers can submit leads without signing in. Owners must not see
+     the form when opening their own card, from My Cards, or via a private edit link. */
+  let owner=!!(openedFromDashboard||ownerSession);
+  if(!owner&&authUser&&p&&p.id){
+    try{owner=await isMyCard(p.id)}catch(e){owner=false}
+  }
+  if(leadBox&&owner){
+    leadBox.hidden=true;
+    leadBox.style.display="none";
+    leadBox.setAttribute("aria-hidden","true");
+  }
+
   const back=$("sharedHome");
   if(back)back.textContent=openedFromDashboard?"← My Cards":"← Home";
   await syncOwnerUi();
