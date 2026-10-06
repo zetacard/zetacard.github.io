@@ -216,6 +216,11 @@ button:disabled{cursor:not-allowed;opacity:.55}
 .lead-status{display:inline-flex;padding:6px 9px;border-radius:999px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
 .lead-status.new{background:#eef2ff;color:#4050b0}.lead-status.contacted{background:#eefaf5;color:#16734f}.lead-status.qualified{background:#fff8e7;color:#8b6500}.lead-status.archived{background:#f1f3f7;color:#6a7180}
 .leads-empty{background:#fff;border:1px dashed #cbd5e1;border-radius:20px;padding:32px;text-align:center;color:var(--muted)}
+/* ZetaCard v33 — Advanced Lead CRM */
+.lead-kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:0 0 15px}.lead-kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 10px 28px #27364d0a}.lead-kpi b{display:block;font-size:23px}.lead-kpi span{display:block;margin-top:4px;color:var(--muted);font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.06em}.lead-kpi.qualified{background:#f3fbf7;border-color:#cbe8d8}.lead-kpi.due{background:#fffaf0;border-color:#f0d59a}
+.lead-analytics-panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px;margin:0 0 15px;box-shadow:0 10px 28px #27364d0a}.lead-analytics-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}.lead-analytics-head strong{font-size:14px}.lead-analytics-head p{margin:3px 0 0;color:var(--muted);font-size:10px}.lead-pipeline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.pipeline-item{padding:10px 11px;border:1px solid var(--line);border-radius:12px;background:#f8faff}.pipeline-item b{display:block;font-size:18px}.pipeline-item span{font-size:9px;color:var(--muted);font-weight:850;text-transform:uppercase}.lead-card-breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.lead-card-mini{padding:10px 11px;border:1px solid var(--line);border-radius:12px;background:#fff}.lead-card-mini .top{display:flex;justify-content:space-between;gap:8px}.lead-card-mini strong{font-size:11px}.lead-card-mini .count{font-size:11px;font-weight:950}.lead-card-mini .bar{height:6px;border-radius:999px;background:#edf1f7;overflow:hidden;margin-top:8px}.lead-card-mini .bar i{display:block;height:100%;background:var(--brand);border-radius:999px}.lead-followup{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:9px;padding-top:9px;border-top:1px dashed #dfe5ef}.lead-followup label{font-size:9px;font-weight:900;color:#56627d}.lead-followup input{padding:8px 9px;border:1px solid var(--line);border-radius:9px;background:#fbfcfe;font-size:10px;min-width:190px}.followup-state{font-size:9px;color:var(--muted);font-weight:800}.lead-card.overdue{border-color:#e5b0b0;box-shadow:0 0 0 2px #b33d4a10}.lead-overdue{display:inline-flex;padding:5px 8px;border-radius:999px;background:#fff0f0;color:#a43c47;font-size:8px;font-weight:950;text-transform:uppercase}.lead-filter-actions{display:flex;gap:7px;flex-wrap:wrap}.lead-filter-chip{border:1px solid var(--line);background:#fff;color:#4c5872;padding:8px 10px;border-radius:10px;font-size:10px;font-weight:900}.lead-filter-chip.active{background:#eef2ff;border-color:#a7b1ff;color:#3948ab}
+@media(max-width:1000px){.lead-kpi-grid{grid-template-columns:repeat(3,1fr)}.lead-card-breakdown{grid-template-columns:repeat(2,1fr)}}@media(max-width:640px){.lead-kpi-grid{grid-template-columns:1fr 1fr}.lead-pipeline{grid-template-columns:1fr 1fr}.lead-card-breakdown{grid-template-columns:1fr}.lead-followup input{min-width:0;width:100%}}
+
 .lead-capture{margin-top:16px;padding:16px;background:linear-gradient(180deg,#fff,#f8f9ff);border:1px solid var(--line);border-radius:20px}
 .lead-capture-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
 .lead-capture h3{margin:0;font-size:16px}.lead-capture p{margin:4px 0 0;font-size:11px;color:var(--muted);line-height:1.45}
@@ -274,6 +279,20 @@ button:disabled{cursor:not-allowed;opacity:.55}
     <button id="dashboardCardsTab" class="dashboard-tab active" type="button">My Cards</button>
     <button id="dashboardLeadsTab" class="dashboard-tab" type="button">Leads <span id="dashboardLeadBadge" style="margin-left:5px"></span></button>
   </div>
+  <div id="leadAnalyticsSummary" style="display:none">
+    <div class="lead-kpi-grid">
+      <div class="lead-kpi"><b id="leadTotalKpi">0</b><span>Total leads</span></div>
+      <div class="lead-kpi"><b id="leadNewKpi">0</b><span>New</span></div>
+      <div class="lead-kpi"><b id="leadContactedKpi">0</b><span>Contacted</span></div>
+      <div class="lead-kpi qualified"><b id="leadQualifiedKpi">0%</b><span>Qualified rate</span></div>
+      <div class="lead-kpi due"><b id="leadDueKpi">0</b><span>Follow-up due</span></div>
+    </div>
+    <div class="lead-analytics-panel">
+      <div class="lead-analytics-head"><div><strong>Lead pipeline</strong><p>Track enquiries from first contact to qualified follow-up.</p></div><button id="refreshLeadAnalyticsBtn" class="btn ghost" type="button">Refresh analytics</button></div>
+      <div class="lead-pipeline"><div class="pipeline-item"><b id="pipeNew">0</b><span>New</span></div><div class="pipeline-item"><b id="pipeContacted">0</b><span>Contacted</span></div><div class="pipeline-item"><b id="pipeQualified">0</b><span>Qualified</span></div><div class="pipeline-item"><b id="pipeArchived">0</b><span>Archived</span></div></div>
+      <div id="leadCardBreakdown" class="lead-card-breakdown"></div>
+    </div>
+  </div>
   <div id="dashboardCardsView" class="dashboard-view show">
     <div class="dashboard-stats"><div class="dash-stat"><b id="dashCardCount">0</b><span>Total cards</span></div><div class="dash-stat"><b id="dashTypeCount">0</b><span>Card types</span></div><div class="dash-stat"><b id="dashLatestType">—</b><span>Latest card</span></div></div>
     <div id="dashboardStatus" class="status"></div><div id="dashboardCards" class="cards-grid"></div>
@@ -289,6 +308,7 @@ button:disabled{cursor:not-allowed;opacity:.55}
     </div>
     <div class="leads-toolbar">
       <div class="lead-search"><input id="leadSearchInput" placeholder="Search name, company, email or card..."><select id="leadStatusFilter"><option value="all">All statuses</option><option value="new">New</option><option value="contacted">Contacted</option><option value="qualified">Qualified</option><option value="archived">Archived</option></select></div>
+      <div class="lead-filter-actions"><button id="leadDueFilter" class="lead-filter-chip" type="button">Follow-up due</button><button id="leadClearFilters" class="lead-filter-chip" type="button">Clear filters</button></div>
     </div>
     <div id="leadStatusMessage" class="status"></div>
     <div id="leadsGrid" class="leads-grid"></div>
@@ -374,7 +394,7 @@ const SUPABASE_URL="https://sojuhiuydumpouknkmat.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_--O6hnERwb8RwEa-VFHnUw_SRUE54C-";
 const SITE_BASE="/";
 const dbClient=()=>window.supabase&&window.supabase.createClient?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY):null;
-let db=null,currentProfile=null,selectedType="",ownerSession=false,editToken="",mainTheme="midnight",imageFile=null,imageObjectUrl=null,createBusy=false,editing=false,authUser=null,authBusy=false,authEmailMode="signup",dashboardLeads=[],dashboardMode="cards",openedFromDashboard=false;
+let db=null,currentProfile=null,selectedType="",ownerSession=false,editToken="",mainTheme="midnight",imageFile=null,imageObjectUrl=null,createBusy=false,editing=false,authUser=null,authBusy=false,authEmailMode="signup",dashboardLeads=[],dashboardMode="cards",openedFromDashboard=false,leadDueOnly=false,leadSummary=null;
 const $=id=>document.getElementById(id);
 const escapeHtml=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 const clean=v=>String(v??"").trim();
@@ -522,29 +542,81 @@ function setDashboardMode(mode){
 }
 function leadStatusClass(s){return ["new","contacted","qualified","archived"].includes(s)?s:"new"}
 function leadDate(v){try{return new Date(v).toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"})}catch(e){return v||""}}
+function toLocalInputValue(v){
+  if(!v)return "";
+  const d=new Date(v);if(Number.isNaN(d.getTime()))return "";
+  const pad=n=>String(n).padStart(2,"0");
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+function isOverdueLead(l){
+  if(!l?.follow_up_at)return false;
+  const d=new Date(l.follow_up_at);
+  return !Number.isNaN(d.getTime())&&d.getTime()<Date.now()&&leadStatusClass(l.status)!=="archived";
+}
+function followupLabel(v){
+  if(!v)return "No follow-up set";
+  const d=new Date(v);if(Number.isNaN(d.getTime()))return "";
+  return d.getTime()<Date.now()?"Overdue":d.toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"});
+}
 function filteredLeads(){
-  const q=clean($("leadSearchInput")?.value||"").toLowerCase(), status=$("leadStatusFilter")?.value||"all";
+  const q=clean($("leadSearchInput")?.value||"").toLowerCase(),status=$("leadStatusFilter")?.value||"all";
   return dashboardLeads.filter(l=>{
     const text=[l.name,l.company,l.email,l.phone,l.message,l.card_name,l.username].join(" ").toLowerCase();
-    return (status==="all"||leadStatusClass(l.status)===status)&&(!q||text.includes(q));
+    return(status==="all"||leadStatusClass(l.status)===status)&&(!q||text.includes(q))&&(!leadDueOnly||isOverdueLead(l));
   });
+}
+function updateLeadAnalyticsFromData(){
+  const total=dashboardLeads.length,counts={new:0,contacted:0,qualified:0,archived:0};
+  dashboardLeads.forEach(l=>counts[leadStatusClass(l.status)]++);
+  const due=dashboardLeads.filter(isOverdueLead).length;
+  $("leadTotalKpi").textContent=total;
+  $("leadNewKpi").textContent=counts.new;
+  $("leadContactedKpi").textContent=counts.contacted;
+  $("leadQualifiedKpi").textContent=total?Math.round(counts.qualified/total*100)+"%":"0%";
+  $("leadDueKpi").textContent=due;
+  $("pipeNew").textContent=counts.new;
+  $("pipeContacted").textContent=counts.contacted;
+  $("pipeQualified").textContent=counts.qualified;
+  $("pipeArchived").textContent=counts.archived;
+  const breakdown={};
+  dashboardLeads.forEach(l=>{const k=l.card_name||l.username||"Card";breakdown[k]=(breakdown[k]||0)+1});
+  const rows=Object.entries(breakdown).sort((a,b)=>b[1]-a[1]).slice(0,6),max=rows[0]?.[1]||1;
+  $("leadCardBreakdown").innerHTML=rows.length
+    ?rows.map(([name,count])=>`<div class="lead-card-mini"><div class="top"><strong>${escapeHtml(name)}</strong><span class="count">${count}</span></div><div class="bar"><i style="width:${Math.round(count/max*100)}%"></i></div></div>`).join("")
+    :"<div class=\"help\" style=\"grid-column:1/-1\">No lead data yet.</div>";
+  $("leadAnalyticsSummary").style.display="block";
+  $("leadDueFilter")?.classList.toggle("active",leadDueOnly);
 }
 function renderLeads(){
   const box=$("leadsGrid");if(!box)return;
   const items=filteredLeads();
-  const badge=$("dashboardLeadBadge"); if(badge)badge.textContent=dashboardLeads.filter(x=>leadStatusClass(x.status)==="new").length?`(${dashboardLeads.filter(x=>leadStatusClass(x.status)==="new").length})`:"";
-  if(!items.length){box.innerHTML='<div class="leads-empty" style="grid-column:1/-1"><h3>No leads found</h3><p>When someone submits the contact form on one of your public cards, the lead will appear here.</p></div>';return}
-  box.innerHTML=items.map((l,i)=>`<article class="lead-card" data-lead-id="${escapeHtml(l.id)}">
-    <div class="lead-card-head"><div><div class="lead-name">${escapeHtml(l.name||"Unnamed")}</div><div class="lead-company">${escapeHtml(l.company||"No company")}</div></div><span class="lead-status ${leadStatusClass(l.status)}">${escapeHtml(leadStatusClass(l.status))}</span></div>
+  const badge=$("dashboardLeadBadge");
+  if(badge)badge.textContent=dashboardLeads.filter(x=>leadStatusClass(x.status)==="new").length?`(${dashboardLeads.filter(x=>leadStatusClass(x.status)==="new").length})`:"";
+  updateLeadAnalyticsFromData();
+  if(!items.length){
+    box.innerHTML='<div class="leads-empty" style="grid-column:1/-1"><h3>No leads found</h3><p>When someone submits the contact form on one of your public cards, the lead will appear here.</p></div>';
+    return;
+  }
+  box.innerHTML=items.map(l=>`<article class="lead-card ${isOverdueLead(l)?"overdue":""}" data-lead-id="${escapeHtml(l.id)}">
+    <div class="lead-card-head"><div><div class="lead-name">${escapeHtml(l.name||"Unnamed")}</div><div class="lead-company">${escapeHtml(l.company||"No company")}</div></div><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">${isOverdueLead(l)?'<span class="lead-overdue">Follow-up overdue</span>':''}<span class="lead-status ${leadStatusClass(l.status)}">${escapeHtml(leadStatusClass(l.status))}</span></div></div>
     <div class="lead-meta"><span>📇 ${escapeHtml(l.card_name||l.username||"Card")}</span>${l.email?`<span>✉️ ${escapeHtml(l.email)}</span>`:""}${l.phone?`<span>📞 ${escapeHtml(l.phone)}</span>`:""}<span class="lead-date">${escapeHtml(leadDate(l.created_at))}</span></div>
     ${l.message?`<div class="lead-message">${escapeHtml(l.message)}</div>`:""}
     <div class="lead-card-actions"><select class="lead-status-select"><option value="new" ${leadStatusClass(l.status)==="new"?"selected":""}>New</option><option value="contacted" ${leadStatusClass(l.status)==="contacted"?"selected":""}>Contacted</option><option value="qualified" ${leadStatusClass(l.status)==="qualified"?"selected":""}>Qualified</option><option value="archived" ${leadStatusClass(l.status)==="archived"?"selected":""}>Archived</option></select>${l.email?`<a class="btn ghost" href="mailto:${escapeHtml(l.email)}">Email</a>`:""}${l.phone?`<a class="btn ghost" href="tel:${escapeHtml(l.phone)}">Call</a>`:""}<button type="button" class="btn ghost lead-save">Save</button></div>
+    <div class="lead-followup"><label>Follow-up</label><input class="lead-followup-input" type="datetime-local" value="${escapeHtml(toLocalInputValue(l.follow_up_at))}"><span class="followup-state">${escapeHtml(followupLabel(l.follow_up_at))}</span></div>
     <input class="lead-note" maxlength="1000" value="${escapeHtml(l.notes||"")}" placeholder="Private follow-up note (optional)">
   </article>`).join("");
   box.querySelectorAll(".lead-card").forEach(card=>{
-    const id=card.dataset.leadId, lead=dashboardLeads.find(x=>x.id===id);
-    card.querySelector(".lead-save")?.addEventListener("click",()=>saveLead(id,card.querySelector(".lead-status-select")?.value||"new",card.querySelector(".lead-note")?.value||""));
+    const id=card.dataset.leadId;
+    card.querySelector(".lead-save")?.addEventListener("click",()=>{
+      const input=card.querySelector(".lead-followup-input");
+      saveLead(id,card.querySelector(".lead-status-select")?.value||"new",card.querySelector(".lead-note")?.value||"",input?.value||"");
+    });
   });
+}
+async function loadLeadSummary(){
+  if(!authUser||!initDb())return;
+  try{const r=await db.rpc("get_my_lead_summary");if(r.error)throw r.error;leadSummary=r.data||null}
+  catch(e){leadSummary=null}
 }
 async function loadLeads(){
   if(!authUser||!initDb())return;
@@ -552,15 +624,20 @@ async function loadLeads(){
   try{
     const r=await db.rpc("get_my_leads");if(r.error)throw r.error;
     dashboardLeads=Array.isArray(r.data)?r.data:(Array.isArray(r.data?.leads)?r.data.leads:[]);
+    await loadLeadSummary();
     renderLeads();msg("leadStatusMessage","");
   }catch(e){console.error(e);msg("leadStatusMessage","Could not load leads: "+(e.message||"Unknown error"),true)}
 }
-async function saveLead(id,status,notes){
+async function saveLead(id,status,notes,followupLocal){
   if(!authUser||!id)return;
   try{
-    const r=await db.rpc("update_my_lead",{p_lead_id:id,p_status:status,p_notes:notes});
-    if(r.error)throw r.error;
-    const lead=dashboardLeads.find(x=>x.id===id);if(lead){lead.status=status;lead.notes=notes;lead.updated_at=new Date().toISOString()}
+    const r=await db.rpc("update_my_lead",{p_lead_id:id,p_status:status,p_notes:notes});if(r.error)throw r.error;
+    if(followupLocal!==undefined){
+      const iso=followupLocal?new Date(followupLocal).toISOString():null;
+      const f=await db.rpc("set_my_lead_followup",{p_lead_id:id,p_follow_up_at:iso});if(f.error)throw f.error;
+    }
+    const lead=dashboardLeads.find(x=>x.id===id);
+    if(lead){lead.status=status;lead.notes=notes;lead.follow_up_at=followupLocal?new Date(followupLocal).toISOString():null;lead.updated_at=new Date().toISOString()}
     renderLeads();msg("leadStatusMessage","Lead updated.");
   }catch(e){msg("leadStatusMessage","Could not update lead: "+(e.message||"Unknown error"),true)}
 }
@@ -1126,6 +1203,9 @@ window.addEventListener("DOMContentLoaded",async()=>{
   $("exportLeadsBtn").onclick=exportLeadsCsv;
   $("leadSearchInput").oninput=renderLeads;
   $("leadStatusFilter").onchange=renderLeads;
+  $("leadDueFilter").onclick=()=>{leadDueOnly=!leadDueOnly;renderLeads()};
+  $("leadClearFilters").onclick=()=>{$("leadSearchInput").value="";$("leadStatusFilter").value="all";leadDueOnly=false;renderLeads()};
+  $("refreshLeadAnalyticsBtn").onclick=loadLeads;
   $("closeAuthBtn").onclick=closeAuth;
   $("authCancelBtn").onclick=closeAuth;
   $("signupTab").onclick=()=>setAuthMode("signup");
@@ -1145,4 +1225,3 @@ window.addEventListener("DOMContentLoaded",async()=>{
 </script>
 </body>
 </html>
-  
