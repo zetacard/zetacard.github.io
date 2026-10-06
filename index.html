@@ -594,11 +594,23 @@ async function submitLead(e){
   if(!consent){msg("leadSubmitStatus","Please give consent before sending your details.",true);return}
   $("submitLeadBtn").disabled=true;msg("leadSubmitStatus","Sending...");
   try{
-    const r=await db.rpc("submit_card_lead",{p_username:currentProfile.username,p_name:name,p_email:email,p_phone:phone,p_company:company,p_message:message,p_consent:consent});
-    if(r.error)throw r.error;
-    $("leadForm").reset();msg("leadSubmitStatus","Thanks — your message was sent to the card owner.");
-  }catch(e){msg("leadSubmitStatus",e.message||"Could not send your message.",true)}
-  finally{$("submitLeadBtn").disabled=false}
+    const payload={p_username:currentProfile.username,p_name:name,p_email:email,p_phone:phone,p_company:company,p_message:message,p_consent:true};
+    const r=await db.rpc("submit_card_lead",payload);
+    if(r.error){
+      console.error("ZetaCard submit_card_lead RPC error",r.error,payload);
+      const code=r.error.code||"";
+      const raw=r.error.message||r.error.details||r.error.hint||"Unknown database error";
+      if(code==="PGRST202"||/submit_card_lead|schema cache|function .* does not exist/i.test(raw)){
+        throw new Error("Lead system is not installed in Supabase yet. Run the ZetaCard Lead Capture SQL file, then refresh this page.");
+      }
+      throw new Error(raw);
+    }
+    $("leadForm").reset();
+    msg("leadSubmitStatus","Thanks — your message was sent to the card owner.");
+  }catch(e){
+    console.error("ZetaCard lead submission failed",e);
+    msg("leadSubmitStatus",e.message||"Could not send your message. Please try again.",true);
+  }finally{$("submitLeadBtn").disabled=false}
 }
 
 async function loadDashboard(){if(!authUser||!initDb())return;msg("dashboardStatus","Loading your cards...");try{await claimLocalOwnedCards();const r=await db.rpc("get_my_cards");if(r.error)throw r.error;dashboardCards=Array.isArray(r.data)?r.data:(r.data||[]);const types=new Set(dashboardCards.map(x=>x.card_type));$("dashCardCount").textContent=dashboardCards.length;$("dashTypeCount").textContent=types.size;const latest=dashboardCards[0];$("dashLatestType").textContent=latest?(TYPES[latest.card_type]?.label||latest.card_type):"—";renderDashboardCards(dashboardCards);msg("dashboardStatus","")}catch(e){console.error(e);msg("dashboardStatus","Could not load your cards: "+(e.message||"Unknown error"),true)}}
