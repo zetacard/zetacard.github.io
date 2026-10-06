@@ -260,6 +260,37 @@ button:disabled{cursor:not-allowed;opacity:.55}
 .share-mini b{display:block;font-size:16px}.share-mini span{display:block;margin-top:2px;font-size:8px;color:var(--muted);font-weight:850;text-transform:uppercase;letter-spacing:.05em}
 @media(max-width:640px){.share-options{grid-template-columns:1fr 1fr}.share-breakdown{grid-template-columns:1fr 1fr}}
 
+
+/* v35 visual customization */
+.custom-style-panel{margin-top:12px;padding:14px;border:1px solid #dfe6f0;border-radius:18px;background:linear-gradient(180deg,#fbfcff,#f6f8fc)}
+.custom-style-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:11px}
+.custom-style-field{display:flex;flex-direction:column;gap:6px}
+.custom-style-field label{font-size:10px;font-weight:900;color:#3e4a66}
+.custom-style-field input[type=color]{width:100%;height:42px;padding:4px;border:1px solid #cfd7e6;border-radius:11px;background:#fff;cursor:pointer}
+.custom-style-field select{width:100%;padding:10px 11px;border:1px solid #cfd7e6;border-radius:11px;background:#fff;color:#26335f}
+.custom-style-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.custom-style-help{margin-top:8px;font-size:10px;color:var(--muted);line-height:1.45}
+.zc-customized{--zc-accent:#536dfe;position:relative}
+.zc-customized::after{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--zc-accent);opacity:.055;pointer-events:none;z-index:1}
+.zc-customized::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;border-radius:inherit;background:var(--zc-accent);z-index:4;pointer-events:none}
+.zc-customized .preview-inner{position:relative;z-index:2}
+.zc-customized>.public-ar{position:relative;z-index:3}
+.zc-customized .preview-logo{border-color:var(--zc-accent)}
+.zc-customized .id-chip,.zc-customized .ar-badge{background:var(--zc-accent);color:#fff}
+.zc-customized .property-cta{background:var(--zc-accent);color:#fff}
+.zc-customized .product-hero{border-top:3px solid var(--zc-accent)}
+.zc-customized .ticket-box{border-color:var(--zc-accent)}
+.zc-customized .catalog-item{border-top:3px solid var(--zc-accent)}
+.zc-customized.zc-radius-soft,.zc-customized.zc-radius-soft .catalog-item,.zc-customized.zc-radius-soft .product-hero,.zc-customized.zc-radius-soft .ticket-box,.zc-customized.zc-radius-soft .stat{border-radius:18px}
+.zc-customized.zc-radius-sharp,.zc-customized.zc-radius-sharp .catalog-item,.zc-customized.zc-radius-sharp .product-hero,.zc-customized.zc-radius-sharp .ticket-box,.zc-customized.zc-radius-sharp .stat{border-radius:8px}
+.zc-density-compact .preview-inner{padding:22px}
+.zc-density-spacious .preview-inner{padding:38px}
+.zc-font-system{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+.zc-font-serif{font-family:Georgia,"Times New Roman",serif}
+.zc-font-rounded{font-family:"Trebuchet MS",Inter,system-ui,sans-serif}
+.zc-font-mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+@media(max-width:700px){.custom-style-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -350,7 +381,7 @@ button:disabled{cursor:not-allowed;opacity:.55}
         <div class="form-head"><div><strong id="formTypeTitle">Build your card</strong><div id="formTypeHint" class="help">Only relevant fields are shown.</div></div><button id="backToTypes" class="nav-btn" type="button">← Card types</button></div>
         <div id="dynamicForm"></div>
         <div id="visualSection" class="optional-section hidden"><h3>Visual identity</h3><p id="visualHint">Add the image that belongs to this card.</p><div class="identity-box"><div id="identityPreview" class="identity-preview">Z</div><div><div style="font-weight:900;font-size:13px">Photo / image</div><div class="help" style="margin-top:3px">JPG, PNG or WebP · max 5 MB</div><div class="identity-actions"><label class="upload-btn" for="cardPhoto">Choose image</label><button id="removePhoto" class="remove-btn" type="button">Remove</button><input id="cardPhoto" class="file-input" type="file" accept="image/jpeg,image/png,image/webp"></div><div id="fileName" class="file-name">No image selected</div></div></div></div>
-        <div id="styleSection" class="optional-section hidden"><h3>Card style</h3><p>Choose a theme for this card type.</p><div id="styleGrid" class="style-grid"></div><input id="theme" type="hidden" value="midnight"></div>
+        <div id="styleSection" class="optional-section hidden"><h3>Card style</h3><p>Choose a theme and personalize the visual identity of this card.</p><div id="styleGrid" class="style-grid"></div><input id="theme" type="hidden" value="midnight"><div id="customStylePanel" class="custom-style-panel"><div style="font-weight:900;font-size:12px">Brand customization</div><div class="custom-style-grid"><div class="custom-style-field"><label for="customAccent">Accent color</label><input id="customAccent" type="color" value="#536dfe" aria-label="Accent color"></div><div class="custom-style-field"><label for="customFont">Typography</label><select id="customFont"><option value="system">System / Inter</option><option value="serif">Elegant Serif</option><option value="rounded">Rounded Modern</option><option value="mono">Technical Mono</option></select></div><div class="custom-style-field"><label for="customDensity">Content spacing</label><select id="customDensity"><option value="normal">Balanced</option><option value="compact">Compact</option><option value="spacious">Spacious</option></select></div><div class="custom-style-field"><label for="customRadius">Card corners</label><select id="customRadius"><option value="default">Theme default</option><option value="soft">Soft</option><option value="sharp">Sharp</option></select></div></div><div class="custom-style-actions"><button id="resetCustomStyle" type="button" class="btn ghost">Reset customization</button></div><div class="custom-style-help">These settings are saved inside the card, so the published viewer sees the same design.</div></div></div>
         <div class="actions"><button id="createBtn" class="btn primary" type="button">Create share link</button><button id="clearBtn" class="btn ghost" type="button">Clear form</button></div><div id="formStatus" class="status"></div>
       </div>
     </section>
@@ -752,17 +783,73 @@ function backAction(){if($("formStep").classList.contains("active")){showTypeSte
 function updateBackButton(){$("builderBack").textContent=$("formStep").classList.contains("active")?"← Card types":"← Home"}
 function clearDynamicValues(){document.querySelectorAll("#dynamicForm [data-key]").forEach(e=>{e.value=""})}
 function formFieldId(k){return "f_"+k}
+
+function sanitizeAppearance(a={}){
+  const p=(a&&typeof a==='object')?a:{};
+  const hex=/^#[0-9a-fA-F]{6}$/;
+  return {
+    accent:hex.test(String(p.accent||''))?String(p.accent).toLowerCase():'#536dfe',
+    font:['system','serif','rounded','mono'].includes(p.font)?p.font:'system',
+    density:['normal','compact','spacious'].includes(p.density)?p.density:'normal',
+    radius:['default','soft','sharp'].includes(p.radius)?p.radius:'default'
+  };
+}
+function currentAppearance(prefill={}){
+  return sanitizeAppearance(prefill?prefill._appearance||prefill.appearance||{}:{});
+}
+function readAppearance(){
+  return sanitizeAppearance({
+    accent:$('customAccent')?.value||'#536dfe',
+    font:$('customFont')?.value||'system',
+    density:$('customDensity')?.value||'normal',
+    radius:$('customRadius')?.value||'default'
+  });
+}
+function applyAppearanceControls(a={}){
+  const p=sanitizeAppearance(a);
+  if($('customAccent'))$('customAccent').value=p.accent;
+  if($('customFont'))$('customFont').value=p.font;
+  if($('customDensity'))$('customDensity').value=p.density;
+  if($('customRadius'))$('customRadius').value=p.radius;
+}
+function appearanceClasses(a={}){
+  const p=sanitizeAppearance(a);
+  return ['zc-customized','zc-font-'+p.font,'zc-density-'+p.density,'zc-radius-'+p.radius].join(' ');
+}
+function applyCardAppearance(el,c={}){
+  if(!el)return;
+  const p=sanitizeAppearance(c._appearance||c.appearance||{});
+  el.style.setProperty('--zc-accent',p.accent);
+  el.classList.remove('zc-customized','zc-font-system','zc-font-serif','zc-font-rounded','zc-font-mono','zc-density-normal','zc-density-compact','zc-density-spacious','zc-radius-default','zc-radius-soft','zc-radius-sharp');
+  el.classList.add(...appearanceClasses(p).split(' '));
+}
+function buildAppearanceControls(prefill={}){
+  const panel=$('customStylePanel');
+  if(!panel)return;
+  applyAppearanceControls(currentAppearance(prefill));
+  if(panel.dataset.bound==='1')return;
+  panel.dataset.bound='1';
+  ['customAccent','customFont','customDensity','customRadius'].forEach(id=>{
+    $(id)?.addEventListener('input',()=>updatePreview());
+    $(id)?.addEventListener('change',()=>updatePreview());
+  });
+  $('resetCustomStyle')?.addEventListener('click',()=>{
+    applyAppearanceControls({});
+    updatePreview();
+  });
+}
+
 function renderForm(prefill={}){
   const t=TYPES[selectedType];const schema=SCHEMAS[selectedType];let html='<div class="field-grid">';
   schema.forEach(([k,label,placeholder,type="text",required=false,full=false])=>{const id=formFieldId(k);const val=escapeHtml(prefill[k]??"");const req=required?'<span class="req">Required</span>':'';const attrs='id="'+id+'" data-key="'+k+'" '+(required?'required ':'');const control=type==="textarea"?'<textarea '+attrs+' placeholder="'+escapeHtml(placeholder)+'">'+val+'</textarea>':'<input '+attrs+' type="'+type+'" value="'+val+'" placeholder="'+escapeHtml(placeholder)+'">';html+='<div class="field '+(full?'full':'')+'"><div class="field-label"><label for="'+id+'">'+escapeHtml(label)+'</label>'+req+'</div>'+control;if(k==="username")html+='<div class="help">3–30 lowercase letters, numbers and hyphens.</div><div id="userStatus" class="status"></div>';if(k==="ar_model_url")html+='<div class="help">Optional. Adds interactive 3D/AR when a compatible model is available.</div>';if(k==="ar_usdz_url")html+='<div class="help">Optional iPhone/iPad AR model.</div>';html+='</div>'});html+='</div>';$('dynamicForm').innerHTML=html;
   document.querySelectorAll('#dynamicForm [data-key]').forEach(el=>el.addEventListener('input',()=>updatePreview()));
   $("visualSection").classList.toggle("hidden",!t.photo);$("styleSection").classList.toggle("hidden",!t.theme);
   if(t.photo){$("visualHint").textContent=selectedType==="product"?"Add the main product image.":selectedType==="property"?"Add the main property image.":selectedType==="wedding"?"Add a couple or invitation image.":selectedType==="identity"?"Add the ID photo.":"Add your profile photo or logo."}
-  buildThemeButtons();renderIdentityPreview();mountThreeDStudio(prefill);mountCatalogStudio(prefill);
+  buildThemeButtons();buildAppearanceControls(prefill);renderIdentityPreview();mountThreeDStudio(prefill);mountCatalogStudio(prefill);
 }
 async function checkUser(v){const u=uname(v);if(!u){msg("userStatus","");return}if(!validUsername(u)){msg("userStatus","Use 3–30 lowercase letters, numbers or hyphens.",true);return}if(!initDb()){msg("userStatus","Database unavailable.",true);return}const r=await db.from("profiles").select("username").eq("username",u).maybeSingle();if(r.error){msg("userStatus","Could not check username.",true);return}msg("userStatus",r.data?"Username already taken":"✓ Username available",!!r.data)}
 function buildThemeButtons(){const el=$("styleGrid");el.innerHTML=[["midnight","Midnight","Bold & modern"],["ocean","Ocean","Fresh & clean"],["forest","Forest","Calm & natural"],["sunset","Sunset","Warm & creative"]].map(([k,n,s])=>'<button type="button" class="theme-btn '+(mainTheme===k?'selected':'')+'" data-theme="'+k+'"><div class="theme-swatch '+k+'"><b style="font-size:12px">'+n+'</b></div><div class="theme-name">'+n+'</div><div class="theme-sub">'+s+'</div><span class="theme-mark">✓</span></button>').join("");el.onclick=e=>{const b=e.target.closest(".theme-btn");if(!b)return;mainTheme=safeTheme(b.dataset.theme);document.querySelectorAll(".theme-btn").forEach(x=>x.classList.toggle("selected",x===b));updatePreview()}}
-function values(){const o={};document.querySelectorAll('#dynamicForm [data-key]').forEach(el=>o[el.dataset.key]=clean(el.value));return o}
+function values(){const o={};document.querySelectorAll('#dynamicForm [data-key]').forEach(el=>o[el.dataset.key]=clean(el.value));o._appearance=readAppearance();return o}
 function baseProfile(c){
   if(selectedType==="visiting"||selectedType==="identity")return {name:c.name||"",job_title:c.job_title||c.designation||"",company:c.company||c.organization||"",phone:c.phone||"",email:c.email||"",bio:c.bio||""};
   if(selectedType==="menu")return {name:c.restaurant_name||"",job_title:"",company:c.restaurant_name||"",phone:c.phone||"",email:c.email||"",bio:c.description||c.tagline||""};
@@ -1022,7 +1109,7 @@ function setupPublicCatalog(c){
   renderPublicCatalogItems(c);
 }
 
-function updatePreview(){if(!selectedType)return;const c=values();let photo=imageObjectUrl||"";const el=$("mainCard");el.className="card-preview card-"+selectedType+" theme-"+themeClass()+(TYPES[selectedType].theme?" recolorable":"");el.innerHTML=renderCardMarkup(selectedType,c,photo);if((selectedType==="product"||selectedType==="property")&&c.ar_model_url){el.innerHTML+='<div class="public-ar"><model-viewer class="ar-viewer" src="'+escapeHtml(c.ar_model_url)+'" ar ar-modes="webxr scene-viewer quick-look" camera-controls auto-rotate alt="Interactive 3D experience"><button slot="ar-button" class="ar-action">View in your space</button></model-viewer></div>'}if(selectedType==="catalog"){const wrap=$("mainCard").querySelector("#publicCatalog");if(wrap){const run=()=>{const c2=values();renderPublicCatalogItems(c2)};$("mainCard").querySelector("#publicCatalogSearchBtn")?.addEventListener("click",run);$("mainCard").querySelector("#publicCatalogSearch")?.addEventListener("keydown",e=>{if(e.key==="Enter")run()});}}}
+function updatePreview(){if(!selectedType)return;const c=values();let photo=imageObjectUrl||"";const el=$("mainCard");el.className="card-preview card-"+selectedType+" theme-"+themeClass()+(TYPES[selectedType].theme?" recolorable":"");applyCardAppearance(el,c);el.innerHTML=renderCardMarkup(selectedType,c,photo);if((selectedType==="product"||selectedType==="property")&&c.ar_model_url){el.innerHTML+='<div class="public-ar"><model-viewer class="ar-viewer" src="'+escapeHtml(c.ar_model_url)+'" ar ar-modes="webxr scene-viewer quick-look" camera-controls auto-rotate alt="Interactive 3D experience"><button slot="ar-button" class="ar-action">View in your space</button></model-viewer></div>'}if(selectedType==="catalog"){const wrap=$("mainCard").querySelector("#publicCatalog");if(wrap){const run=()=>{const c2=values();renderPublicCatalogItems(c2)};$("mainCard").querySelector("#publicCatalogSearchBtn")?.addEventListener("click",run);$("mainCard").querySelector("#publicCatalogSearch")?.addEventListener("keydown",e=>{if(e.key==="Enter")run()});}}}
 function experienceData(profile){const content=profile.card_data||{};return {...content}}
 function normalizedProfile(p){const q={...p};q.card_type=TYPES[p.card_type]?p.card_type:"visiting";q.card_data=q.card_data||{};q.theme=safeTheme(p.theme);q.avatar_url=p.avatar_url||"";q.ar_model_url=p.ar_model_url||q.card_data.ar_model_url||"";q.ar_usdz_url=p.ar_usdz_url||q.card_data.ar_usdz_url||"";q.model_name=p.model_name||q.card_data.model_name||"";q.model_scale=Number(p.model_scale||q.card_data.model_scale||100);q.hotspots=p.hotspots||q.card_data.hotspots||[];return q}
 async function findAvailableUsername(base){
@@ -1102,6 +1189,7 @@ async function uploadImage(file,u){if(file.size>5*1024*1024)throw new Error("Ima
 function openBuilder(){
   if(!authUser){openAuth("signup");return}
   showBuilder();
+  applyAppearanceControls({});
   if(typeof modelObjectUrl!=="undefined"&&modelObjectUrl)URL.revokeObjectURL(modelObjectUrl);
   if(typeof modelObjectUrl!=="undefined")modelObjectUrl="";
   if(typeof modelFile!=="undefined")modelFile=null;
@@ -1134,6 +1222,7 @@ async function copyQr(){if(!currentProfile)return;const data=getQrDataUrl();if(!
 function renderPublicCard(p){
   const el=$("sharedCard");const c=experienceData(p);const photo=(p.avatar_url&&p.avatar_url.startsWith("http"))?p.avatar_url:"";
   el.className="card-preview card-"+p.card_type+" theme-"+safeTheme(p.theme)+(TYPES[p.card_type].theme?" recolorable":"");
+  applyCardAppearance(el,c);
   el.innerHTML=renderCardMarkup(p.card_type,c,photo);if(p.card_type==="catalog")setupPublicCatalog(c);
   if((p.card_type==="product"||p.card_type==="property")&&p.ar_model_url){
     const box=document.createElement("div");box.className="public-ar";
