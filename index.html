@@ -1,4 +1,4 @@
-<!-- ZetaCard v38: Social Links + Contact CTA Bar -->
+<!-- ZetaCard v39: Testimonials + Social Proof -->
 <!-- ZetaCard v37: Mini Website / Public Profile Sections -->
 <!-- ZetaCard v34: Smart Sharing + Contact Save + QR Tools -->
 <!-- ZetaCard v36: AI Card Assistant -->
@@ -295,6 +295,15 @@ button:disabled{cursor:not-allowed;opacity:.55}
 @media(max-width:700px){.custom-style-grid{grid-template-columns:1fr}}
 
 
+/* v39 testimonials + social proof */
+.testimonial-studio{margin-top:14px;padding:15px;border:1px solid #dfe6f0;border-radius:20px;background:linear-gradient(180deg,#fffdf9,#f8f9fc)}
+.testimonial-studio-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.testimonial-studio h3{margin:0;font-size:15px}.testimonial-studio p{margin:4px 0 0;color:var(--muted);font-size:10px;line-height:1.5}
+.testimonial-items{display:grid;gap:9px;margin-top:11px}.testimonial-item{padding:11px;border:1px solid #dbe3ee;border-radius:15px;background:#fff}.testimonial-item-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.testimonial-item-head strong{font-size:11px}
+.testimonial-item-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.testimonial-item-grid .full{grid-column:1/-1}.testimonial-item-grid input,.testimonial-item-grid textarea,.testimonial-item-grid select{width:100%;padding:9px 10px;border:1px solid #ccd7e6;border-radius:10px;background:#fbfcfe;outline:none;font:inherit;font-size:11px}.testimonial-item-grid textarea{min-height:78px;resize:vertical}.testimonial-item-grid input:focus,.testimonial-item-grid textarea:focus,.testimonial-item-grid select:focus{border-color:var(--brand);box-shadow:0 0 0 4px #536dfe12;background:#fff}
+.testimonial-add{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}.testimonial-empty{padding:13px;text-align:center;color:var(--muted);font-size:10px;border:1px dashed #c7d2e3;border-radius:12px}.testimonial-help{margin-top:8px;color:var(--muted);font-size:10px;line-height:1.45}
+.public-testimonials{width:100%;margin-top:14px;display:grid;gap:10px}.testimonial-card{position:relative;padding:15px 16px 14px;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 10px 28px #27364d0a;overflow:hidden}.testimonial-card::before{content:"“";position:absolute;right:12px;top:-4px;font-size:56px;font-weight:950;line-height:1;color:var(--zc-accent,#536dfe);opacity:.1}.testimonial-stars{letter-spacing:2px;font-size:13px;color:var(--zc-accent,#536dfe)}.testimonial-text{margin:9px 0 0;color:#4f5b74;font-size:11px;line-height:1.65;white-space:pre-line}.testimonial-person{display:flex;align-items:center;gap:9px;margin-top:12px;padding-top:10px;border-top:1px solid #edf1f6}.testimonial-avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--zc-accent,#536dfe) 13%,#fff);color:var(--zc-accent,#536dfe);font-size:10px;font-weight:950}.testimonial-person strong{display:block;font-size:11px}.testimonial-person span{display:block;margin-top:2px;color:var(--muted);font-size:9px}.testimonial-badge{display:inline-flex;margin-left:6px;padding:3px 6px;border-radius:999px;background:#eef7f1;color:#2b7a4d;font-size:7px;font-weight:950;text-transform:uppercase;letter-spacing:.05em;vertical-align:middle}.testimonial-card.zc-radius-soft{border-radius:21px}.testimonial-card.zc-radius-sharp{border-radius:9px}.public-testimonials.zc-font-system{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}.public-testimonials.zc-font-serif{font-family:Georgia,"Times New Roman",serif}.public-testimonials.zc-font-rounded{font-family:"Trebuchet MS",Inter,system-ui,sans-serif}.public-testimonials.zc-font-mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}.public-testimonials.zc-density-compact .testimonial-card{padding:12px 13px}.public-testimonials.zc-density-spacious .testimonial-card{padding:18px 19px}
+@media(max-width:700px){.testimonial-item-grid{grid-template-columns:1fr}.testimonial-item-grid .full{grid-column:auto}}
+
 /* v38 social links + contact CTA bar */
 .social-studio{margin-top:14px;padding:15px;border:1px solid #dfe6f0;border-radius:20px;background:linear-gradient(180deg,#fbfcff,#f6f8fc)}
 .social-studio-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.social-studio h3{margin:0;font-size:15px}.social-studio p{margin:4px 0 0;color:var(--muted);font-size:10px;line-height:1.5}
@@ -452,7 +461,7 @@ button:disabled{cursor:not-allowed;opacity:.55}
         <div class="actions"><button id="createBtn" class="btn primary" type="button">Create share link</button><button id="clearBtn" class="btn ghost" type="button">Clear form</button></div><div id="formStatus" class="status"></div>
       </div>
     </section>
-    <aside id="previewBox" class="preview-box"><h2>Live preview</h2><div id="mainCard" class="card-preview card-visiting theme-midnight"></div><div id="mainSocialLinks" class="public-social" style="display:none"></div><div id="mainShowcaseSections" class="public-showcase" style="display:none"></div><div class="preview-note">The preview uses the actual selected card type and updates as you fill the form.</div></aside>
+    <aside id="previewBox" class="preview-box"><h2>Live preview</h2><div id="mainCard" class="card-preview card-visiting theme-midnight"></div><div id="mainSocialLinks" class="public-social" style="display:none"></div><div id="mainShowcaseSections" class="public-showcase" style="display:none"></div><div id="mainTestimonials" class="public-testimonials" style="display:none"></div><div class="preview-note">The preview uses the actual selected card type and updates as you fill the form.</div></aside>
   </div>
 </main>
 
@@ -482,7 +491,7 @@ button:disabled{cursor:not-allowed;opacity:.55}
     <div id="sharedError" class="status error"></div>
     <div class="shared-layout"><div id="sharedCard" class="card-preview card-visiting theme-midnight"></div><div class="qr-box"><strong>Scan to open</strong><div id="qr" class="qr"></div></div></div>
     <div class="shared-actions"><button id="copyLinkBtn" class="btn primary" type="button">Copy link</button><button id="shareBtn" class="btn ghost" type="button">Share</button><button id="saveContactBtn" class="btn ghost" type="button">Save contact</button><button id="createOwnBtn" class="btn secondary" type="button">Create your own card</button></div>
-    <div id="publicSocialLinks" class="public-social" style="display:none"></div><div id="publicShowcaseSections" class="public-showcase" style="display:none"></div>
+    <div id="publicSocialLinks" class="public-social" style="display:none"></div><div id="publicShowcaseSections" class="public-showcase" style="display:none"></div><div id="publicTestimonials" class="public-testimonials" style="display:none"></div>
     <div id="shareMenu" class="share-menu" aria-hidden="true">
       <div class="share-menu-head"><div><strong>Share this ZetaCard</strong><span>Choose a sharing method.</span></div><button id="closeShareMenu" class="btn ghost" type="button" style="padding:7px 9px">Close</button></div>
       <div class="share-options">
@@ -527,7 +536,7 @@ const SUPABASE_URL="https://sojuhiuydumpouknkmat.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_--O6hnERwb8RwEa-VFHnUw_SRUE54C-";
 const SITE_BASE="/";
 const dbClient=()=>window.supabase&&window.supabase.createClient?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY):null;
-let db=null,currentProfile=null,selectedType="",ownerSession=false,editToken="",mainTheme="midnight",imageFile=null,imageObjectUrl=null,createBusy=false,editing=false,authUser=null,authBusy=false,authEmailMode="signup",dashboardLeads=[],dashboardMode="cards",openedFromDashboard=false,leadDueOnly=false,leadSummary=null,showcaseSections=[],socialLinks=[];
+let db=null,currentProfile=null,selectedType="",ownerSession=false,editToken="",mainTheme="midnight",imageFile=null,imageObjectUrl=null,createBusy=false,editing=false,authUser=null,authBusy=false,authEmailMode="signup",dashboardLeads=[],dashboardMode="cards",openedFromDashboard=false,leadDueOnly=false,leadSummary=null,showcaseSections=[],socialLinks=[],testimonials=[];
 const $=id=>document.getElementById(id);
 const escapeHtml=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 const clean=v=>String(v??"").trim();
@@ -973,6 +982,50 @@ function renderSocialEditor(){
   syncSocialField();syncSocialPreview();
 }
 function socialFieldChanged(e){const card=e.target.closest('.social-item');if(!card)return;const i=Number(card.dataset.sli);socialLinks[i][e.target.dataset.socialKey]=e.target.value;socialLinks=sanitizeSocialLinks(socialLinks);syncSocialField();syncSocialPreview()}
+function sanitizeTestimonials(raw){
+  const arr=Array.isArray(raw)?raw:[];
+  return arr.slice(0,6).map(x=>({
+    author:clean(x?.author).slice(0,80),
+    role:clean(x?.role).slice(0,100),
+    text:clean(x?.text).slice(0,700),
+    rating:Math.max(1,Math.min(5,Number(x?.rating)||5)),
+    featured:x?.featured===true
+  })).filter(x=>x.author||x.role||x.text);
+}
+function testimonialStars(rating){const n=Math.max(1,Math.min(5,Number(rating)||5));return '★'.repeat(n)+'☆'.repeat(5-n)}
+function syncTestimonialsField(){const el=$("testimonialsField");if(el)el.value=JSON.stringify(sanitizeTestimonials(testimonials))}
+function renderTestimonials(container,items,appearance={},builder=false){
+  if(!container)return;
+  const list=sanitizeTestimonials(items);container.innerHTML="";
+  if(!list.length){container.style.display=builder?'block':'none';if(builder)container.innerHTML='<div class="testimonial-empty">No testimonials yet. Add customer feedback or social proof here.</div>';return}
+  container.style.display='grid';
+  const a=sanitizeAppearance(appearance);container.style.setProperty('--zc-accent',a.accent);container.className='public-testimonials zc-font-'+a.font+' zc-density-'+a.density;
+  list.forEach(item=>{
+    const card=document.createElement('article');card.className='testimonial-card zc-radius-'+a.radius;
+    const author=item.author||'Customer';const initials=author.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'C';
+    const badge=item.featured?'<span class="testimonial-badge">Featured</span>':'';
+    card.innerHTML='<div class="testimonial-stars" aria-label="'+item.rating+' out of 5 stars">'+testimonialStars(item.rating)+'</div>'+(item.text?'<div class="testimonial-text">'+escapeHtml(item.text)+'</div>':'')+'<div class="testimonial-person"><div class="testimonial-avatar">'+escapeHtml(initials)+'</div><div><strong>'+escapeHtml(author)+badge+'</strong>'+(item.role?'<span>'+escapeHtml(item.role)+'</span>':'')+'</div></div>';
+    container.appendChild(card);
+  });
+}
+function syncTestimonialsPreview(){renderTestimonials($("mainTestimonials"),testimonials,readAppearance(),true)}
+function mountTestimonialsStudio(prefill={}){
+  const old=$("testimonialStudio");if(old)old.remove();
+  testimonials=sanitizeTestimonials(prefill.testimonials||[]);
+  const wrap=document.createElement('div');wrap.innerHTML='<div id="testimonialStudio" class="testimonial-studio"><div class="testimonial-studio-head"><div><h3>⭐ Testimonials + social proof</h3><p>Show real customer feedback on your public card. Up to 6 testimonials, each with a 1–5 star rating.</p></div><span class="pill">Up to 6</span></div><input id="testimonialsField" type="hidden" data-key="testimonials"><div id="testimonialItems" class="testimonial-items"></div><div class="testimonial-add"><button id="addTestimonial" class="btn secondary" type="button">+ Add testimonial</button><button id="clearTestimonials" class="btn ghost" type="button">Clear testimonials</button></div><div class="testimonial-help">Use only genuine feedback you are permitted to publish. “Featured” is a presentation label, not an independent verification by ZetaCard.</div></div>';$('dynamicForm').appendChild(wrap.firstElementChild);renderTestimonialEditor();
+}
+function renderTestimonialEditor(){
+  const box=$("testimonialItems");if(!box)return;
+  if(!testimonials.length){box.innerHTML='<div class="testimonial-empty">No testimonials added yet.</div>'}else{
+    box.innerHTML=testimonials.map((x,i)=>'<div class="testimonial-item" data-ti="'+i+'"><div class="testimonial-item-head"><strong>Testimonial '+(i+1)+'</strong><button type="button" class="btn ghost remove-testimonial" data-ti="'+i+'">Remove</button></div><div class="testimonial-item-grid"><input data-testimonial-key="author" value="'+escapeHtml(x.author)+'" placeholder="Customer name"><input data-testimonial-key="role" value="'+escapeHtml(x.role)+'" placeholder="Role / company (optional)"><select data-testimonial-key="rating"><option value="5" '+(x.rating===5?'selected':'')+'>★★★★★ · 5</option><option value="4" '+(x.rating===4?'selected':'')+'>★★★★☆ · 4</option><option value="3" '+(x.rating===3?'selected':'')+'>★★★☆☆ · 3</option><option value="2" '+(x.rating===2?'selected':'')+'>★★☆☆☆ · 2</option><option value="1" '+(x.rating===1?'selected':'')+'>★☆☆☆☆ · 1</option></select><label style="display:flex;align-items:center;gap:7px;font-size:10px;font-weight:850"><input type="checkbox" data-testimonial-key="featured" '+(x.featured?'checked':'')+'> Featured</label><textarea class="full" maxlength="700" data-testimonial-key="text" placeholder="Customer feedback...">'+escapeHtml(x.text)+'</textarea></div></div>').join('');
+  }
+  box.querySelectorAll('[data-testimonial-key]').forEach(el=>{el.addEventListener('input',testimonialFieldChanged);el.addEventListener('change',testimonialFieldChanged)});
+  box.querySelectorAll('.remove-testimonial').forEach(b=>b.addEventListener('click',()=>{testimonials.splice(Number(b.dataset.ti),1);renderTestimonialEditor();syncTestimonialsField();syncTestimonialsPreview()}));
+  $("addTestimonial")?.addEventListener('click',()=>{if(testimonials.length>=6){msg('formStatus','You can add up to 6 testimonials.',true);return}testimonials.push({author:'Happy customer',role:'',text:'Share a genuine customer experience here.',rating:5,featured:false});renderTestimonialEditor();syncTestimonialsField();syncTestimonialsPreview()});
+  $("clearTestimonials")?.addEventListener('click',()=>{testimonials=[];renderTestimonialEditor();syncTestimonialsField();syncTestimonialsPreview()});
+  syncTestimonialsField();syncTestimonialsPreview();
+}
+function testimonialFieldChanged(e){const card=e.target.closest('.testimonial-item');if(!card)return;const i=Number(card.dataset.ti),key=e.target.dataset.testimonialKey;testimonials[i][key]=key==='featured'?!!e.target.checked:key==='rating'?Number(e.target.value)||5:e.target.value;testimonials=sanitizeTestimonials(testimonials);syncTestimonialsField();syncTestimonialsPreview()}
 function showcaseTypeLabel(t){return ({about:'About',services:'Services',portfolio:'Portfolio',links:'Link',custom:'Custom'})[t]||'Custom'}
 function syncShowcaseField(){const el=$("showcaseSectionsField");if(el)el.value=JSON.stringify(sanitizeShowcaseSections(showcaseSections))}
 function renderShowcaseSections(container,sections,appearance={},builder=false){
@@ -1009,11 +1062,11 @@ function renderForm(prefill={}){
   document.querySelectorAll('#dynamicForm [data-key]').forEach(el=>el.addEventListener('input',()=>updatePreview()));
   $("visualSection").classList.toggle("hidden",!t.photo);$("styleSection").classList.toggle("hidden",!t.theme);
   if(t.photo){$("visualHint").textContent=selectedType==="product"?"Add the main product image.":selectedType==="property"?"Add the main property image.":selectedType==="wedding"?"Add a couple or invitation image.":selectedType==="identity"?"Add the ID photo.":"Add your profile photo or logo."}
-  buildThemeButtons();buildAppearanceControls(prefill);renderIdentityPreview();mountThreeDStudio(prefill);mountCatalogStudio(prefill);mountShowcaseStudio(prefill);mountSocialStudio(prefill);
+  buildThemeButtons();buildAppearanceControls(prefill);renderIdentityPreview();mountThreeDStudio(prefill);mountCatalogStudio(prefill);mountShowcaseStudio(prefill);mountSocialStudio(prefill);mountTestimonialsStudio(prefill);
 }
 async function checkUser(v){const u=uname(v);if(!u){msg("userStatus","");return}if(!validUsername(u)){msg("userStatus","Use 3–30 lowercase letters, numbers or hyphens.",true);return}if(!initDb()){msg("userStatus","Database unavailable.",true);return}const r=await db.from("profiles").select("username").eq("username",u).maybeSingle();if(r.error){msg("userStatus","Could not check username.",true);return}msg("userStatus",r.data?"Username already taken":"✓ Username available",!!r.data)}
 function buildThemeButtons(){const el=$("styleGrid");el.innerHTML=[["midnight","Midnight","Bold & modern"],["ocean","Ocean","Fresh & clean"],["forest","Forest","Calm & natural"],["sunset","Sunset","Warm & creative"]].map(([k,n,s])=>'<button type="button" class="theme-btn '+(mainTheme===k?'selected':'')+'" data-theme="'+k+'"><div class="theme-swatch '+k+'"><b style="font-size:12px">'+n+'</b></div><div class="theme-name">'+n+'</div><div class="theme-sub">'+s+'</div><span class="theme-mark">✓</span></button>').join("");el.onclick=e=>{const b=e.target.closest(".theme-btn");if(!b)return;mainTheme=safeTheme(b.dataset.theme);document.querySelectorAll(".theme-btn").forEach(x=>x.classList.toggle("selected",x===b));updatePreview()}}
-function values(){const o={};document.querySelectorAll('#dynamicForm [data-key]').forEach(el=>{if(el.dataset.key!=='showcase_sections')o[el.dataset.key]=clean(el.value)});o._appearance=readAppearance();o.showcase_sections=sanitizeShowcaseSections(showcaseSections);o.social_links=sanitizeSocialLinks(socialLinks);return o}
+function values(){const o={};document.querySelectorAll('#dynamicForm [data-key]').forEach(el=>{if(el.dataset.key!=='showcase_sections')o[el.dataset.key]=clean(el.value)});o._appearance=readAppearance();o.showcase_sections=sanitizeShowcaseSections(showcaseSections);o.social_links=sanitizeSocialLinks(socialLinks);o.testimonials=sanitizeTestimonials(testimonials);return o}
 function baseProfile(c){
   if(selectedType==="visiting"||selectedType==="identity")return {name:c.name||"",job_title:c.job_title||c.designation||"",company:c.company||c.organization||"",phone:c.phone||"",email:c.email||"",bio:c.bio||""};
   if(selectedType==="menu")return {name:c.restaurant_name||"",job_title:"",company:c.restaurant_name||"",phone:c.phone||"",email:c.email||"",bio:c.description||c.tagline||""};
@@ -1273,7 +1326,7 @@ function setupPublicCatalog(c){
   renderPublicCatalogItems(c);
 }
 
-function updatePreview(){if(!selectedType)return;const c=values();let photo=imageObjectUrl||"";const el=$("mainCard");el.className="card-preview card-"+selectedType+" theme-"+themeClass()+(TYPES[selectedType].theme?" recolorable":"");applyCardAppearance(el,c);el.innerHTML=renderCardMarkup(selectedType,c,photo);renderSocialLinks($("mainSocialLinks"),c.social_links||[],c._appearance||readAppearance(),false);renderShowcaseSections($("mainShowcaseSections"),c.showcase_sections||[],c._appearance||readAppearance(),true);if((selectedType==="product"||selectedType==="property")&&c.ar_model_url){el.innerHTML+='<div class="public-ar"><model-viewer class="ar-viewer" src="'+escapeHtml(c.ar_model_url)+'" ar ar-modes="webxr scene-viewer quick-look" camera-controls auto-rotate alt="Interactive 3D experience"><button slot="ar-button" class="ar-action">View in your space</button></model-viewer></div>'}if(selectedType==="catalog"){const wrap=$("mainCard").querySelector("#publicCatalog");if(wrap){const run=()=>{const c2=values();renderPublicCatalogItems(c2)};$("mainCard").querySelector("#publicCatalogSearchBtn")?.addEventListener("click",run);$("mainCard").querySelector("#publicCatalogSearch")?.addEventListener("keydown",e=>{if(e.key==="Enter")run()});}}}
+function updatePreview(){if(!selectedType)return;const c=values();let photo=imageObjectUrl||"";const el=$("mainCard");el.className="card-preview card-"+selectedType+" theme-"+themeClass()+(TYPES[selectedType].theme?" recolorable":"");applyCardAppearance(el,c);el.innerHTML=renderCardMarkup(selectedType,c,photo);renderSocialLinks($("mainSocialLinks"),c.social_links||[],c._appearance||readAppearance(),false);renderShowcaseSections($("mainShowcaseSections"),c.showcase_sections||[],c._appearance||readAppearance(),true);renderTestimonials($("mainTestimonials"),c.testimonials||[],c._appearance||readAppearance(),true);if((selectedType==="product"||selectedType==="property")&&c.ar_model_url){el.innerHTML+='<div class="public-ar"><model-viewer class="ar-viewer" src="'+escapeHtml(c.ar_model_url)+'" ar ar-modes="webxr scene-viewer quick-look" camera-controls auto-rotate alt="Interactive 3D experience"><button slot="ar-button" class="ar-action">View in your space</button></model-viewer></div>'}if(selectedType==="catalog"){const wrap=$("mainCard").querySelector("#publicCatalog");if(wrap){const run=()=>{const c2=values();renderPublicCatalogItems(c2)};$("mainCard").querySelector("#publicCatalogSearchBtn")?.addEventListener("click",run);$("mainCard").querySelector("#publicCatalogSearch")?.addEventListener("keydown",e=>{if(e.key==="Enter")run()});}}}
 function experienceData(profile){const content=profile.card_data||{};return {...content}}
 function normalizedProfile(p){const q={...p};q.card_type=TYPES[p.card_type]?p.card_type:"visiting";q.card_data=q.card_data||{};q.theme=safeTheme(p.theme);q.avatar_url=p.avatar_url||"";q.ar_model_url=p.ar_model_url||q.card_data.ar_model_url||"";q.ar_usdz_url=p.ar_usdz_url||q.card_data.ar_usdz_url||"";q.model_name=p.model_name||q.card_data.model_name||"";q.model_scale=Number(p.model_scale||q.card_data.model_scale||100);q.hotspots=p.hotspots||q.card_data.hotspots||[];return q}
 async function findAvailableUsername(base){
@@ -1359,12 +1412,12 @@ function openBuilder(){
   if(typeof modelFile!=="undefined")modelFile=null;
   if(typeof threeDHotspots!=="undefined")threeDHotspots=[];
   if(typeof threeDScale!=="undefined")threeDScale=2.8;
-  selectedType="";mainTheme="midnight";currentProfile=null;ownerSession=false;editToken="";editing=false;showcaseSections=[];socialLinks=[];
+  selectedType="";mainTheme="midnight";currentProfile=null;ownerSession=false;editToken="";editing=false;showcaseSections=[];socialLinks=[];testimonials=[];
   $("typeStatus").textContent="";$("continueBtn").disabled=true;$("typePill").textContent="Choose a type";
   document.querySelectorAll(".type-option").forEach(b=>b.classList.remove("selected"));
   $("dynamicForm").innerHTML="";$("previewBox").style.display="none";$("aiWorkspace").style.display="none";$("aiPlan").classList.remove("show");$("aiPrompt").value="";$("aiStatus").textContent="";showModeStep()
 }
-function clearForm(){const keepType=selectedType;const keepTheme="midnight";showcaseSections=[];socialLinks=[];renderForm();mainTheme=keepTheme;$("theme").value=keepTheme;clearImage();msg("formStatus","");updatePreview();if(keepType){$("builder").scrollIntoView({block:"start"})}}
+function clearForm(){const keepType=selectedType;const keepTheme="midnight";showcaseSections=[];socialLinks=[];testimonials=[];renderForm();mainTheme=keepTheme;$("theme").value=keepTheme;clearImage();msg("formStatus","");updatePreview();if(keepType){$("builder").scrollIntoView({block:"start"})}}
 function getCurrentCardUrl(){return currentProfile?profileUrl(currentProfile.username):location.href}
 function toggleShareMenu(force){const menu=$("shareMenu");if(!menu)return;const next=typeof force==="boolean"?force:!menu.classList.contains("show");menu.classList.toggle("show",next);menu.setAttribute("aria-hidden",next?"false":"true")}
 async function trackShareEvent(type){if(!currentProfile)return;await recordEvent(currentProfile.username,type)}
@@ -1387,7 +1440,7 @@ function renderPublicCard(p){
   const el=$("sharedCard");const c=experienceData(p);const photo=(p.avatar_url&&p.avatar_url.startsWith("http"))?p.avatar_url:"";
   el.className="card-preview card-"+p.card_type+" theme-"+safeTheme(p.theme)+(TYPES[p.card_type].theme?" recolorable":"");
   applyCardAppearance(el,c);
-  el.innerHTML=renderCardMarkup(p.card_type,c,photo);renderSocialLinks($("publicSocialLinks"),c.social_links||[],c._appearance||{},true);renderShowcaseSections($("publicShowcaseSections"),c.showcase_sections||[],c._appearance||{},false);if(p.card_type==="catalog")setupPublicCatalog(c);
+  el.innerHTML=renderCardMarkup(p.card_type,c,photo);renderSocialLinks($("publicSocialLinks"),c.social_links||[],c._appearance||{},true);renderShowcaseSections($("publicShowcaseSections"),c.showcase_sections||[],c._appearance||{},false);renderTestimonials($("publicTestimonials"),c.testimonials||[],c._appearance||{},false);if(p.card_type==="catalog")setupPublicCatalog(c);
   if((p.card_type==="product"||p.card_type==="property")&&p.ar_model_url){
     const box=document.createElement("div");box.className="public-ar";
     const v=document.createElement("model-viewer");v.className="ar-viewer";v.setAttribute("camera-controls","");v.setAttribute("auto-rotate","");v.setAttribute("ar","");v.setAttribute("ar-modes","webxr scene-viewer quick-look");v.setAttribute("shadow-intensity","1");v.setAttribute("exposure","1");v.setAttribute("alt","Interactive 3D experience");v.src=p.ar_model_url;
