@@ -1,3 +1,4 @@
+<!-- ZetaCard v34: Smart Sharing + Contact Save + QR Tools -->
 <!-- ZetaCard v27: Account Dashboard + Multiple Cards -->
 <!-- ZetaCard v26: Supabase Auth required before new card creation; username field removed -->
 <!-- ZetaCard v24.1: no-key smart copy -->
@@ -241,6 +242,24 @@ button:disabled{cursor:not-allowed;opacity:.55}
 .viewer-back-row{display:flex;justify-content:flex-start;margin-bottom:10px}
 .viewer-back-row .nav-btn{min-width:150px}
 
+
+/* ZetaCard v34 — Smart sharing + QR + contact tools */
+.share-menu{display:none;position:relative;margin-top:9px;padding:12px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 16px 40px #27364d14}
+.share-menu.show{display:block}
+.share-menu-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+.share-menu-head strong{font-size:12px}.share-menu-head span{display:block;margin-top:2px;font-size:9px;color:var(--muted)}
+.share-options{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.share-option{min-height:60px;border:1px solid var(--line);background:#f8faff;border-radius:12px;padding:9px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:10px;font-weight:900;color:#33415f}
+.share-option:hover{border-color:#a8b5d0;transform:translateY(-1px)}
+.share-option .share-icon{font-size:18px;line-height:1}
+.share-option.primary-share{background:#eef2ff;border-color:#ccd5ff;color:#3d51b5}
+.qr-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;justify-content:center}
+.qr-actions .btn{padding:8px 10px;font-size:10px}
+.share-breakdown{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:11px}
+.share-mini{padding:9px 10px;border:1px solid var(--line);border-radius:12px;background:#f8faff}
+.share-mini b{display:block;font-size:16px}.share-mini span{display:block;margin-top:2px;font-size:8px;color:var(--muted);font-weight:850;text-transform:uppercase;letter-spacing:.05em}
+@media(max-width:640px){.share-options{grid-template-columns:1fr 1fr}.share-breakdown{grid-template-columns:1fr 1fr}}
+
 </style>
 </head>
 <body>
@@ -365,6 +384,16 @@ button:disabled{cursor:not-allowed;opacity:.55}
     <div id="sharedError" class="status error"></div>
     <div class="shared-layout"><div id="sharedCard" class="card-preview card-visiting theme-midnight"></div><div class="qr-box"><strong>Scan to open</strong><div id="qr" class="qr"></div></div></div>
     <div class="shared-actions"><button id="copyLinkBtn" class="btn primary" type="button">Copy link</button><button id="shareBtn" class="btn ghost" type="button">Share</button><button id="saveContactBtn" class="btn ghost" type="button">Save contact</button><button id="createOwnBtn" class="btn secondary" type="button">Create your own card</button></div>
+    <div id="shareMenu" class="share-menu" aria-hidden="true">
+      <div class="share-menu-head"><div><strong>Share this ZetaCard</strong><span>Choose a sharing method.</span></div><button id="closeShareMenu" class="btn ghost" type="button" style="padding:7px 9px">Close</button></div>
+      <div class="share-options">
+        <button class="share-option primary-share" id="nativeShareBtn" type="button"><span class="share-icon">↗</span><span>Device share</span></button>
+        <button class="share-option" id="whatsappShareBtn" type="button"><span class="share-icon">☏</span><span>WhatsApp</span></button>
+        <button class="share-option" id="telegramShareBtn" type="button"><span class="share-icon">➤</span><span>Telegram</span></button>
+        <button class="share-option" id="emailShareBtn" type="button"><span class="share-icon">✉</span><span>Email</span></button>
+      </div>
+    </div>
+    <div class="qr-actions"><button id="downloadQrBtn" class="btn ghost" type="button">Download QR</button><button id="copyQrBtn" class="btn ghost" type="button">Copy QR</button></div>
     <div id="leadCapture" class="lead-capture">
       <div class="lead-capture-head"><div><h3>Interested? Send a message</h3><p>Share your contact details with the card owner for a follow-up. Only submit information you are comfortable sharing.</p></div><span class="pill">Lead form</span></div>
       <form id="leadForm">
@@ -384,7 +413,12 @@ button:disabled{cursor:not-allowed;opacity:.55}
     <div id="sharedStatus" class="shared-status"></div>
     <div id="ownerActions" class="owner-actions"><button id="editBtn" class="btn ghost" type="button">Edit card</button><button id="copyEditBtn" class="btn ghost" type="button">Copy edit link</button></div>
     <div id="ownerNote" class="owner-note">Owner controls are visible only after opening the private edit link.</div>
-    <div id="analytics" class="analytics"><div style="display:flex;justify-content:space-between;align-items:center"><strong>Analytics</strong><button id="refreshAnalytics" class="btn ghost" type="button">Refresh</button></div><div class="analytics-grid"><div class="metric"><b id="viewsCount">0</b><span>Views</span></div><div class="metric"><b id="phoneCount">0</b><span>Phone clicks</span></div><div class="metric"><b id="emailCount">0</b><span>Email clicks</span></div><div class="metric"><b id="shareCount">0</b><span>Shares</span></div></div><div id="analyticsStatus" class="status"></div></div>
+    <div id="analytics" class="analytics"><div style="display:flex;justify-content:space-between;align-items:center"><strong>Analytics</strong><button id="refreshAnalytics" class="btn ghost" type="button">Refresh</button></div><div class="analytics-grid"><div class="metric"><b id="viewsCount">0</b><span>Views</span></div><div class="metric"><b id="phoneCount">0</b><span>Phone clicks</span></div><div class="metric"><b id="emailCount">0</b><span>Email clicks</span></div><div class="metric"><b id="shareCount">0</b><span>Shares</span></div></div><div id="analyticsStatus" class="status"></div><div id="shareBreakdown" class="share-breakdown" style="display:none">
+      <div class="share-mini"><b id="shareWhatsappCount">0</b><span>WhatsApp</span></div>
+      <div class="share-mini"><b id="shareTelegramCount">0</b><span>Telegram</span></div>
+      <div class="share-mini"><b id="shareEmailCount">0</b><span>Email</span></div>
+      <div class="share-mini"><b id="copyLinkCount">0</b><span>Copy link</span></div>
+    </div></div>
   </div>
 </section>
 
@@ -1079,9 +1113,24 @@ function openBuilder(){
   $("dynamicForm").innerHTML="";$("previewBox").style.display="none";showTypeStep()
 }
 function clearForm(){const keepType=selectedType;const keepTheme="midnight";renderForm();mainTheme=keepTheme;$("theme").value=keepTheme;clearImage();msg("formStatus","");updatePreview();if(keepType){$("builder").scrollIntoView({block:"start"})}}
-async function shareCurrent(){const url=profileUrl(currentProfile.username);try{if(navigator.share){await navigator.share({title:"ZetaCard",text:"Open this digital card",url});recordEvent(currentProfile.username,"share")}else{await navigator.clipboard.writeText(url);msg("sharedStatus","Link copied to clipboard.");recordEvent(currentProfile.username,"share")}}catch(e){msg("sharedStatus","Share cancelled or unavailable.")}}
-async function copyLink(){if(!currentProfile)return;try{await navigator.clipboard.writeText(profileUrl(currentProfile.username));msg("sharedStatus","Share link copied.");recordEvent(currentProfile.username,"share")}catch(e){msg("sharedStatus","Copy unavailable. Use the address bar.")}}
-function saveContact(){if(!currentProfile)return;const b=currentProfile;const lines=["BEGIN:VCARD","VERSION:3.0","FN:"+(b.name||""),"TITLE:"+(b.job_title||""),"ORG:"+(b.company||""),b.phone?"TEL;TYPE=CELL:"+b.phone:"",b.email?"EMAIL;TYPE=INTERNET:"+b.email:"",b.bio?"NOTE:"+b.bio.replace(/\r?\n/g," "):"","URL:"+profileUrl(b.username),"END:VCARD"].filter(Boolean).join("\r\n");const blob=new Blob([lines],{type:"text/vcard;charset=utf-8"});const a=document.createElement("a");const u=URL.createObjectURL(blob);a.href=u;a.download=(b.username||"zetacard")+".vcf";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),900);msg("sharedStatus","Contact file created.")}
+function getCurrentCardUrl(){return currentProfile?profileUrl(currentProfile.username):location.href}
+function toggleShareMenu(force){const menu=$("shareMenu");if(!menu)return;const next=typeof force==="boolean"?force:!menu.classList.contains("show");menu.classList.toggle("show",next);menu.setAttribute("aria-hidden",next?"false":"true")}
+async function trackShareEvent(type){if(!currentProfile)return;await recordEvent(currentProfile.username,type)}
+async function shareNative(){if(!currentProfile)return;const url=getCurrentCardUrl();try{if(navigator.share){await navigator.share({title:(currentProfile.name||"ZetaCard")+" — ZetaCard",text:"Open this digital card",url});await trackShareEvent("share");msg("sharedStatus","Card shared.")}else{await navigator.clipboard.writeText(url);await trackShareEvent("share");await trackShareEvent("copy_link");msg("sharedStatus","Share link copied.")}}catch(e){if(e?.name!=="AbortError")msg("sharedStatus","Share unavailable on this device.",true)}}
+async function openChannelShare(channel){if(!currentProfile)return;const rawUrl=getCurrentCardUrl(),url=encodeURIComponent(rawUrl),title=encodeURIComponent((currentProfile.name||"ZetaCard")+" — ZetaCard");let target="",event="";
+  if(channel==="whatsapp"){target=`https://wa.me/?text=${encodeURIComponent("Open this digital card: "+rawUrl)}`;event="share_whatsapp"}
+  else if(channel==="telegram"){target=`https://t.me/share/url?url=${url}&text=${title}`;event="share_telegram"}
+  else if(channel==="email"){target=`mailto:?subject=${title}&body=${encodeURIComponent("Open this digital card: "+rawUrl)}`;event="share_email"}
+  if(!target)return;window.open(target,"_blank","noopener,noreferrer");await trackShareEvent("share");await trackShareEvent(event);msg("sharedStatus",`${channel.charAt(0).toUpperCase()+channel.slice(1)} share opened.`);toggleShareMenu(false)}
+async function copyLink(){if(!currentProfile)return;try{await navigator.clipboard.writeText(getCurrentCardUrl());await trackShareEvent("share");await trackShareEvent("copy_link");msg("sharedStatus","Share link copied.")}catch(e){msg("sharedStatus","Copy unavailable. Use the address bar.",true)}}
+function getContactData(p){const c=p?.card_data||{};return {name:p?.name||c.name||"",job_title:p?.job_title||"",company:p?.company||"",phone:p?.phone||c.phone||c.contact_phone||"",email:p?.email||c.email||c.contact_email||"",website:p?.website||c.website||"",address:p?.address||c.address||"",bio:p?.bio||c.bio||""}}
+function vcardEscape(v){return String(v??"").replace(/\\/g,"\\\\").replace(/\r?\n/g,"\\n").replace(/,/g,"\\,").replace(/;/g,"\\;")}
+async function saveContact(){if(!currentProfile)return;const b=getContactData(currentProfile);const lines=["BEGIN:VCARD","VERSION:3.0","FN:"+vcardEscape(b.name),b.job_title?"TITLE:"+vcardEscape(b.job_title):"",b.company?"ORG:"+vcardEscape(b.company):"",b.phone?"TEL;TYPE=CELL:"+vcardEscape(b.phone):"",b.email?"EMAIL;TYPE=INTERNET:"+vcardEscape(b.email):"",b.website?"URL:"+vcardEscape(b.website):"",b.address?"ADR;TYPE=WORK:;;"+vcardEscape(b.address)+";;;;":"",b.bio?"NOTE:"+vcardEscape(b.bio):"","X-ZETACARD-URL:"+vcardEscape(getCurrentCardUrl()),"END:VCARD"].filter(Boolean).join("\r\n");const blob=new Blob([lines],{type:"text/vcard;charset=utf-8"});const a=document.createElement("a"),u=URL.createObjectURL(blob);a.href=u;a.download=(currentProfile.username||"zetacard")+".vcf";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),900);await trackShareEvent("contact_save");msg("sharedStatus","Contact file created.")}
+function getQrImage(){const box=$("qr");if(!box)return null;const canvas=box.querySelector("canvas");if(canvas)return canvas;const img=box.querySelector("img");return img||null}
+function getQrDataUrl(){const node=getQrImage();if(!node)return null;if(node.tagName==="CANVAS")return node.toDataURL("image/png");const c=document.createElement("canvas");c.width=node.naturalWidth||140;c.height=node.naturalHeight||140;const ctx=c.getContext("2d");if(!ctx)return null;ctx.fillStyle="#fff";ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(node,0,0,c.width,c.height);return c.toDataURL("image/png")}
+async function downloadQr(){if(!currentProfile)return;const data=getQrDataUrl();if(!data){msg("sharedStatus","QR is not ready yet.",true);return}const a=document.createElement("a");a.href=data;a.download=(currentProfile.username||"zetacard")+"-qr.png";document.body.appendChild(a);a.click();a.remove();await trackShareEvent("qr_download");msg("sharedStatus","QR downloaded.")}
+async function copyQr(){if(!currentProfile)return;const data=getQrDataUrl();if(!data){msg("sharedStatus","QR is not ready yet.",true);return}try{const blob=await (await fetch(data)).blob();if(navigator.clipboard?.write&&window.ClipboardItem){await navigator.clipboard.write([new ClipboardItem({[blob.type]:blob})]);await trackShareEvent("qr_copy");msg("sharedStatus","QR copied to clipboard.")}else{throw new Error("Clipboard image unavailable")}}catch(e){msg("sharedStatus","Image copy is unavailable here. Use Download QR instead.",true)}}
+
 function renderPublicCard(p){
   const el=$("sharedCard");const c=experienceData(p);const photo=(p.avatar_url&&p.avatar_url.startsWith("http"))?p.avatar_url:"";
   el.className="card-preview card-"+p.card_type+" theme-"+safeTheme(p.theme)+(TYPES[p.card_type].theme?" recolorable":"");
@@ -1168,13 +1217,14 @@ async function openShared(p){
   $("saveContactBtn").style.display=(p.card_type==="visiting"||p.card_type==="identity")?"inline-flex":"none";
   const leadStatus=$("leadSubmitStatus");
   if(leadStatus)leadStatus.textContent="";
+  toggleShareMenu(false);
   await syncLeadVisibility();
   const back=$("sharedHome");
   if(back)back.textContent=openedFromDashboard?"← My Cards":"← Home";
   await syncOwnerUi();
 }
 async function syncOwnerUi(){const show=!!(ownerSession&&currentProfile&&editToken&&await verifyOwner(currentProfile.username,editToken));$("ownerActions").style.display=show?"flex":"none";$("ownerNote").style.display=show?"block":"none";$("analytics").classList.toggle("show",show);if(show)loadAnalytics()}
-async function loadAnalytics(){if(!currentProfile||!editToken)return;msg("analyticsStatus","Loading...");try{const r=await db.rpc("get_profile_analytics",{p_username:currentProfile.username,p_token_hash:await hash(editToken)});if(r.error)throw r.error;const counts={view:0,phone_click:0,email_click:0,share:0};(r.data||[]).forEach(x=>counts[x.event_type]=Number(x.event_count)||0);$("viewsCount").textContent=counts.view;$("phoneCount").textContent=counts.phone_click;$("emailCount").textContent=counts.email_click;$("shareCount").textContent=counts.share;msg("analyticsStatus","")}catch(e){msg("analyticsStatus","Could not load analytics.",true)}}
+async function loadAnalytics(){if(!currentProfile||!editToken)return;msg("analyticsStatus","Loading...");try{const r=await db.rpc("get_profile_analytics",{p_username:currentProfile.username,p_token_hash:await hash(editToken)});if(r.error)throw r.error;const counts={view:0,phone_click:0,email_click:0,share:0,share_whatsapp:0,share_telegram:0,share_email:0,copy_link:0};(r.data||[]).forEach(x=>counts[x.event_type]=Number(x.event_count)||0);$("viewsCount").textContent=counts.view;$("phoneCount").textContent=counts.phone_click;$("emailCount").textContent=counts.email_click;$("shareCount").textContent=counts.share;$("shareWhatsappCount").textContent=counts.share_whatsapp;$("shareTelegramCount").textContent=counts.share_telegram;$("shareEmailCount").textContent=counts.share_email;$("copyLinkCount").textContent=counts.copy_link;const bd=$("shareBreakdown");if(bd)bd.style.display="grid";msg("analyticsStatus","")}catch(e){msg("analyticsStatus","Could not load analytics.",true)}}
 async function openProfileFromUrl(){const params=new URLSearchParams(location.search);let u=uname(params.get("u")||"");let privateEdit=false;let key="";if(location.hash.startsWith("#edit=")){const h=new URLSearchParams(location.hash.slice(1));u=uname(h.get("edit"));key=h.get("key")||"";privateEdit=true}if(!u)return false;if(!initDb())return false;try{await refreshAuth();const r=await db.rpc("get_public_profile",{p_username:u});if(r.error)throw r.error;if(!r.data)throw new Error("Profile not found.");const p=normalizedProfile(r.data);ownerSession=false;editToken="";openedFromDashboard=false;if(privateEdit&&key){storeToken(u,key);editToken=key;ownerSession=await verifyOwner(u,key)}await openShared(p);recordEvent(p.username,"view");history.replaceState(null,"",profileUrl(u));if(privateEdit&&ownerSession){startEdit(p)}return true}catch(e){showShared();msg("sharedError",e.message||"Could not load this card.",true);return true}}
 function startEdit(p){editing=true;selectedType=p.card_type;mainTheme=p.theme;showBuilder();showFormStep();renderForm(p.card_data||{});document.querySelectorAll(".type-option").forEach(b=>b.classList.toggle("selected",b.dataset.type===selectedType));$("typePill").textContent=TYPES[selectedType].icon+" "+TYPES[selectedType].label;Object.entries(p.card_data||{}).forEach(([k,v])=>{const el=document.querySelector('#dynamicForm [data-key="'+CSS.escape(k)+'"]');if(el)el.value=v});if(TYPES[selectedType].photo&&p.avatar_url&&p.avatar_url.startsWith("http")){$("identityPreview").innerHTML='<img alt="Card image" src="'+escapeHtml(p.avatar_url)+'">'}updatePreview();msg("formStatus","You are editing this card.")}
 async function saveEdit(){if(!currentProfile)return;if(!authUser&&!editToken)return;const c=values();const base=baseProfile(c);const required=SCHEMAS[selectedType].filter(x=>x[4]).map(x=>x[0]);const missing=required.find(k=>!clean(c[k]));if(missing){msg("formStatus","Please complete: "+missing,true);return}try{msg("formStatus","Saving changes...");let avatarUrl=currentProfile.avatar_url||"avatar:initials";if(imageFile)avatarUrl=await uploadImage(imageFile,currentProfile.username);let r;if(authUser&&currentProfile.id){r=await db.rpc("update_my_card",{p_profile_id:currentProfile.id,p_name:base.name,p_job_title:base.job_title,p_company:base.company,p_phone:base.phone,p_email:base.email,p_bio:base.bio,p_theme:mainTheme,p_avatar_url:avatarUrl,p_card_type:selectedType,p_card_data:c,p_ar_model_url:c.ar_model_url||"",p_ar_usdz_url:c.ar_usdz_url||""});}else{r=await db.rpc("update_card_with_owner",{p_token_hash:await hash(editToken),p_username:currentProfile.username,p_name:base.name,p_job_title:base.job_title,p_company:base.company,p_phone:base.phone,p_email:base.email,p_bio:base.bio,p_theme:mainTheme,p_avatar_url:avatarUrl,p_card_type:selectedType,p_card_data:c,p_ar_model_url:c.ar_model_url||"",p_ar_usdz_url:c.ar_usdz_url||""});}if(r.error)throw r.error;const saved=normalizedProfile(r.data);currentProfile=saved;openedFromDashboard=false;await openShared(saved);history.replaceState(null,"",profileUrl(saved.username));msg("sharedStatus","Card updated successfully.");}catch(e){msg("formStatus",e.message||"Could not update the card.",true)}}
@@ -1215,7 +1265,7 @@ window.addEventListener("DOMContentLoaded",async()=>{
   $("clearLeadBtn").onclick=()=>$("leadForm").reset();
   $("landingCreate").onclick=openBuilder;$("landingCreateTop").onclick=openBuilder;$("createOwnBtn").onclick=openBuilder;$("sharedHome").onclick=()=>{if(openedFromDashboard){openedFromDashboard=false;showDashboard()}else showLanding()};
   $("builderBack").onclick=backAction;$("backToTypes").onclick=showTypeStep;$("continueBtn").onclick=()=>showFormStep();$("createBtn").onclick=editOrCreate;$("clearBtn").onclick=clearForm;
-  $("copyLinkBtn").onclick=copyLink;$("shareBtn").onclick=shareCurrent;$("saveContactBtn").onclick=saveContact;$("refreshAnalytics").onclick=loadAnalytics;
+  $("copyLinkBtn").onclick=copyLink;$("shareBtn").onclick=()=>toggleShareMenu();$("saveContactBtn").onclick=saveContact;$("closeShareMenu").onclick=()=>toggleShareMenu(false);$("nativeShareBtn").onclick=shareNative;$("whatsappShareBtn").onclick=()=>openChannelShare("whatsapp");$("telegramShareBtn").onclick=()=>openChannelShare("telegram");$("emailShareBtn").onclick=()=>openChannelShare("email");$("downloadQrBtn").onclick=downloadQr;$("copyQrBtn").onclick=copyQr;$("refreshAnalytics").onclick=loadAnalytics;
   $("editBtn").onclick=()=>{if(currentProfile&&editToken)startEdit(currentProfile)};$("copyEditBtn").onclick=async()=>{if(!currentProfile||!editToken)return;try{await navigator.clipboard.writeText(editUrl(currentProfile.username,editToken));msg("sharedStatus","Private edit link copied. Keep it secret.")}catch(e){msg("sharedStatus","Copy unavailable. Your private edit link is in the current browser hash.")}};
   $("cardPhoto").onchange=()=>{const f=$("cardPhoto").files&&$("cardPhoto").files[0];if(!f)return;imageFile=f;if(imageObjectUrl)URL.revokeObjectURL(imageObjectUrl);imageObjectUrl=URL.createObjectURL(f);$("fileName").textContent=f.name;renderIdentityPreview();updatePreview()};$("removePhoto").onclick=()=>{clearImage();updatePreview()};
   showLanding();
