@@ -1,4 +1,5 @@
 <!-- ZetaCard v34: Smart Sharing + Contact Save + QR Tools -->
+<!-- ZetaCard v36: AI Card Assistant -->
 <!-- ZetaCard v27: Account Dashboard + Multiple Cards -->
 <!-- ZetaCard v26: Supabase Auth required before new card creation; username field removed -->
 <!-- ZetaCard v24.1: no-key smart copy -->
@@ -9,7 +10,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ZetaCard — Experience Cards</title>
+<title>ZetaCard — AI Experience Cards</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.3.1/model-viewer.min.js"></script>
@@ -291,6 +292,26 @@ button:disabled{cursor:not-allowed;opacity:.55}
 .zc-font-mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
 @media(max-width:700px){.custom-style-grid{grid-template-columns:1fr}}
 
+
+/* v36 AI Card Assistant */
+.creation-mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.creation-mode{padding:18px;border:1px solid var(--line);border-radius:18px;background:#fff;text-align:left;transition:.16s ease;color:var(--ink)}
+.creation-mode:hover{transform:translateY(-2px);box-shadow:0 10px 24px #27364d0d;border-color:#aebbd0}
+.creation-mode .mode-icon{font-size:28px;display:block;margin-bottom:9px}
+.creation-mode strong{display:block;font-size:15px}.creation-mode span{display:block;margin-top:5px;color:var(--muted);font-size:11px;line-height:1.45}
+.ai-workspace{margin-top:14px;padding:16px;border:1px solid #cfd9ff;border-radius:20px;background:linear-gradient(180deg,#f8f9ff,#eef2ff)}
+.ai-workspace h3{margin:0 0 5px;font-size:17px}.ai-workspace>p{margin:0;color:#5c6780;font-size:11px;line-height:1.5}
+.ai-prompt{width:100%;min-height:120px;margin-top:12px;padding:12px 13px;border:1px solid #c9d3ea;border-radius:13px;resize:vertical;background:#fff;outline:none}
+.ai-prompt:focus{border-color:var(--brand);box-shadow:0 0 0 4px #536dfe12}
+.ai-examples{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.ai-example{padding:7px 9px;border:1px solid #cdd7ed;border-radius:999px;background:#fff;color:#465575;font-size:10px;font-weight:850;cursor:pointer}
+.ai-example:hover{border-color:#9eacd0}.ai-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+.ai-status{min-height:20px;margin-top:8px;color:#536dfe;font-size:11px}.ai-status.ok{color:var(--ok)}.ai-status.error{color:var(--danger)}
+.ai-plan{display:none;margin-top:12px;padding:12px;border:1px solid #d7def0;border-radius:15px;background:#fff}.ai-plan.show{display:block}
+.ai-plan-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.ai-plan-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.ai-plan-item{padding:9px;border:1px solid var(--line);border-radius:11px;background:#f8faff}.ai-plan-item small{display:block;color:var(--muted);font-size:9px}.ai-plan-item strong{display:block;margin-top:2px;font-size:11px}
+.ai-plan-note{margin-top:9px;color:var(--muted);font-size:10px;line-height:1.45}
+@media(max-width:700px){.creation-mode-grid{grid-template-columns:1fr}.ai-plan-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -370,6 +391,32 @@ button:disabled{cursor:not-allowed;opacity:.55}
   <div class="header"><div class="eyebrow">ZETACARD STUDIO</div><h1 id="builderTitle">Choose your card</h1><p id="builderSubtitle">Start with the card type. ZetaCard will build the rest for you.</p><div id="accountRequiredHint" class="account-required">You must be signed in to create a card. Public cards can still be viewed without an account.</div></div>
   <div id="builderGrid">
     <section class="step-card">
+      <div id="modeStep" class="step-pane active">
+        <div class="step-title"><div><h2>1. Choose how to create</h2><p>Build the card yourself or let ZetaCard prepare a first draft from your description.</p></div><span class="pill">AI optional</span></div>
+        <div class="creation-mode-grid">
+          <button id="manualModeBtn" type="button" class="creation-mode"><span class="mode-icon">🛠️</span><strong>Manual Mode</strong><span>Choose a card type and fill in the fields yourself.</span></button>
+          <button id="aiModeBtn" type="button" class="creation-mode"><span class="mode-icon">✨</span><strong>AI Card Assistant</strong><span>Describe the card you want. ZetaCard prepares the card type, theme and draft fields.</span></button>
+        </div>
+        <div id="aiWorkspace" class="ai-workspace" style="display:none">
+          <h3>✨ Describe your card</h3>
+          <p>Describe the card, the tone, and the information you want included. Review the generated draft before publishing.</p>
+          <textarea id="aiPrompt" class="ai-prompt" maxlength="3000" placeholder="e.g. Create a professional visiting card for Rahul, founder of a digital marketing agency in Patna."></textarea>
+          <div class="ai-examples">
+            <button type="button" class="ai-example" data-prompt="Create a professional visiting card for Rahul, founder of a digital marketing agency in Patna.">Professional card</button>
+            <button type="button" class="ai-example" data-prompt="Create a modern product card for Zeta Chair Pro with a premium technology style and 3D-ready presentation.">3D product</button>
+            <button type="button" class="ai-example" data-prompt="Create an elegant wedding invitation for Ananya and Arjun with a warm romantic style.">Wedding</button>
+            <button type="button" class="ai-example" data-prompt="Create a luxury property showcase for a modern 3 BHK villa.">Property</button>
+          </div>
+          <div class="ai-actions"><button id="generateCardAiBtn" type="button" class="btn primary">✨ Generate card plan</button><button id="cancelAiModeBtn" type="button" class="btn ghost">Cancel</button></div>
+          <div id="aiStatus" class="ai-status"></div>
+          <div id="aiPlan" class="ai-plan">
+            <div class="ai-plan-head"><strong>Generated plan</strong><span id="aiPlanBadge" class="pill">Draft ready</span></div>
+            <div id="aiPlanGrid" class="ai-plan-grid"></div>
+            <div id="aiPlanNote" class="ai-plan-note"></div>
+          </div>
+        </div>
+      </div>
+
       <div id="typeStep" class="step-pane active">
         <div class="step-title"><div><h2>1. Choose card type</h2><p>Your selection controls the form and the design.</p></div><span id="typePill" class="pill">Choose a type</span></div>
         <div id="typeGrid" class="type-grid"></div>
@@ -773,14 +820,23 @@ function typeCards(){return Object.entries(TYPES).map(([key,t])=>'<button type="
 function setSelectedType(type){if(!TYPES[type])return;selectedType=type;document.querySelectorAll(".type-option").forEach(b=>{const on=b.dataset.type===type;b.classList.toggle("selected",on);b.setAttribute("aria-pressed",on?"true":"false")});$("typePill").textContent=TYPES[type].icon+" "+TYPES[type].label;$("continueBtn").disabled=false;updateBackButton();updatePreview()}
 function clearImage(){if(imageObjectUrl)URL.revokeObjectURL(imageObjectUrl);imageObjectUrl=null;imageFile=null;$('cardPhoto').value="";$('fileName').textContent="No image selected";renderIdentityPreview()}
 function renderIdentityPreview(){const el=$("identityPreview");if(!el)return;if(imageObjectUrl){el.innerHTML='<img alt="Card image" src="'+imageObjectUrl+'">';return}el.textContent="Z"}
+const AI_TYPE_FIELDS={visiting:["name","job_title","company","phone","email","website","address","bio"],menu:["restaurant_name","tagline","phone","email","address","opening_hours","currency","menu_items","order_url","reservation_url","description"],wedding:["bride_name","groom_name","date","time","venue","address","rsvp_name","rsvp_phone","rsvp_url","map_url","dress_code","message"],identity:["name","organization","designation","id_number","department","issue_date","expiry_date","phone","email","emergency_contact","bio"],catalog:["business_name","tagline","phone","email","website","catalog_items","enquiry_url","description"],event:["event_name","organizer","date","time","venue","address","registration_url","ticket_info","contact_phone","contact_email","description"],product:["product_name","brand","sku","price","currency","buy_url","support_url","ar_model_url","ar_usdz_url","description","features"],property:["property_title","property_type","price","location","area","bedrooms","bathrooms","contact_phone","contact_email","map_url","tour_url","ar_model_url","ar_usdz_url","description","amenities"]};
+function aiSlug(v){return uname(v).replace(/[^a-z0-9-]/g,"-").replace(/-+/g,"-").replace(/^-|-$/g,"").slice(0,30)}
+function localPlanFromPrompt(prompt){const p=clean(prompt),q=p.toLowerCase();let card_type="visiting";if(/wedding|bride|groom|marriage|invitation/.test(q))card_type="wedding";else if(/menu|restaurant|cafe|food|dish|dinner|breakfast/.test(q))card_type="menu";else if(/property|villa|apartment|flat|real estate|house|plot|land/.test(q))card_type="property";else if(/product|chair|laptop|phone|machine|device|3d|\bar\b/.test(q))card_type="product";else if(/catalog|collection|products|shop|store/.test(q))card_type="catalog";else if(/identity|id card|employee|staff card/.test(q))card_type="identity";else if(/event|conference|expo|festival|ticket|pass/.test(q))card_type="event";const fields={},m=(p.match(/for\s+([A-Z][A-Za-z]*(?:\s+[A-Z][A-Za-z]*){0,2})/i)||[])[1]||"";if(card_type==="visiting"){fields.name=m||"Your Name";fields.job_title=/founder|ceo|developer|designer|manager|director/i.test(p)?((p.match(/(?:founder|ceo|developer|designer|manager|director)/i)||[])[0]||"Professional"):"Professional";fields.company=(p.match(/(?:agency|company|studio|firm|business|brand)\s+in\s+[A-Za-z ]+/i)||[])[0]?.replace(/\s+in\s+.*/i,"")||"Your Company";fields.bio=p}else if(card_type==="wedding"){fields.bride_name=(p.match(/bride\s+([A-Za-z ]+)/i)||[])[1]?.trim()||"Bride";fields.groom_name=(p.match(/groom\s+([A-Za-z ]+)/i)||[])[1]?.trim()||"Groom";fields.message=p}else if(card_type==="menu"){fields.restaurant_name=(p.match(/(?:restaurant|cafe|menu)\s+(?:for\s+)?([A-Za-z0-9 &'’-]{3,40})/i)||[])[1]?.trim()||"Your Restaurant";fields.currency="₹";fields.menu_items="Starter — ₹199\nMain Course — ₹299\nDessert — ₹179";fields.description=p}else if(card_type==="property"){fields.property_title=m||"Modern Property";fields.property_type=/villa/i.test(p)?"Villa":"Property";fields.location=(p.match(/in\s+([A-Za-z .'-]+)/i)||[])[1]?.trim()||"Your location";fields.description=p}else if(card_type==="product"){fields.product_name=m||"Your Product";fields.brand="Zeta";fields.currency="₹";fields.description=p;fields.features="Premium design\nQuality materials\nDesigned for everyday use"}else if(card_type==="catalog"){fields.business_name=m||"Your Brand";fields.catalog_items="Product One — ₹999\nProduct Two — ₹1,499\nProduct Three — ₹1,999";fields.description=p}else if(card_type==="event"){fields.event_name=m||"Your Event";fields.description=p}else{fields.name=m||"Your Name";fields.organization="Your Organization";fields.bio=p}return {card_type,theme:/luxury|elegant|premium/i.test(q)?"sunset":/natural|eco|green|calm/i.test(q)?"forest":/blue|ocean|modern|tech/i.test(q)?"ocean":"midnight",fields,smart_options:{three_d:card_type==="product"||card_type==="property",photo:["visiting","wedding","identity","product","property"].includes(card_type)}}}
+function normalizeAiPlan(plan){if(!plan||typeof plan!=="object")throw new Error("AI returned an invalid plan.");if(!TYPES[plan.card_type])plan.card_type="visiting";plan.theme=safeTheme(plan.theme);if(!plan.fields||typeof plan.fields!=="object")plan.fields={};const allowed=new Set(AI_TYPE_FIELDS[plan.card_type]||[]),fields={};Object.keys(plan.fields).forEach(k=>{if(allowed.has(k)&&plan.fields[k]!=null)fields[k]=String(plan.fields[k])});plan.fields=fields;plan.smart_options=(plan.smart_options&&typeof plan.smart_options==="object")?plan.smart_options:{};plan.smart_options.three_d=!!plan.smart_options.three_d;plan.smart_options.photo=!!plan.smart_options.photo;return plan}
+function renderAiPlan(plan,source){const grid=$("aiPlanGrid");if(!grid)return;const label=TYPES[plan.card_type]?.label||plan.card_type,count=Object.keys(plan.fields||{}).filter(k=>clean(plan.fields[k])).length;grid.innerHTML=`<div class="ai-plan-item"><small>Card type</small><strong>${escapeHtml(label)}</strong></div><div class="ai-plan-item"><small>Theme</small><strong>${escapeHtml(plan.theme)}</strong></div><div class="ai-plan-item"><small>Prepared fields</small><strong>${count}</strong></div><div class="ai-plan-item"><small>3D / AR</small><strong>${plan.smart_options.three_d?"Recommended":"Not needed"}</strong></div>`;$("aiPlanNote").textContent=source==="edge"?"AI prepared this draft through your configured Supabase Edge Function. Review every field before publishing.":"AI service is not configured, so ZetaCard prepared a local draft from your prompt. Review and edit it before publishing.";$("aiPlanBadge").textContent=source==="edge"?"AI ready":"Draft ready";$("aiPlan").classList.add("show")}
+async function applyAiPlan(plan){plan=normalizeAiPlan(plan);selectedType=plan.card_type;mainTheme=safeTheme(plan.theme);$("aiWorkspace").style.display="none";$("modeStep").classList.remove("active");$("typeStep").classList.remove("active");$("formStep").classList.add("active");$("previewBox").style.display="block";$("stepIndicator").textContent="Step 3 of 3";$("builderTitle").textContent="Build your "+TYPES[selectedType].label;$("builderSubtitle").textContent="AI prepared a first draft. Review and edit it before creating your share link.";$("builderBack").textContent="← Card types";renderForm(plan.fields);await new Promise(r=>setTimeout(r,0));$("theme").value=mainTheme;if(typeof buildThemeButtons==="function")buildThemeButtons();updatePreview();updateBackButton();window.scrollTo(0,0)}
+async function generateCardFromPrompt(){const prompt=clean($("aiPrompt").value),status=$("aiStatus"),btn=$("generateCardAiBtn");if(!prompt){status.className="ai-status error";status.textContent="Describe the card you want first.";return}btn.disabled=true;status.className="ai-status";status.textContent="Preparing your ZetaCard…";try{let plan=null,source="local";if(initDb()){try{const r=await db.functions.invoke("generate-card-from-prompt",{body:{prompt}});if(!r.error&&r.data){plan=normalizeAiPlan(r.data.plan||r.data);source="edge"}}catch(e){console.warn("AI Edge Function unavailable; using local draft",e)}}if(!plan)plan=localPlanFromPrompt(prompt);renderAiPlan(plan,source);status.className="ai-status "+(source==="edge"?"ok":"");status.textContent=source==="edge"?"AI card plan ready.":"Draft prepared. Review the fields before publishing.";await new Promise(r=>setTimeout(r,250));await applyAiPlan(plan)}catch(e){console.error(e);status.className="ai-status error";status.textContent=e.message||"Could not prepare the card."}finally{btn.disabled=false}}
+
 function setupTypeGrid(){
   $("typeGrid").innerHTML=typeCards();
   $("typeGrid").addEventListener("click",e=>{const b=e.target.closest(".type-option");if(b)setSelectedType(b.dataset.type)});
 }
-function showTypeStep(){$("typeStep").classList.add("active");$("formStep").classList.remove("active");$("previewBox").style.display="none";$("stepIndicator").textContent="Step 1 of 2";$("builderTitle").textContent="Choose your card";$("builderSubtitle").textContent="Start with the card type. ZetaCard will build the rest for you.";$("builderBack").textContent="← Home";updateBackButton();window.scrollTo(0,0)}
-function showFormStep(){if(!selectedType){msg("typeStatus","Please select a card type first.",true);return false}$("typeStep").classList.remove("active");$("formStep").classList.add("active");$("previewBox").style.display="block";$("stepIndicator").textContent="Step 2 of 2";$("builderTitle").textContent="Build your "+TYPES[selectedType].label;$("builderSubtitle").textContent=TYPES[selectedType].desc;$("builderBack").textContent="← Card types";renderForm();updateBackButton();updatePreview();window.scrollTo(0,0);return false}
-function backAction(){if($("formStep").classList.contains("active")){showTypeStep();return}showLanding()}
-function updateBackButton(){$("builderBack").textContent=$("formStep").classList.contains("active")?"← Card types":"← Home"}
+function showModeStep(){$("modeStep").classList.add("active");$("typeStep").classList.remove("active");$("formStep").classList.remove("active");$("previewBox").style.display="none";$("aiWorkspace").style.display="none";$("stepIndicator").textContent="Step 1 of 3";$("builderTitle").textContent="How do you want to create?";$("builderSubtitle").textContent="Choose Manual Mode or let the AI Card Assistant prepare a first draft.";$("builderBack").textContent="← Home";updateBackButton();window.scrollTo(0,0)}
+function showTypeStep(){$("modeStep").classList.remove("active");$("typeStep").classList.add("active");$("formStep").classList.remove("active");$("previewBox").style.display="none";$("aiWorkspace").style.display="none";$("stepIndicator").textContent="Step 2 of 3";$("builderTitle").textContent="Choose your card";$("builderSubtitle").textContent="Start with the card type. ZetaCard will build the rest for you.";$('builderBack').textContent="← Modes";updateBackButton();window.scrollTo(0,0)}
+function showFormStep(){if(!selectedType){msg("typeStatus","Please select a card type first.",true);return false}$("modeStep").classList.remove("active");$("typeStep").classList.remove("active");$("formStep").classList.add("active");$("previewBox").style.display="block";$("stepIndicator").textContent="Step 3 of 3";$("builderTitle").textContent="Build your "+TYPES[selectedType].label;$("builderSubtitle").textContent=TYPES[selectedType].desc;$("builderBack").textContent="← Card types";renderForm();updateBackButton();updatePreview();window.scrollTo(0,0);return false}
+function backAction(){if($("formStep").classList.contains("active")){showTypeStep();return}if($("typeStep").classList.contains("active")){showModeStep();return}if($("modeStep").classList.contains("active")){showLanding();return}showLanding()}
+function updateBackButton(){if($("formStep").classList.contains("active"))$("builderBack").textContent="← Card types";else if($("typeStep").classList.contains("active"))$("builderBack").textContent="← Modes";else $("builderBack").textContent="← Home"}
 function clearDynamicValues(){document.querySelectorAll("#dynamicForm [data-key]").forEach(e=>{e.value=""})}
 function formFieldId(k){return "f_"+k}
 
@@ -1198,7 +1254,7 @@ function openBuilder(){
   selectedType="";mainTheme="midnight";currentProfile=null;ownerSession=false;editToken="";editing=false;
   $("typeStatus").textContent="";$("continueBtn").disabled=true;$("typePill").textContent="Choose a type";
   document.querySelectorAll(".type-option").forEach(b=>b.classList.remove("selected"));
-  $("dynamicForm").innerHTML="";$("previewBox").style.display="none";showTypeStep()
+  $("dynamicForm").innerHTML="";$("previewBox").style.display="none";$("aiWorkspace").style.display="none";$("aiPlan").classList.remove("show");$("aiPrompt").value="";$("aiStatus").textContent="";showModeStep()
 }
 function clearForm(){const keepType=selectedType;const keepTheme="midnight";renderForm();mainTheme=keepTheme;$("theme").value=keepTheme;clearImage();msg("formStatus","");updatePreview();if(keepType){$("builder").scrollIntoView({block:"start"})}}
 function getCurrentCardUrl(){return currentProfile?profileUrl(currentProfile.username):location.href}
@@ -1330,6 +1386,11 @@ window.addEventListener("DOMContentLoaded",async()=>{
     // Re-evaluate the public card whenever the browser signs in or out.
     if(currentProfile&&$("shared")?.style.display!=="none")await syncLeadVisibility();
   });
+  $("manualModeBtn").onclick=()=>{ $("aiWorkspace").style.display="none"; showTypeStep(); };
+  $("aiModeBtn").onclick=()=>{ $("aiWorkspace").style.display="block"; $("aiStatus").textContent=""; $("aiPrompt").focus(); };
+  $("cancelAiModeBtn").onclick=()=>{ $("aiWorkspace").style.display="none"; showModeStep(); };
+  document.querySelectorAll(".ai-example").forEach(b=>b.onclick=()=>{ $("aiPrompt").value=b.dataset.prompt||""; $("aiPrompt").focus(); });
+  $("generateCardAiBtn").onclick=generateCardFromPrompt;
   $("authNavBtn").onclick=()=>openAuth("signup");
   $("signOutBtn").onclick=signOut;
   $("dashboardNavBtn").onclick=showDashboard;
