@@ -1,4 +1,4 @@
-<!-- ZetaCard v51: Runtime, routing, edit media, owner visibility and export safety fixes; based on v50 -->
+<!-- ZetaCard v52: Professional UI refinement on top of v51; application logic intentionally preserved. -->
 <!-- Base application: ZetaCard v49, with prior feature markers retained below. -->
 <!-- ZetaCard v44: Smart Forms + Enquiry Inbox -->
 <!-- ZetaCard v39: Testimonials + Social Proof -->
@@ -15,7 +15,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ZetaCard v51 — AI Experience Cards</title>
+<meta name="description" content="Create professional digital cards for people, businesses, products and events with ZetaCard.">
+<title>ZetaCard v52 — Professional Digital Card Studio</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.3.1/model-viewer.min.js"></script>
@@ -1113,6 +1114,214 @@ button:disabled{cursor:not-allowed;opacity:.55}
 @media(max-width:900px){.template-studio .template-thumb.true-v49{height:170px!important;min-height:170px!important}}
 </style>
 
+
+<!-- ZetaCard v52: restrained professional interface polish. Card-art/template styles are intentionally preserved. -->
+<style id="zc-v52-professional-ui">
+:root {
+  --ink: #172033;
+  --muted: #667085;
+  --line: #e4e7ec;
+  --soft: #f8fafc;
+  --brand: #4f46e5;
+  --brand2: #4f46e5;
+  --ok: #16794b;
+  --danger: #b42318;
+  color-scheme: light;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: #f7f8fb !important;
+  color: #172033 !important;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif !important;
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+button, input, textarea, select { font: inherit; }
+button { transition: background-color .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid rgba(79,70,229,.25) !important;
+  outline-offset: 2px;
+}
+
+/* Landing navigation */
+.landing-nav {
+  width: min(1120px, calc(100% - 48px)) !important;
+  min-height: 68px;
+  padding: 12px 0 !important;
+  margin: 0 auto !important;
+  border-bottom: 1px solid #e9ebf1;
+}
+.landing-brand { color: #172033 !important; font-size: 19px !important; font-weight: 760 !important; letter-spacing: -.5px !important; }
+.landing-brand span { color: #4f46e5 !important; }
+.auth-bar { gap: 8px !important; }
+.auth-state { border-radius: 9px !important; box-shadow: none !important; font-weight: 600 !important; }
+
+/* Buttons — one solid accent, consistent size, no decorative gradients */
+.btn, .nav-btn, .dashboard-tab, .template-chip, .threeD-tab, .store-tab, .booking-tab {
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  font-weight: 650 !important;
+  letter-spacing: 0 !important;
+}
+.btn { min-height: 38px; padding: 9px 13px !important; font-size: 12px !important; }
+.btn.primary, .primary {
+  color: #fff !important;
+  background: #4f46e5 !important;
+  background-image: none !important;
+  border: 1px solid #4f46e5 !important;
+  box-shadow: none !important;
+}
+.btn.primary:hover, .primary:hover { background: #4338ca !important; border-color: #4338ca !important; }
+.btn.ghost, .ghost, .nav-btn {
+  background: #fff !important;
+  color: #344054 !important;
+  border: 1px solid #d0d5dd !important;
+}
+.btn.ghost:hover, .ghost:hover, .nav-btn:hover { background: #f9fafb !important; border-color: #98a2b3 !important; }
+.btn.secondary, .secondary { background: #eef2ff !important; color: #4338ca !important; border: 1px solid #e0e7ff !important; }
+.nav-btn { font-size: 12px !important; font-weight: 650 !important; }
+
+/* Hero: smaller typography, restrained surface, clearer hierarchy */
+.landing-wrap {
+  width: min(1120px, calc(100% - 48px)) !important;
+  margin: 48px auto 52px !important;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr) !important;
+  gap: clamp(28px, 4.5vw, 64px) !important;
+  align-items: center;
+}
+.hero { max-width: 610px; }
+.hero-kicker { color: #4f46e5 !important; font-size: 10px !important; letter-spacing: 1.5px !important; font-weight: 750 !important; }
+.hero h1 {
+  max-width: 12ch;
+  margin: 14px 0 15px !important;
+  color: #172033 !important;
+  font-size: clamp(38px, 4.35vw, 58px) !important;
+  line-height: 1.07 !important;
+  letter-spacing: -2.25px !important;
+  font-weight: 760 !important;
+}
+.hero p { max-width: 520px !important; margin: 0 !important; color: #667085 !important; font-size: 16px !important; line-height: 1.7 !important; }
+.hero-actions { gap: 10px !important; margin-top: 23px !important; }
+.hero-actions .btn { min-height: 42px; padding: 11px 16px !important; font-size: 13px !important; }
+.hero-points { display: flex; flex-wrap: wrap; gap: 8px !important; margin-top: 18px !important; font-size: 11px !important; font-weight: 600 !important; color: #475467 !important; }
+.hero-points span { display: inline-flex; align-items: center; padding: 5px 8px; border: 1px solid #eaecf0; border-radius: 7px; background: #fff; }
+.hero-stage { min-height: 340px !important; padding: 8px 10px 14px 0; }
+.landing-demo {
+  width: min(100%, 430px) !important;
+  min-height: 290px !important;
+  padding: 25px !important;
+  border: 1px solid #25334d !important;
+  border-radius: 18px !important;
+  background: #18243a !important;
+  box-shadow: 0 18px 42px rgba(16,24,40,.12) !important;
+}
+.landing-demo h2 { margin: 29px 0 8px !important; font-size: clamp(24px, 2.7vw, 32px) !important; line-height: 1.13 !important; letter-spacing: -.8px !important; }
+.landing-demo p { color: #d0d5dd !important; font-size: 13px !important; line-height: 1.6 !important; }
+.landing-demo .hero-kicker { color: #c7d2fe !important; }
+.landing-demo .demo-lines { gap: 8px !important; margin-top: 22px !important; font-size: 12px !important; opacity: 1 !important; }
+.landing-demo .demo-lines > div { padding: 8px 10px; border: 1px solid rgba(255,255,255,.12); border-radius: 8px; background: rgba(255,255,255,.045); color: #f2f4f7; }
+.floating-type {
+  right: -4px !important;
+  bottom: 0 !important;
+  width: 154px !important;
+  padding: 13px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 24px rgba(16,24,40,.10) !important;
+  color: #344054 !important;
+  font-size: 11px !important;
+  line-height: 1.9 !important;
+}
+.floating-type strong { margin-bottom: 4px !important; color: #172033 !important; font-size: 12px !important; }
+.features {
+  width: min(1120px, calc(100% - 48px)) !important;
+  margin: 0 auto 58px !important;
+  gap: 12px !important;
+}
+.feature { padding: 20px !important; border: 1px solid #e4e7ec !important; border-radius: 14px !important; background: #fff !important; box-shadow: none !important; }
+.feature > div:first-child { font-size: 19px; }
+.feature h3 { margin: 10px 0 5px !important; color: #172033 !important; font-size: 15px !important; font-weight: 700 !important; letter-spacing: -.2px !important; }
+.feature p { margin: 0 !important; color: #667085 !important; font-size: 12px !important; line-height: 1.65 !important; }
+
+/* App chrome and panels. Card artwork/template canvases remain untouched. */
+.container { width: min(1120px, calc(100% - 40px)) !important; padding: 16px 0 42px !important; }
+.topbar {
+  padding: 12px 0 !important;
+  background: rgba(255,255,255,.96) !important;
+  border-bottom: 1px solid #e4e7ec !important;
+  backdrop-filter: blur(10px);
+}
+.topbar .brand { color: #172033 !important; font-size: 17px !important; font-weight: 750 !important; }
+.step-card, .preview-box, .shared-card-shell, .dashboard-card, .dash-stat, .lead-analytics-panel, .lead-kpi,
+.booking-studio, .form-studio, .threeD-studio, .admin-panel, .catalog-public-wrap, .storefront-panel {
+  border: 1px solid #e4e7ec !important;
+  border-radius: 15px !important;
+  box-shadow: 0 2px 8px rgba(16,24,40,.025) !important;
+}
+.step-card, .preview-box, .dashboard-card, .dash-stat, .lead-analytics-panel, .lead-kpi { background: #fff !important; }
+.step-card { padding: 21px !important; }
+.preview-box { padding: 17px !important; }
+.step-title h2, .dashboard-head h2 { color: #172033 !important; letter-spacing: -.45px !important; font-weight: 720 !important; }
+.step-title p, .dashboard-head p { color: #667085 !important; }
+.pill { background: #f2f4f7 !important; color: #475467 !important; border-radius: 8px !important; font-weight: 650 !important; }
+.type-grid { gap: 10px !important; }
+.type-option { min-height: 112px !important; padding: 14px !important; border: 1px solid #e4e7ec !important; border-radius: 12px !important; box-shadow: none !important; }
+.type-option:hover { transform: translateY(-1px) !important; border-color: #c7d2fe !important; box-shadow: 0 4px 12px rgba(16,24,40,.04) !important; }
+.type-option.selected { border: 1.5px solid #4f46e5 !important; background: #f8f8ff !important; box-shadow: 0 0 0 2px rgba(79,70,229,.07) !important; }
+.form-head { border-radius: 10px !important; border-color: #e4e7ec !important; background: #f9fafb !important; }
+.field input, .field textarea, .field select, input, textarea, select {
+  border-radius: 9px;
+}
+.field input, .field textarea, .field select { border-color: #d0d5dd !important; background: #fff !important; color: #172033 !important; }
+.field input:focus, .field textarea:focus, .field select:focus { border-color: #818cf8 !important; box-shadow: 0 0 0 3px rgba(79,70,229,.10) !important; outline: none !important; }
+.dashboard-head { margin-top: 22px !important; }
+.dashboard-stats { gap: 10px !important; }
+.dashboard-tabs { gap: 7px !important; }
+.dashboard-tab { font-size: 12px !important; padding: 9px 12px !important; }
+.dashboard-tab.active { background: #eef2ff !important; border-color: #c7d2fe !important; color: #4338ca !important; }
+.status { font-size: 12px !important; }
+
+/* Keep public cards and the card/template design system visually independent from app UI changes. */
+.card-preview, .template-thumb, .template-option, .public-showcase, .showcase-card { font-family: inherit; }
+
+@media (max-width: 900px) {
+  .landing-wrap { grid-template-columns: minmax(0,1fr) minmax(0,.9fr) !important; gap: 26px !important; margin-top: 36px !important; }
+  .hero h1 { font-size: clamp(36px, 5.2vw, 48px) !important; letter-spacing: -1.6px !important; }
+  .hero p { font-size: 15px !important; }
+  .hero-stage { min-height: 300px !important; }
+  .landing-demo { min-height: 275px !important; }
+  .floating-type { right: -4px !important; }
+  .features { margin-bottom: 40px !important; }
+  .cards-grid { gap: 10px !important; }
+}
+@media (max-width: 700px) {
+  .landing-nav, .landing-wrap, .features { width: calc(100% - 32px) !important; }
+  .landing-nav { align-items: flex-start !important; }
+  .auth-bar { justify-content: flex-end; gap: 6px !important; }
+  .auth-bar .btn { min-height: 34px; padding: 7px 9px !important; font-size: 11px !important; }
+  .account-email { max-width: 120px !important; }
+  .landing-wrap { grid-template-columns: 1fr !important; margin: 30px auto 34px !important; gap: 22px !important; }
+  .hero h1 { max-width: 13ch; font-size: clamp(36px, 9vw, 46px) !important; line-height: 1.08 !important; }
+  .hero p { font-size: 14px !important; }
+  .hero-stage { min-height: 275px !important; padding: 0 4px 9px 0 !important; }
+  .landing-demo { width: 100% !important; min-height: 248px !important; padding: 21px !important; }
+  .landing-demo h2 { margin-top: 22px !important; font-size: 26px !important; }
+  .floating-type { width: 140px !important; right: -2px !important; bottom: 0 !important; }
+  .features { grid-template-columns: 1fr !important; gap: 10px !important; }
+  .feature { padding: 16px !important; }
+  .container { width: calc(100% - 28px) !important; padding-top: 12px !important; }
+  .step-card { padding: 16px !important; }
+  .preview-box { padding: 14px !important; }
+  .dashboard-head { align-items: flex-start !important; }
+  .dashboard-actions { width: 100%; }
+  .dashboard-actions .btn { flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+</style>
+
 </head>
 <body>
 
@@ -1124,23 +1333,23 @@ button:disabled{cursor:not-allowed;opacity:.55}
       <button id="authNavBtn" class="btn ghost" type="button">Sign in / Sign up</button>
       <button id="signOutBtn" class="btn ghost" type="button" style="display:none">Sign out</button>
       <button id="dashboardNavBtn" class="btn ghost" type="button" style="display:none">My Cards</button>
-      <button id="landingCreateTop" class="btn primary" type="button">Create your card</button>
+      <button id="landingCreateTop" class="btn primary" type="button">Create a card</button>
     </div>
   </nav>
   <div class="landing-wrap">
     <div class="hero">
-      <div class="hero-kicker">DIGITAL CARD EXPERIENCE STUDIO</div>
-      <h1>One platform. Many kinds of cards.</h1>
-      <p>Choose the card you need first. ZetaCard then builds the right form, the right visual layout, and the right tools for that card.</p>
-      <div class="hero-actions"><button id="landingCreate" class="btn primary" type="button">Create my card</button></div>
-      <div class="hero-points"><span>✓ Type-specific forms</span><span>✓ Type-specific designs</span><span>✓ QR + share</span><span>✓ 3D / AR ready</span></div>
+      <div class="hero-kicker">DIGITAL CARD STUDIO</div>
+      <h1>One studio. Every kind of card.</h1>
+      <p>Create professional digital cards for people, businesses, products and events. Choose a type, customize the design, and share it in minutes.</p>
+      <div class="hero-actions"><button id="landingCreate" class="btn primary" type="button">Create a card</button></div>
+      <div class="hero-points"><span>✓ Forms that fit</span><span>✓ Professional designs</span><span>✓ QR codes + sharing</span><span>✓ Optional 3D / AR</span></div>
     </div>
     <div class="hero-stage">
-      <div class="landing-demo"><div class="hero-kicker" style="color:#cbd4ff">PRODUCT CARD</div><h2>See it in 3D.</h2><p>Different cards can become different digital experiences.</p><div class="demo-lines"><div>📦 Product information</div><div>✨ Interactive 3D / AR</div><div>↗ Share one memorable link</div></div></div>
+      <div class="landing-demo"><div class="hero-kicker" style="color:#cbd4ff">PRODUCT CARD</div><h2>See it in 3D.</h2><p>Give people useful details and a clear next step, all in one shareable card.</p><div class="demo-lines"><div>📦 Product information</div><div>✨ Interactive 3D / AR</div><div>↗ Share one memorable link</div></div></div>
       <div class="floating-type"><strong>Card types</strong>💼 Visiting<br>🍽️ Menu<br>💍 Wedding<br>🛍️ Catalog<br>📦 Product<br>🏠 Property</div>
     </div>
   </div>
-  <div class="features"><div class="feature"><div>🧩</div><h3>Form follows type</h3><p>No generic giant form. Users see only fields that belong to the selected card.</p></div><div class="feature"><div>🎨</div><h3>Design follows type</h3><p>A menu looks like a menu, a wedding invitation looks like an invitation, and a catalog looks like a catalog.</p></div><div class="feature"><div>✨</div><h3>Experience layer</h3><p>Product and property cards can carry interactive 3D and AR experiences.</p></div></div>
+  <div class="features"><div class="feature"><div>🧩</div><h3>Forms that fit</h3><p>Only show the fields that make sense for the card type. Keep creating clear and focused.</p></div><div class="feature"><div>🎨</div><h3>Designs with purpose</h3><p>Choose a layout that suits the job, from a business profile to an invitation or product catalog.</p></div><div class="feature"><div>✨</div><h3>More than a card</h3><p>Add sharing, QR codes, enquiries, booking or product experiences where they are relevant.</p></div></div>
 </section>
 
 <section id="dashboardPage" class="container dashboard-page">
