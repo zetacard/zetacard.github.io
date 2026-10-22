@@ -1,4 +1,3 @@
-
 <!-- ZetaCard v54: activate type-specific renderer; premium card gallery and form refinement. -->
 <!-- ZetaCard v52: Professional UI refinement on top of v51; application logic intentionally preserved. -->
 <!-- Base application: ZetaCard v49, with prior feature markers retained below. -->
@@ -1635,6 +1634,169 @@ html{scroll-behavior:smooth}body{background:#f7f8fb;color:var(--zc-v54-ink);-web
 @media(max-width:650px){.landing-nav{align-items:flex-start}.landing-wrap{grid-template-columns:1fr;margin-top:35px;gap:16px}.hero h1{font-size:clamp(39px,11vw,52px);letter-spacing:-1.8px}.hero p{font-size:14px}.hero-stage{min-height:340px}.hero-card-gallery{height:315px;max-width:430px}.hero-art-wedding{height:215px;width:52%}.hero-art-menu{height:180px;width:43%}.hero-art-visiting{height:150px;width:49%}.hero-art-product{height:140px;width:36%}.floating-type{width:153px;font-size:9px;padding:10px;bottom:-4px}.features{grid-template-columns:1fr!important}.type-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}.type-option{min-height:216px!important;padding:9px!important}.type-sample{height:86px;min-height:86px}.type-option .type-icon{font-size:19px}.type-option .type-choice-copy strong{font-size:12px}.type-option .type-choice-copy .type-description{font-size:9px!important}.card-preview .zc-trad{padding:22px 19px}.card-preview.card-wedding .zc-trad-wedding:before{inset:8px}.card-preview.card-visiting.tpl-v46-layout-13 .zc-visit-footer{margin-left:-19px;margin-right:-19px;padding-left:19px;padding-right:19px}}
 @media(max-width:390px){.type-grid{grid-template-columns:1fr!important}.type-option{min-height:205px!important}.type-sample{height:94px;min-height:94px}.hero-card-gallery{height:280px}.hero-art h3{font-size:18px}.hero-art-wedding h3{font-size:21px}}
 </style>
+
+<style id="zc-v55-visual-repair">
+/* V55: public viewer layout repair. The public card never shares or overlaps the QR panel. */
+#shared .shared-wrap{width:min(960px,calc(100% - 24px));margin-inline:auto}
+#shared .shared-layout{display:flex!important;flex-direction:column!important;align-items:center!important;gap:20px!important;width:100%;min-width:0}
+#shared #sharedCard{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;margin:0 auto;overflow:hidden;flex:0 1 auto;isolation:isolate}
+#shared #sharedCard>.zc-trad{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+#shared #sharedCard .zc-trad *{min-width:0}
+#shared .qr-box{display:grid!important;grid-template-columns:minmax(0,1fr) 156px;align-items:center;justify-content:stretch;gap:16px;width:min(100%,390px);max-width:390px;min-width:0;min-height:0;box-sizing:border-box;padding:17px 18px;margin:0 auto;position:relative;z-index:2;overflow:visible;border:1px solid #e1e5ed;border-radius:16px;background:#fff;box-shadow:0 10px 28px rgba(27,37,61,.08)}
+#shared .qr-box strong{font-size:13px;line-height:1.45;color:#18243a;max-width:145px}
+#shared .qr-box strong:after{content:"A quick way to open this card";display:block;margin-top:5px;font-size:10px;font-weight:500;line-height:1.5;color:#68758b}
+#shared .qr{display:grid;place-items:center;width:156px;height:156px;min-width:156px;min-height:156px;margin:0;padding:7px;box-sizing:border-box;border:1px solid #e4e7ee;border-radius:12px;background:#fff;overflow:hidden}
+#shared #qr canvas,#shared #qr img{display:block!important;width:140px!important;height:140px!important;max-width:140px!important;max-height:140px!important;image-rendering:pixelated}
+#shared #qr:not(:has(canvas)):not(:has(img)){font-size:10px;text-align:center;color:#6b7280;overflow-wrap:anywhere}
+#shared .shared-actions{justify-content:center;max-width:860px;margin:18px auto 0;gap:9px}
+#shared .public-report-wrap{display:flex;justify-content:center;margin-top:15px}
+#shared #sharedCard .zc-trad{overflow:hidden}
+#shared #sharedCard .zc-trad h2,#shared #sharedCard .zc-trad h3,#shared #sharedCard .zc-trad p,#shared #sharedCard .zc-trad b,#shared #sharedCard .zc-trad span{overflow-wrap:anywhere}
+
+/* Type-specific canvas proportions: invitations and menus are portrait/editorial; ID and visiting cards remain landscape. */
+#shared #sharedCard.card-visiting{max-width:790px}
+#shared #sharedCard.card-menu{max-width:600px}
+#shared #sharedCard.card-wedding{max-width:560px}
+#shared #sharedCard.card-identity{max-width:790px}
+#shared #sharedCard.card-catalog{max-width:690px}
+#shared #sharedCard.card-event{max-width:780px}
+#shared #sharedCard.card-product{max-width:690px}
+#shared #sharedCard.card-property{max-width:720px}
+#mainCard.card-menu,#mainCard.card-wedding{width:100%;max-width:500px;margin-inline:auto}
+#mainCard.card-catalog,#mainCard.card-product,#mainCard.card-property{width:100%;max-width:560px;margin-inline:auto}
+.card-preview .zc-trad{box-sizing:border-box;min-width:0}
+.card-preview .zc-trad>*{min-width:0;max-width:100%}
+
+/* A restaurant menu should look like a composed menu card, not a generic list. */
+.card-preview.card-menu{border-radius:4px!important;border:1px solid var(--tpl-accent,#9e793f)!important;box-shadow:0 0 0 5px var(--tpl-paper,#fffdf7),0 0 0 6px var(--tpl-accent,#9e793f),0 20px 46px rgba(55,39,19,.15)!important}
+.card-preview.card-menu .zc-trad-menu{position:relative;isolation:isolate;min-height:640px;box-sizing:border-box;padding:36px 38px 30px;background-image:radial-gradient(circle at 0 0,color-mix(in srgb,var(--tpl-accent,#9e793f) 8%,transparent) 0 22%,transparent 23%),radial-gradient(circle at 100% 100%,color-mix(in srgb,var(--tpl-accent,#9e793f) 7%,transparent) 0 20%,transparent 21%)}
+.card-preview.card-menu .zc-trad-menu:before{content:"";position:absolute;inset:12px;border:1px solid color-mix(in srgb,var(--tpl-accent,#9e793f) 65%,transparent);box-shadow:inset 0 0 0 5px color-mix(in srgb,var(--tpl-accent,#9e793f) 6%,transparent);pointer-events:none;z-index:0}
+.card-preview.card-menu .zc-trad-menu>*{position:relative;z-index:1}
+.card-preview.card-menu .zc-menu-crest{gap:15px;margin-bottom:7px;font-size:17px}
+.card-preview.card-menu .zc-menu-crest small{font-size:9px;letter-spacing:2.4px}
+.card-preview.card-menu .zc-menu-brand{font-size:clamp(27px,3.4vw,36px);line-height:1.12;margin-top:12px;padding-inline:8px}
+.card-preview.card-menu .zc-menu-cuisine{font-size:9px;letter-spacing:2.2px;margin-top:9px}
+.card-preview.card-menu .zc-menu-rule{margin:23px 0 17px}
+.card-preview.card-menu .zc-menu-heading{font-size:34px;letter-spacing:6px;line-height:1.1}
+.card-preview.card-menu .zc-menu-tagline{font-size:13px;margin-top:9px}
+.card-preview.card-menu .zc-menu-description{font-size:12px;line-height:1.65;max-width:420px;margin:14px auto 20px}
+.card-preview.card-menu .zc-menu-items{border-top:1px solid var(--tpl-accent,#9e793f);padding-top:4px;margin-top:3px}
+.card-preview.card-menu .zc-menu-category{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 1px 7px;margin-top:4px;color:var(--tpl-accent,#9e793f);border-bottom:1px solid color-mix(in srgb,var(--tpl-accent,#9e793f) 35%,transparent);font:900 9px/1.3 Inter,system-ui,sans-serif;letter-spacing:1.9px;text-transform:uppercase}
+.card-preview.card-menu .zc-menu-category i{font-size:10px;font-style:normal;opacity:.75}
+.card-preview.card-menu .zc-menu-item{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:16px;padding:13px 2px;border-bottom:1px dashed color-mix(in srgb,var(--tpl-accent,#9e793f) 28%,transparent)}
+.card-preview.card-menu .zc-menu-item-copy{min-width:0}
+.card-preview.card-menu .zc-menu-item b{display:block;font:600 15px/1.35 Georgia,"Times New Roman",serif;color:inherit;overflow-wrap:anywhere}
+.card-preview.card-menu .zc-menu-price{display:inline-flex;align-items:center;justify-content:center;padding:6px 9px;border:1px solid color-mix(in srgb,var(--tpl-accent,#9e793f) 38%,transparent);border-radius:999px;background:color-mix(in srgb,var(--tpl-accent,#9e793f) 7%,transparent);color:var(--tpl-accent,#9e793f);font:850 12px/1.2 Inter,system-ui,sans-serif;white-space:nowrap}
+.card-preview.card-menu .zc-menu-dietary{margin-top:16px;border:1px solid color-mix(in srgb,var(--tpl-accent,#9e793f) 22%,transparent);border-radius:5px}
+.card-preview.card-menu .zc-menu-footer{margin-top:auto;padding-top:16px;gap:14px;font-size:10px;line-height:1.5}
+.card-preview.card-menu .zc-menu-footer span{max-width:48%;overflow-wrap:anywhere}
+.card-preview.card-menu .zc-action-row{justify-content:center;margin-top:17px}
+.card-preview.card-menu .zc-menu-contact{margin-top:12px}
+.card-preview.card-menu .zc-menu-contact .zc-contact-item{padding:5px 0}
+
+/* Traditional invitation: more ceremony, hierarchy and deliberate spacing. */
+.card-preview.card-wedding{border-radius:5px!important;box-shadow:0 0 0 5px var(--tpl-paper,#fffdf8),0 0 0 6px var(--tpl-accent,#a68149),0 24px 60px rgba(58,23,37,.18)!important}
+.card-preview.card-wedding .zc-trad-wedding{min-height:780px;box-sizing:border-box;padding:35px 38px 28px;background-image:radial-gradient(ellipse at top,color-mix(in srgb,var(--tpl-accent,#a68149) 9%,transparent),transparent 58%),linear-gradient(90deg,transparent 0 4%,color-mix(in srgb,var(--tpl-accent,#a68149) 4%,transparent) 4.1% 4.2%,transparent 4.3% 95.7%,color-mix(in srgb,var(--tpl-accent,#a68149) 4%,transparent) 95.8% 95.9%,transparent 96%)}
+.card-preview.card-wedding .zc-wedding-border{font-size:28px;gap:23px;margin:2px 0 18px}
+.card-preview.card-wedding .zc-wedding-seal{font-size:28px;letter-spacing:3px;margin-bottom:10px}
+.card-preview.card-wedding .zc-wedding-english{font-size:9px;letter-spacing:3.4px}
+.card-preview.card-wedding .zc-wedding-photo{height:190px;max-width:340px;margin:17px auto 13px;border-width:4px}
+.card-preview.card-wedding .zc-wedding-blessing{font-size:11px;max-width:360px;letter-spacing:.25px}
+.card-preview.card-wedding .zc-wedding-family{font-size:10px;letter-spacing:.4px;margin-top:11px}
+.card-preview.card-wedding .zc-wedding-couple{gap:7px;margin-top:18px}
+.card-preview.card-wedding .zc-wedding-couple span{font-size:clamp(30px,4.6vw,40px);line-height:1.08}
+.card-preview.card-wedding .zc-wedding-couple i{font-size:22px}
+.card-preview.card-wedding .zc-wedding-message{font-size:13px;line-height:1.7;max-width:380px;margin-top:17px}
+.card-preview.card-wedding .zc-wedding-divider{margin:22px 0 13px}
+.card-preview.card-wedding .zc-wedding-event{font-size:16px;margin-bottom:14px}
+.card-preview.card-wedding .zc-wedding-date-grid>div{padding:14px 9px}
+.card-preview.card-wedding .zc-wedding-date-grid strong{font-size:13px}
+.card-preview.card-wedding .zc-wedding-venue{padding:16px 10px}
+.card-preview.card-wedding .zc-wedding-venue strong{font-size:17px}
+.card-preview.card-wedding .zc-wedding-bottom{font-size:9px;letter-spacing:1.3px;padding-top:16px}
+.card-preview.card-wedding .zc-wedding-ornament-bottom{font-size:20px;margin-top:18px}
+
+/* Stronger visual hierarchy for the remaining card families. */
+.card-preview.card-visiting .zc-trad-visiting{min-height:490px;box-sizing:border-box;padding:34px 36px;background-image:radial-gradient(ellipse at 100% 0,color-mix(in srgb,var(--tpl-accent,#d1b77e) 23%,transparent),transparent 43%),linear-gradient(135deg,transparent 0 78%,color-mix(in srgb,var(--tpl-accent,#d1b77e) 9%,transparent) 78% 100%)}
+.card-preview.card-visiting .zc-visit-top{padding-bottom:20px;border-bottom:1px solid color-mix(in srgb,var(--tpl-accent,#d1b77e) 50%,transparent)}
+.card-preview.card-visiting .zc-visit-brand strong{font-size:16px}
+.card-preview.card-visiting .zc-visit-person{padding:33px 0 24px}
+.card-preview.card-visiting .zc-visit-person h2{font-size:clamp(34px,4.2vw,44px);letter-spacing:-.8px}
+.card-preview.card-visiting .zc-visit-role{font-size:13px;letter-spacing:.2px}
+.card-preview.card-visiting .zc-visit-person p{font-size:13px;max-width:590px}
+.card-preview.card-visiting .zc-contact-item{padding:10px 0!important}
+.card-preview.card-visiting .zc-contact-item b{font-size:12px!important}
+.card-preview.card-identity .zc-trad-identity{min-height:500px;box-sizing:border-box;padding-bottom:27px}
+.card-preview.card-identity .zc-id-topbar{padding:20px 22px;margin-bottom:25px;letter-spacing:.3px}
+.card-preview.card-identity .zc-id-topbar b{font-size:13px}
+.card-preview.card-identity .zc-id-main{grid-template-columns:120px minmax(0,1fr);gap:20px}
+.card-preview.card-identity .zc-id-portrait{width:120px;height:148px}
+.card-preview.card-identity .zc-id-details h2{font-size:27px}
+.card-preview.card-identity .zc-id-validity{margin-top:22px}
+.card-preview.card-catalog .zc-trad-catalog{min-height:700px;box-sizing:border-box;padding:31px 30px}
+.card-preview.card-catalog .zc-catalog-cover{padding:26px 22px 30px;position:relative;overflow:hidden;background-image:radial-gradient(circle at 100% 0,color-mix(in srgb,var(--tpl-accent,#a27c48) 13%,transparent),transparent 42%),linear-gradient(135deg,color-mix(in srgb,var(--tpl-paper,#fff) 90%,var(--tpl-accent,#a27c48)),var(--tpl-paper,#fff))}
+.card-preview.card-catalog .zc-catalog-mark{width:50px;height:50px;font-size:13px}
+.card-preview.card-catalog .zc-catalog-cover h2{font-size:clamp(30px,4vw,40px);line-height:1.05}
+.card-preview.card-catalog .catalog-public-grid{gap:13px}
+.card-preview.card-catalog .catalog-public-card{padding:12px;border-radius:5px;box-shadow:0 5px 14px rgba(24,30,44,.045)}
+.card-preview.card-catalog .catalog-public-image{height:130px}
+.card-preview.card-event .zc-trad-event{min-height:560px;box-sizing:border-box;padding:34px 35px;background-image:radial-gradient(circle at 100% 0,color-mix(in srgb,var(--tpl-accent,#cfb36c) 20%,transparent),transparent 36%)}
+.card-preview.card-event .zc-ticket-main{padding:35px 0 26px}
+.card-preview.card-event .zc-ticket-main h2{font-size:clamp(35px,5vw,48px);letter-spacing:-1px}
+.card-preview.card-event .zc-ticket-main p{font-size:13px;line-height:1.6;max-width:560px}
+.card-preview.card-event .zc-ticket-facts .zc-fact{padding:13px 14px;border-radius:7px}
+.card-preview.card-event .zc-ticket-perforation{margin-top:27px}
+.card-preview.card-product .zc-trad-product{min-height:680px;box-sizing:border-box;padding:31px}
+.card-preview.card-product .zc-product-hero-image{height:285px;max-width:100%;background:linear-gradient(145deg,#fff,color-mix(in srgb,var(--tpl-accent,#536dfe) 5%,#fff));box-shadow:0 8px 20px rgba(25,39,59,.06)}
+.card-preview.card-product .zc-product-placeholder{height:265px}
+.card-preview.card-product .zc-trad-product h2{font-size:clamp(30px,4vw,39px);letter-spacing:-.7px}
+.card-preview.card-product .zc-product-description{font-size:13px;line-height:1.65}
+.card-preview.card-product .zc-product-price-row{padding:18px;border-radius:9px}
+.card-preview.card-product .zc-product-price-row strong{font-size:28px}
+.card-preview.card-property .zc-trad-property{min-height:690px;box-sizing:border-box;padding:31px}
+.card-preview.card-property .zc-property-hero-image{height:280px;box-shadow:0 8px 22px rgba(25,39,59,.08)}
+.card-preview.card-property .zc-property-placeholder{height:250px}
+.card-preview.card-property .zc-trad-property h2{font-size:clamp(30px,4vw,39px);letter-spacing:-.6px}
+.card-preview.card-property .zc-property-price{padding:19px;border-radius:8px}
+.card-preview.card-property .zc-property-price strong{font-size:27px}
+.card-preview.card-property .zc-property-stats{gap:10px}
+.card-preview.card-property .zc-property-stats .zc-fact{padding:13px;border-radius:7px}
+
+@media(max-width:760px){
+ #shared{padding:18px 12px 36px}
+ #shared .shared-wrap{width:100%}
+ #shared .qr-box{width:min(100%,370px);grid-template-columns:minmax(0,1fr) 156px;padding:13px;gap:12px}
+ #shared #sharedCard.card-visiting .zc-trad-visiting{padding:25px 22px;min-height:460px}
+ #shared #sharedCard.card-menu .zc-trad-menu{padding:31px 27px 27px;min-height:630px}
+ #shared #sharedCard.card-wedding .zc-trad-wedding{padding:30px 26px 25px;min-height:760px}
+ #shared #sharedCard.card-identity .zc-trad-identity{min-height:500px}
+ #shared #sharedCard.card-catalog .zc-trad-catalog{padding:24px 22px;min-height:650px}
+ #shared #sharedCard.card-event .zc-trad-event{padding:28px 25px;min-height:530px}
+ #shared #sharedCard.card-product .zc-trad-product,#shared #sharedCard.card-property .zc-trad-property{padding:25px 22px;min-height:640px}
+ .card-preview.card-menu .zc-trad-menu{padding:28px 22px 25px}
+ .card-preview.card-wedding .zc-trad-wedding{padding:28px 23px 24px}
+ .card-preview.card-catalog .zc-trad-catalog{padding:23px 20px}
+ .card-preview.card-product .zc-trad-product,.card-preview.card-property .zc-trad-property{padding:23px 20px}
+}
+@media(max-width:460px){
+ #shared .qr-box{grid-template-columns:minmax(0,1fr) 124px;gap:9px;padding:10px}
+ #shared .qr{width:124px;height:124px;min-width:124px;min-height:124px;padding:5px}
+ #shared #qr canvas,#shared #qr img{width:112px!important;height:112px!important;max-width:112px!important;max-height:112px!important}
+ #shared .qr-box strong{font-size:12px}
+ .card-preview.card-menu .zc-menu-brand{font-size:27px}
+ .card-preview.card-menu .zc-menu-heading{font-size:30px}
+ .card-preview.card-menu .zc-menu-item{gap:9px;padding:11px 0}
+ .card-preview.card-menu .zc-menu-item b{font-size:14px}
+ .card-preview.card-menu .zc-menu-price{font-size:11px;padding:5px 7px}
+ .card-preview.card-identity .zc-id-main{grid-template-columns:88px minmax(0,1fr);gap:12px}
+ .card-preview.card-identity .zc-id-portrait{width:88px;height:112px}
+ .card-preview.card-identity .zc-id-details h2{font-size:19px}
+ .card-preview.card-product .zc-product-hero-image,.card-preview.card-property .zc-property-hero-image{height:205px}
+ .card-preview.card-wedding .zc-wedding-photo{height:145px}
+ .card-preview.card-event .zc-ticket-main h2{font-size:31px}
+}
+</style>
+
 </head>
 <body>
 
@@ -2989,16 +3151,38 @@ function zcPrettyDate(value){
   const d=new Date(raw+"T12:00:00");return Number.isNaN(d.getTime())?raw:d.toLocaleDateString(undefined,{day:"numeric",month:"long",year:"numeric"});
 }
 function zcRenderMenuItems(raw,currency){
-  const lines=String(raw||"").split(/\n+/).map(x=>x.trim()).filter(Boolean).slice(0,16);
-  const source=lines.length?lines:["Starters: Paneer Tikka — "+(currency||"₹")+"280","Mains: Veg Biryani — "+(currency||"₹")+"260","Dessert: Gulab Jamun — "+(currency||"₹")+"120"];
+  const lines=String(raw||"").split(/\n+/).map(x=>x.trim()).filter(Boolean).slice(0,24);
+  const defaultCurrency=clean(currency)||"₹";
+  const source=lines.length?lines:[
+    "Starters: Paneer Tikka — "+defaultCurrency+"280",
+    "Mains: Veg Biryani — "+defaultCurrency+"260",
+    "Dessert: Gulab Jamun — "+defaultCurrency+"120"
+  ];
   let currentCategory="",html="";
+  const parseItem=(rawText)=>{
+    let text=String(rawText||"").trim(),name=text,price="";
+    const dash=text.match(/^(.*?)\s+[—–-]\s+(.+)$/);
+    if(dash&&/^(?:(?:₹|\$|€|£)\s*|(?:Rs\.?|INR|USD)\s*)?\d[\d,.]*/i.test(dash[2].trim())){
+      name=dash[1].trim();price=dash[2].trim();
+    }else{
+      const withCurrency=text.match(/^(.*?)(₹|\$|€|£|Rs\.?|INR|USD)\s*([0-9][0-9,]*(?:\.[0-9]{1,2})?)\s*$/i);
+      if(withCurrency){name=withCurrency[1].trim();price=withCurrency[2]+withCurrency[3];}
+      else{
+        const trailingNumber=text.match(/^(.*?)\s+([0-9][0-9,]*(?:\.[0-9]{1,2})?)\s*$/);
+        if(trailingNumber){name=trailingNumber[1].trim();price=defaultCurrency+trailingNumber[2].replace(/\s+/g,"");}
+      }
+    }
+    if(price&&/^[0-9]/.test(price))price=defaultCurrency+price;
+    if(!name)name=text;
+    return {name,price};
+  };
   source.forEach(line=>{
     let text=line,category="";
-    const m=line.match(/^([^:]{2,25}):\s*(.+)$/);
+    const m=line.match(/^([^:]{2,28}):\s*(.+)$/);
     if(m){category=m[1].trim();text=m[2].trim()}
-    const parts=text.split(/\s+—\s+|\s+-\s+/),name=parts[0].trim(),price=parts.slice(1).join(" — ").trim();
-    if(category&&category!==currentCategory){html+=`<div class="zc-menu-category">${escapeHtml(category)}</div>`;currentCategory=category}
-    html+=`<div class="zc-menu-item"><b>${escapeHtml(name)}</b><span>${escapeHtml(price||"")}</span></div>`;
+    const item=parseItem(text);
+    if(category&&category!==currentCategory){html+=`<div class="zc-menu-category"><span>${escapeHtml(category)}</span><i aria-hidden="true">✦</i></div>`;currentCategory=category}
+    html+=`<div class="zc-menu-item"><div class="zc-menu-item-copy"><b>${escapeHtml(item.name||"Menu item")}</b></div><span class="zc-menu-price">${escapeHtml(item.price)}</span></div>`;
   });
   return html;
 }
@@ -4380,5 +4564,3 @@ function typeCards(){
 </script>
 </body>
 </html>
-
-
