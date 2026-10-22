@@ -1,4 +1,4 @@
-<!-- ZetaCard v50: Admin Control Panel + Trust & Safety Moderation -->
+<!-- ZetaCard v51: Runtime, routing, edit media, owner visibility and export safety fixes; based on v50 -->
 <!-- Base application: ZetaCard v49, with prior feature markers retained below. -->
 <!-- ZetaCard v44: Smart Forms + Enquiry Inbox -->
 <!-- ZetaCard v39: Testimonials + Social Proof -->
@@ -15,7 +15,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ZetaCard — AI Experience Cards</title>
+<title>ZetaCard v51 — AI Experience Cards</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.3.1/model-viewer.min.js"></script>
@@ -1390,7 +1390,7 @@ button:disabled{cursor:not-allowed;opacity:.55}
     </div>
     <div id="sharedStatus" class="shared-status"></div>
     <div id="ownerActions" class="owner-actions"><button id="editBtn" class="btn ghost" type="button">Edit card</button><button id="copyEditBtn" class="btn ghost" type="button">Copy edit link</button></div>
-    <div id="ownerNote" class="owner-note">Owner controls are visible only after opening the private edit link.</div>
+    <div id="ownerNote" class="owner-note">Owner controls are visible only when ownership is verified.</div>
     <div id="analytics" class="analytics"><div style="display:flex;justify-content:space-between;align-items:center"><strong>Analytics</strong><button id="refreshAnalytics" class="btn ghost" type="button">Refresh</button></div><div class="analytics-grid"><div class="metric"><b id="viewsCount">0</b><span>Views</span></div><div class="metric"><b id="phoneCount">0</b><span>Phone clicks</span></div><div class="metric"><b id="emailCount">0</b><span>Email clicks</span></div><div class="metric"><b id="shareCount">0</b><span>Shares</span></div><div class="metric"><b id="socialClicksCount">0</b><span>Social clicks</span></div><div class="metric"><b id="bookingSubmitCount">0</b><span>Booking requests</span></div><div class="metric"><b id="orderSubmitCount">0</b><span>Order requests</span></div><div class="metric"><b id="orderTrackCount">0</b><span>Order tracking</span></div><div class="metric"><b id="formSubmitCount">0</b><span>Form submissions</span></div></div><div id="analyticsStatus" class="status"></div><div id="shareBreakdown" class="share-breakdown" style="display:none">
       <div class="share-mini"><b id="shareWhatsappCount">0</b><span>WhatsApp</span></div>
       <div class="share-mini"><b id="shareTelegramCount">0</b><span>Telegram</span></div>
@@ -1404,12 +1404,15 @@ button:disabled{cursor:not-allowed;opacity:.55}
 "use strict";
 const SUPABASE_URL="https://sojuhiuydumpouknkmat.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_--O6hnERwb8RwEa-VFHnUw_SRUE54C-";
-const SITE_BASE="/";
+const SITE_BASE=(()=>{const p=location.pathname||"/";if(p.endsWith("/"))return p;if(/\/[^/]+\.html?$/i.test(p))return p;return "/"})();
 const dbClient=()=>window.supabase&&window.supabase.createClient?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY):null;
-let db=null,currentProfile=null,selectedType="",ownerSession=false,editToken="",mainTheme="midnight",imageFile=null,imageObjectUrl=null,createBusy=false,editing=false,authUser=null,authBusy=false,authEmailMode="signup",dashboardLeads=[],dashboardMode="cards",openedFromDashboard=false,leadDueOnly=false,leadSummary=null,showcaseSections=[],socialLinks=[],testimonials=[],faqItems=[],bookingSettings={},dashboardBookings=[],bookingStatusFilter="all",publicBookingSelection=null,storeSettings={},customFormSettings={},dashboardOrders=[],orderStatusFilter="all",publicStoreCart=[],orderTrackingResult=null,dashboardFormSubmissions=[],formStatusFilter="all",designTemplate="",zcIsAdmin=false,adminUsers=[],adminReports=[],adminEvents=[],adminSummary={},adminUserCards=[];
+let db=null,currentProfile=null,selectedType="",ownerSession=false,editToken="",mainTheme="midnight",imageFile=null,imageObjectUrl=null,imageRemoved=false,createBusy=false,editing=false,authUser=null,authBusy=false,authEmailMode="signup",dashboardLeads=[],dashboardMode="cards",openedFromDashboard=false,leadDueOnly=false,leadSummary=null,showcaseSections=[],socialLinks=[],testimonials=[],faqItems=[],bookingSettings={},dashboardBookings=[],bookingStatusFilter="all",publicBookingSelection=null,storeSettings={},customFormSettings={},dashboardOrders=[],orderStatusFilter="all",publicStoreCart=[],orderTrackingResult=null,dashboardFormSubmissions=[],formStatusFilter="all",designTemplate="",zcIsAdmin=false,adminUsers=[],adminReports=[],adminEvents=[],adminSummary={},adminUserCards=[];
 const $=id=>document.getElementById(id);
 const escapeHtml=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 const clean=v=>String(v??"").trim();
+const safeHttpUrl=value=>{const raw=clean(value);if(!raw)return "";try{const u=new URL(raw);return u.protocol==="https:"||u.protocol==="http:"?u.href:""}catch(e){return ""}};
+const safeMediaPreviewUrl=value=>{const raw=clean(value);const http=safeHttpUrl(raw);if(http)return http;return raw.startsWith("blob:"+location.origin+"/")?raw:""};
+function csvEscapeCell(value){let v=String(value??"").replace(/\r\n?/g,"\n").replace(/\u0000/g,"");if(/^[\u0000-\u0020]*[=+\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""').replace(/\n/g," ")+'"'}
 const uname=v=>clean(v).toLowerCase();
 const validUsername=u=>/^[a-z0-9][a-z0-9-]{2,29}$/.test(u);
 const safeTheme=t=>["midnight","ocean","forest","sunset"].includes(t)?t:"midnight";
@@ -1563,7 +1566,7 @@ async function handleAuthSubmit(e){
       ? await db.auth.signUp({email,password})
       : await db.auth.signInWithPassword({email,password});
     if(r.error)throw r.error;
-    authUser=r.data?.user||null;renderAuthState();await refreshAdminRole();
+    authUser=r.data?.session?.user||null;renderAuthState();await refreshAdminRole();
     if(authUser&&r.data?.session)await logSecurityEvent(authAction,{client:"web"});
     if(authAction==="signup"&&!r.data?.session){
       $("authPassword").value="";
@@ -1591,7 +1594,15 @@ let dashboardCards=[];
 function showDashboard(){if(!authUser){openAuth("login");return}showOnly("dashboardPage");if($("dashboardAccountEmail"))$("dashboardAccountEmail").textContent=authUser.email||"Signed in";setDashboardMode("cards");loadDashboard();window.scrollTo(0,0)}
 function dashboardCardText(p){const d=p.card_data||{};return d.product_name||d.restaurant_name||d.business_name||d.event_name||d.property_title||p.name||d.name||"Untitled card"}
 function dashboardSubtitle(p){const d=p.card_data||{};return d.tagline||d.job_title||d.property_type||d.brand||d.company||d.description||"Digital experience card"}
-function renderDashboardCards(cards){const box=$("dashboardCards");if(!box)return;if(!cards.length){box.innerHTML='<div class="dashboard-empty" style="grid-column:1/-1"><h3>No cards yet</h3><p>Create your first ZetaCard and then manage multiple cards from this dashboard.</p><button id="dashboardEmptyCreate" class="btn primary" type="button">Create your first card</button></div>';$(("dashboardEmptyCreate")).onclick=openBuilder;return}box.innerHTML=cards.map((p,i)=>{const t=TYPES[p.card_type]||TYPES.visiting;return `<article class="dashboard-card"><div class="dashboard-card-top"><div><div class="dashboard-card-type">${escapeHtml(t.label)}</div><h3>${escapeHtml(dashboardCardText(p))}</h3><p>${escapeHtml(dashboardSubtitle(p))}</p></div><div class="dashboard-card-icon">${t.icon}</div></div><div class="dashboard-url">${escapeHtml(profileUrl(p.username))}</div><div class="dashboard-card-actions"><button class="btn primary dash-open" type="button" data-di="${i}">Open</button><button class="btn ghost dash-edit" type="button" data-di="${i}">Edit</button><button class="btn ghost dash-copy" type="button" data-di="${i}">Copy link</button><button class="btn ghost dash-delete" type="button" data-di="${i}">Delete</button></div></article>`}).join("");box.querySelectorAll(".dash-open").forEach(b=>b.onclick=async()=>{const p=dashboardCards[Number(b.dataset.di)];currentProfile=normalizedProfile(p);openedFromDashboard=true;await openShared(currentProfile);history.replaceState(null,"",profileUrl(p.username))});box.querySelectorAll(".dash-edit").forEach(b=>b.onclick=()=>{const p=normalizedProfile(dashboardCards[Number(b.dataset.di)]);currentProfile=p;editing=true;selectedType=p.card_type;mainTheme=p.theme;showBuilder();showFormStep();renderForm(p.card_data||{});document.querySelectorAll(".type-option").forEach(x=>x.classList.toggle("selected",x.dataset.type===selectedType));$("typePill").textContent=TYPES[selectedType].icon+" "+TYPES[selectedType].label;Object.entries(p.card_data||{}).forEach(([k,v])=>{const e=document.querySelector('#dynamicForm [data-key="'+CSS.escape(k)+'"]');if(e)e.value=v});updatePreview();updateBackButton();msg("formStatus","Editing your card from your account dashboard.");window.scrollTo(0,0)});box.querySelectorAll(".dash-copy").forEach(b=>b.onclick=async()=>{const p=dashboardCards[Number(b.dataset.di)];try{await navigator.clipboard.writeText(profileUrl(p.username));msg("dashboardStatus","Share link copied.")}catch(e){msg("dashboardStatus","Copy unavailable.",true)}});box.querySelectorAll(".dash-delete").forEach(b=>b.onclick=()=>deleteDashboardCard(Number(b.dataset.di)))}
+function renderDashboardCards(cards){const box=$("dashboardCards");if(!box)return;if(!cards.length){box.innerHTML='<div class="dashboard-empty" style="grid-column:1/-1"><h3>No cards yet</h3><p>Create your first ZetaCard and then manage multiple cards from this dashboard.</p><button id="dashboardEmptyCreate" class="btn primary" type="button">Create your first card</button></div>';$(("dashboardEmptyCreate")).onclick=openBuilder;return}box.innerHTML=cards.map((p,i)=>{const t=TYPES[p.card_type]||TYPES.visiting;return `<article class="dashboard-card"><div class="dashboard-card-top"><div><div class="dashboard-card-type">${escapeHtml(t.label)}</div><h3>${escapeHtml(dashboardCardText(p))}</h3><p>${escapeHtml(dashboardSubtitle(p))}</p></div><div class="dashboard-card-icon">${t.icon}</div></div><div class="dashboard-url">${escapeHtml(profileUrl(p.username))}</div><div class="dashboard-card-actions"><button class="btn primary dash-open" type="button" data-di="${i}">Open</button><button class="btn ghost dash-edit" type="button" data-di="${i}">Edit</button><button class="btn ghost dash-copy" type="button" data-di="${i}">Copy link</button><button class="btn ghost dash-delete" type="button" data-di="${i}">Delete</button></div></article>`}).join("");box.querySelectorAll(".dash-open").forEach(b=>b.onclick=async()=>{
+  const p=normalizedProfile(dashboardCards[Number(b.dataset.di)]);
+  currentProfile=p;ownerSession=false;editToken="";
+  const storedToken=getToken(p.username);
+  if(storedToken&&await verifyOwner(p.username,storedToken)){ownerSession=true;editToken=storedToken}
+  openedFromDashboard=true;
+  await openShared(currentProfile);
+  history.replaceState(null,"",profileUrl(p.username));
+});box.querySelectorAll(".dash-edit").forEach(b=>b.onclick=()=>{const p=normalizedProfile(dashboardCards[Number(b.dataset.di)]);currentProfile=p;editing=true;selectedType=p.card_type;mainTheme=p.theme;showBuilder();showFormStep();renderForm(p.card_data||{});document.querySelectorAll(".type-option").forEach(x=>x.classList.toggle("selected",x.dataset.type===selectedType));$("typePill").textContent=TYPES[selectedType].icon+" "+TYPES[selectedType].label;Object.entries(p.card_data||{}).forEach(([k,v])=>{const e=document.querySelector('#dynamicForm [data-key="'+CSS.escape(k)+'"]');if(e)e.value=v});updatePreview();updateBackButton();msg("formStatus","Editing your card from your account dashboard.");window.scrollTo(0,0)});box.querySelectorAll(".dash-copy").forEach(b=>b.onclick=async()=>{const p=dashboardCards[Number(b.dataset.di)];try{await navigator.clipboard.writeText(profileUrl(p.username));msg("dashboardStatus","Share link copied.")}catch(e){msg("dashboardStatus","Copy unavailable.",true)}});box.querySelectorAll(".dash-delete").forEach(b=>b.onclick=()=>deleteDashboardCard(Number(b.dataset.di)))}
 
 function setDashboardMode(mode){
   const allowed=["leads","bookings","orders","forms","admin"];
@@ -1761,7 +1772,7 @@ async function saveLead(id,status,notes,followupLocal){
 function exportLeadsCsv(){
   if(!dashboardLeads.length){msg("leadStatusMessage","There are no leads to export.",true);return}
   const headers=["name","company","email","phone","message","card_name","username","status","notes","created_at"];
-  const esc=v=>`"${String(v??"").replace(/"/g,'""').replace(/\r?\n/g," ")}"`;
+  const esc=csvEscapeCell;
   const csv=[headers.join(","),...dashboardLeads.map(l=>headers.map(h=>esc(l[h])).join(","))].join("\n");
   const blob=new Blob([csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
   a.href=url;a.download="zetacard-leads.csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),900);
@@ -1774,7 +1785,7 @@ function filteredBookings(){const q=clean($("bookingSearchInput")?.value||"").to
 function renderBookings(){const box=$("bookingsGrid");if(!box)return;const counts={pending:0,confirmed:0,cancelled:0,completed:0};dashboardBookings.forEach(b=>counts[bookingStatusClass(b.status)]++);$("bookingTotalKpi").textContent=dashboardBookings.length;$("bookingPendingKpi").textContent=counts.pending;$("bookingConfirmedKpi").textContent=counts.confirmed;$("bookingCancelledKpi").textContent=counts.cancelled;const newCount=counts.pending;const badge=$("dashboardBookingBadge");if(badge)badge.textContent=newCount?`(${newCount})`:"";const items=filteredBookings();if(!items.length){box.innerHTML='<div class="booking-empty" style="grid-column:1/-1"><h3>No bookings found</h3><p>When visitors request appointments from your public cards, they will appear here.</p></div>';return}box.innerHTML=items.map(b=>`<article class="booking-card"><div class="booking-card-head"><div><div class="booking-guest">${escapeHtml(b.guest_name||"Unnamed guest")}</div><div class="booking-company">${escapeHtml(b.card_name||b.username||"Card")}</div></div><span class="lead-status ${bookingStatusClass(b.status)}">${escapeHtml(bookingStatusLabel(b.status))}</span></div><div class="booking-when">📅 ${escapeHtml(bookingDateTimeLabel(b.booking_date,b.start_time,b.end_time))}</div><div class="booking-details">${b.guest_email?`<span>✉️ ${escapeHtml(b.guest_email)}</span>`:""}${b.guest_phone?`<span>📞 ${escapeHtml(b.guest_phone)}</span>`:""}${b.note?`<span>📝 ${escapeHtml(b.note)}</span>`:""}<span>🕒 Requested ${escapeHtml(leadDate(b.created_at))}</span></div><div class="booking-card-actions"><select class="booking-status-select"><option value="pending" ${bookingStatusClass(b.status)==="pending"?"selected":""}>Pending</option><option value="confirmed" ${bookingStatusClass(b.status)==="confirmed"?"selected":""}>Confirmed</option><option value="cancelled" ${bookingStatusClass(b.status)==="cancelled"?"selected":""}>Cancelled</option><option value="completed" ${bookingStatusClass(b.status)==="completed"?"selected":""}>Completed</option></select>${b.guest_email?`<a class="btn ghost" href="mailto:${escapeHtml(b.guest_email)}">Email</a>`:""}${b.guest_phone?`<a class="btn ghost" href="tel:${escapeHtml(b.guest_phone)}">Call</a>`:""}<button type="button" class="btn ghost booking-save">Save</button></div></article>`).join("");box.querySelectorAll(".booking-card").forEach(card=>{const id=card.dataset.bookingId;});items.forEach((b,i)=>{const card=box.querySelectorAll(".booking-card")[i];if(card){card.dataset.bookingId=b.id;card.querySelector(".booking-save")?.addEventListener("click",()=>saveBookingStatus(b.id,card.querySelector(".booking-status-select")?.value||"pending"))}})}
 async function loadBookings(){if(!authUser||!initDb())return;msg("bookingStatusMessage","Loading bookings...");try{const r=await db.rpc("get_my_bookings");if(r.error)throw r.error;dashboardBookings=Array.isArray(r.data)?r.data:(Array.isArray(r.data?.bookings)?r.data.bookings:[]);renderBookings();msg("bookingStatusMessage","")}catch(e){console.error(e);msg("bookingStatusMessage","Could not load bookings: "+(e.message||"Unknown error"),true)}}
 async function saveBookingStatus(id,status){if(!authUser||!id)return;try{const r=await db.rpc("update_my_booking_status",{p_booking_id:id,p_status:status});if(r.error)throw r.error;const b=dashboardBookings.find(x=>x.id===id);if(b)b.status=status;renderBookings();msg("bookingStatusMessage","Booking updated.")}catch(e){msg("bookingStatusMessage","Could not update booking: "+(e.message||"Unknown error"),true)}}
-function exportBookingsCsv(){if(!dashboardBookings.length){msg("bookingStatusMessage","There are no bookings to export.",true);return}const headers=["guest_name","guest_email","guest_phone","booking_date","start_time","end_time","card_name","username","status","note","created_at"];const esc=v=>`"${String(v??"").replace(/"/g,'""').replace(/\r?\n/g," ")}"`;const csv=[headers.join(","),...dashboardBookings.map(b=>headers.map(h=>esc(b[h])).join(","))].join("\n");const blob=new Blob([csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="zetacard-bookings.csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),900);msg("bookingStatusMessage","CSV export created.")}
+function exportBookingsCsv(){if(!dashboardBookings.length){msg("bookingStatusMessage","There are no bookings to export.",true);return}const headers=["guest_name","guest_email","guest_phone","booking_date","start_time","end_time","card_name","username","status","note","created_at"];const esc=csvEscapeCell;const csv=[headers.join(","),...dashboardBookings.map(b=>headers.map(h=>esc(b[h])).join(","))].join("\n");const blob=new Blob([csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="zetacard-bookings.csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),900);msg("bookingStatusMessage","CSV export created.")}
 
 async function submitLead(e){
   e.preventDefault();
@@ -1818,7 +1829,7 @@ async function claimLocalOwnedCards(){if(!initDb()||!authUser)return;try{const k
 async function deleteDashboardCard(index){const p=dashboardCards[index];if(!p)return;if(!confirm("Delete this card permanently?"))return;try{msg("dashboardStatus","Deleting card...");const r=await db.rpc("delete_my_card",{p_profile_id:p.id});if(r.error)throw r.error;dashboardCards.splice(index,1);renderDashboardCards(dashboardCards);$("dashCardCount").textContent=dashboardCards.length;$("dashTypeCount").textContent=new Set(dashboardCards.map(x=>x.card_type)).size;msg("dashboardStatus","Card deleted.")}catch(e){msg("dashboardStatus","Could not delete card: "+(e.message||"Unknown error"),true)}}
 
 function homeUrl(){return new URL(SITE_BASE,location.origin).href}
-function profileUrl(u){return new URL(SITE_BASE+encodeURIComponent(u),location.origin).href}
+function profileUrl(u){const url=new URL(SITE_BASE,location.origin);url.searchParams.set("u",uname(u));url.hash="";return url.href}
 function editUrl(u,t){return homeUrl()+"#edit="+encodeURIComponent(u)+"&key="+encodeURIComponent(t)}
 function editKey(u){return "zetaEditToken:"+u}
 function storeToken(u,t){try{localStorage.setItem(editKey(u),t)}catch(e){}}
@@ -1832,7 +1843,7 @@ function showBuilder(){showOnly("builder");window.scrollTo(0,0)}
 function showShared(){showOnly("shared");window.scrollTo(0,0)}
 function typeCards(){return Object.entries(TYPES).map(([key,t])=>'<button type="button" class="type-option" data-type="'+key+'"><span class="type-icon">'+t.icon+'</span><strong>'+t.label+'</strong><span>'+t.desc+'</span><span class="type-check">✓</span></button>').join("")}
 function setSelectedType(type){if(!TYPES[type])return;selectedType=type;designTemplate=defaultTemplate(type);document.querySelectorAll(".type-option").forEach(b=>{const on=b.dataset.type===type;b.classList.toggle("selected",on);b.setAttribute("aria-pressed",on?"true":"false")});$("typePill").textContent=TYPES[type].icon+" "+TYPES[type].label;$("continueBtn").disabled=false;updateBackButton();updatePreview()}
-function clearImage(){if(imageObjectUrl)URL.revokeObjectURL(imageObjectUrl);imageObjectUrl=null;imageFile=null;$('cardPhoto').value="";$('fileName').textContent="No image selected";renderIdentityPreview()}
+function clearImage(){if(imageObjectUrl)URL.revokeObjectURL(imageObjectUrl);imageObjectUrl=null;imageFile=null;imageRemoved=true;$('cardPhoto').value="";$('fileName').textContent="No image selected";renderIdentityPreview()}
 function renderIdentityPreview(){const el=$("identityPreview");if(!el)return;if(imageObjectUrl){el.innerHTML='<img alt="Card image" src="'+imageObjectUrl+'">';return}el.textContent="Z"}
 const AI_TYPE_FIELDS={visiting:["name","job_title","company","phone","email","website","address","bio"],menu:["restaurant_name","tagline","phone","email","address","opening_hours","currency","menu_items","order_url","reservation_url","description"],wedding:["bride_name","groom_name","date","time","venue","address","rsvp_name","rsvp_phone","rsvp_url","map_url","dress_code","message"],identity:["name","organization","designation","id_number","department","issue_date","expiry_date","phone","email","emergency_contact","bio"],catalog:["business_name","tagline","phone","email","website","catalog_items","enquiry_url","description"],event:["event_name","organizer","date","time","venue","address","registration_url","ticket_info","contact_phone","contact_email","description"],product:["product_name","brand","sku","price","currency","buy_url","support_url","ar_model_url","ar_usdz_url","description","features"],property:["property_title","property_type","price","location","area","bedrooms","bathrooms","contact_phone","contact_email","map_url","tour_url","ar_model_url","ar_usdz_url","description","amenities"]};
 function aiSlug(v){return uname(v).replace(/[^a-z0-9-]/g,"-").replace(/-+/g,"-").replace(/^-|-$/g,"").slice(0,30)}
@@ -2174,7 +2185,7 @@ function filteredFormSubmissions(){const q=clean($('formSearchInput')?.value||''
 function renderFormSubmissions(){const box=$('formSubmissionsGrid');if(!box)return;const counts={new:0,contacted:0,resolved:0,archived:0};dashboardFormSubmissions.forEach(x=>counts[formSubmissionStatusClass(x.status)]++);$('formTotalKpi').textContent=dashboardFormSubmissions.length;$('formNewKpi').textContent=counts.new;$('formContactedKpi').textContent=counts.contacted;$('formResolvedKpi').textContent=counts.resolved;const badge=$('dashboardFormBadge');if(badge)badge.textContent=counts.new?`(${counts.new})`:'';const items=filteredFormSubmissions();if(!items.length){box.innerHTML='<div class="booking-empty" style="grid-column:1/-1"><h3>No form submissions found</h3><p>Public custom-form enquiries will appear here.</p></div>';return}box.innerHTML=items.map((x,i)=>{const answers=x.answers&&typeof x.answers==='object'?x.answers:{};const labels=x.field_labels&&typeof x.field_labels==='object'?x.field_labels:{};const av=Object.entries(answers).map(([k,v])=>`<div class="form-answer-item"><b>${escapeHtml(labels[k]||k)}</b><span>${escapeHtml(v)}</span></div>`).join('');return `<article class="form-submission-card"><div class="form-submission-head"><div><div class="form-submission-title">${escapeHtml(x.submission_number||'Submission')}</div><div class="form-submission-card-name">${escapeHtml(x.card_name||x.username||'Card')} · ${escapeHtml(x.form_title||'Custom form')}</div></div><span class="lead-status ${formSubmissionStatusClass(x.status)}">${escapeHtml(formSubmissionStatusLabel(x.status))}</span></div><div class="form-submission-meta"><span>🕒 ${escapeHtml(leadDate(x.created_at))}</span>${x.name?`<span>👤 ${escapeHtml(x.name)}</span>`:''}${x.email?`<span>✉️ ${escapeHtml(x.email)}</span>`:''}${x.phone?`<span>📞 ${escapeHtml(x.phone)}</span>`:''}</div><div class="form-answer-list">${av}</div><div class="form-submission-actions"><select class="form-status-select"><option value="new" ${formSubmissionStatusClass(x.status)==='new'?'selected':''}>New</option><option value="contacted" ${formSubmissionStatusClass(x.status)==='contacted'?'selected':''}>Contacted</option><option value="resolved" ${formSubmissionStatusClass(x.status)==='resolved'?'selected':''}>Resolved</option><option value="archived" ${formSubmissionStatusClass(x.status)==='archived'?'selected':''}>Archived</option></select>${x.email?`<a class="btn ghost" href="mailto:${escapeHtml(x.email)}">Email</a>`:''}${x.phone?`<a class="btn ghost" href="tel:${escapeHtml(x.phone)}">Call</a>`:''}<button type="button" class="btn ghost form-status-save">Save</button></div></article>`}).join('');box.querySelectorAll('.form-status-save').forEach((b,i)=>{const x=items[i];b.onclick=()=>saveFormSubmissionStatus(x.id,b.closest('.form-submission-card')?.querySelector('.form-status-select')?.value||'new')})}
 async function loadFormSubmissions(){if(!authUser||!initDb())return;msg('formStatusMessage','Loading form submissions...');try{const r=await db.rpc('get_my_form_submissions');if(r.error)throw r.error;dashboardFormSubmissions=Array.isArray(r.data)?r.data:(Array.isArray(r.data?.submissions)?r.data.submissions:[]);renderFormSubmissions();msg('formStatusMessage','')}catch(e){console.error(e);msg('formStatusMessage','Could not load form submissions: '+(e.message||'Unknown error'),true)}}
 async function saveFormSubmissionStatus(id,status){if(!authUser||!id)return;try{const r=await db.rpc('update_my_form_submission',{p_submission_id:id,p_status:status});if(r.error)throw r.error;const x=dashboardFormSubmissions.find(v=>v.id===id);if(x)x.status=formSubmissionStatusClass(status);renderFormSubmissions();msg('formStatusMessage','Submission updated.')}catch(e){msg('formStatusMessage','Could not update submission: '+(e.message||'Unknown error'),true)}}
-function exportFormsCsv(){if(!dashboardFormSubmissions.length){msg('formStatusMessage','There are no form submissions to export.',true);return}const headers=['submission_number','card_name','username','form_title','name','email','phone','status','created_at','answers'];const esc=v=>`"${String(v??'').replace(/"/g,'""').replace(/\r?\n/g,' ')}"`;const csv=[headers.join(','),...dashboardFormSubmissions.map(x=>headers.map(h=>esc(h==='answers'?JSON.stringify(x[h]||{}):x[h])).join(','))].join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='zetacard-form-submissions.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),900);msg('formStatusMessage','CSV export created.')}
+function exportFormsCsv(){if(!dashboardFormSubmissions.length){msg('formStatusMessage','There are no form submissions to export.',true);return}const headers=['submission_number','card_name','username','form_title','name','email','phone','status','created_at','answers'];const esc=csvEscapeCell;const csv=[headers.join(','),...dashboardFormSubmissions.map(x=>headers.map(h=>esc(h==='answers'?JSON.stringify(x[h]||{}):x[h])).join(','))].join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='zetacard-form-submissions.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),900);msg('formStatusMessage','CSV export created.')}
 
 
 /* v48 — True Variation Design System: millions/billions of visible combinatorial compositions. */
@@ -2421,9 +2432,9 @@ function mountThreeDStudio(prefill={}){
 async function searchThreeDOnline(){
   const q=$("threeDSearch").value.trim();if(!q){msg("threeDSearchStatus","Enter a model name first.",true);return}const status=$("threeDSearchStatus"),results=$("threeDResults");status.className="threeD-status";status.textContent="Searching free models…";results.innerHTML="";if(!initDb()){status.className="threeD-status error";status.textContent="Supabase is unavailable.";return}
   try{const r=await db.functions.invoke("hyper-service",{body:{q,limit:8}});if(r.error)throw r.error;const list=Array.isArray(r.data?.results)?r.data.results:[];if(!list.length){status.textContent="No matching free models found.";return}status.className="threeD-status ok";status.textContent=`Found ${list.length} free model${list.length===1?"":"s"}.`;
-    results.innerHTML=list.map((m,i)=>'<div class="model-result"><div class="model-result-thumb">'+(m.thumbnail_url?'<img src="'+escapeHtml(m.thumbnail_url)+'" alt="">':'<span class="help">3D model</span>')+'</div><strong>'+escapeHtml(m.name||"3D model")+'</strong><small>'+escapeHtml(m.license||"CC0")+'</small><button type="button" class="btn secondary online-use" data-index="'+i+'">Use model</button></div>').join("");
-    document.querySelectorAll(".online-use").forEach(b=>b.addEventListener("click",()=>{const m=list[Number(b.dataset.index)];if(m?.cdn_url)selectThreeDModel(m.name||"Online model",m.cdn_url);else{status.className="threeD-status error";status.textContent="That result did not provide a GLB URL."}}));
-  }catch(e){status.className="threeD-status error";status.textContent="Online search failed. Make sure the Supabase hyper-service Edge Function is deployed and Verify JWT is OFF."}
+    results.innerHTML=list.map((m,i)=>'<div class="model-result"><div class="model-result-thumb">'+(safeHttpUrl(m.thumbnail_url)?'<img src="'+escapeHtml(safeHttpUrl(m.thumbnail_url))+'" alt="">':'<span class="help">3D model</span>')+'</div><strong>'+escapeHtml(m.name||"3D model")+'</strong><small>'+escapeHtml(m.license||"CC0")+'</small><button type="button" class="btn secondary online-use" data-index="'+i+'">Use model</button></div>').join("");
+    document.querySelectorAll(".online-use").forEach(b=>b.addEventListener("click",()=>{const m=list[Number(b.dataset.index)];if(safeHttpUrl(m?.cdn_url))selectThreeDModel(m.name||"Online model",safeHttpUrl(m.cdn_url));else{status.className="threeD-status error";status.textContent="That result did not provide a GLB URL."}}));
+  }catch(e){status.className="threeD-status error";status.textContent="Online search failed. Make sure the Supabase hyper-service Edge Function is deployed and confirm the Edge Function has the intended authentication and abuse protections."}
 }
 
 
@@ -2577,7 +2588,7 @@ function filteredOrders(){const q=clean($('orderSearchInput')?.value||'').toLowe
 function renderOrders(){const box=$('ordersGrid');if(!box)return;const counts={pending:0,confirmed:0,fulfilled:0,cancelled:0};dashboardOrders.forEach(o=>counts[orderStatusClass(o.status)]++);$('orderTotalKpi').textContent=dashboardOrders.length;$('orderPendingKpi').textContent=counts.pending;$('orderConfirmedKpi').textContent=counts.confirmed;$('orderFulfilledKpi').textContent=counts.fulfilled;$('orderCancelledKpi').textContent=counts.cancelled;const badge=$('dashboardOrderBadge');if(badge)badge.textContent=counts.pending?`(${counts.pending})`:'';const items=filteredOrders();if(!items.length){box.innerHTML='<div class="order-empty" style="grid-column:1/-1"><h3>No orders found</h3><p>Visitor orders from enabled storefronts will appear here.</p></div>';return}box.innerHTML=items.map((o,i)=>{const items=Array.isArray(o.items)?o.items:[];return `<article class="order-card" data-order-index="${i}"><div class="order-card-head"><div><div class="order-number">${escapeHtml(o.order_number||'Order')}</div><div class="order-customer">${escapeHtml(o.customer_name||'Customer')}</div><div class="order-card-name">${escapeHtml(o.card_name||o.username||'Card')}</div></div><span class="lead-status ${orderStatusClass(o.status)}">${escapeHtml(orderStatusLabel(o.status))}</span></div><div class="order-total-line"><strong>${escapeHtml(moneyLabel(o.total,o.currency||'₹'))}</strong><span>${escapeHtml(leadDate(o.created_at))}</span></div><div class="order-items">${items.map(x=>`<div><span>${escapeHtml(x.name)} × ${escapeHtml(x.quantity)}</span><b>${escapeHtml(moneyLabel(x.line_total||0,o.currency||'₹'))}</b></div>`).join('')}</div><div class="booking-details">${o.customer_email?`<span>✉️ ${escapeHtml(o.customer_email)}</span>`:''}${o.customer_phone?`<span>📞 ${escapeHtml(o.customer_phone)}</span>`:''}${o.customer_address?`<span>📍 ${escapeHtml(o.customer_address)}</span>`:''}${o.note?`<span>📝 ${escapeHtml(o.note)}</span>`:''}</div><div class="order-card-actions"><select class="order-status-select"><option value="pending" ${orderStatusClass(o.status)==='pending'?'selected':''}>Pending</option><option value="confirmed" ${orderStatusClass(o.status)==='confirmed'?'selected':''}>Confirmed</option><option value="fulfilled" ${orderStatusClass(o.status)==='fulfilled'?'selected':''}>Fulfilled</option><option value="cancelled" ${orderStatusClass(o.status)==='cancelled'?'selected':''}>Cancelled</option></select>${o.customer_email?`<a class="btn ghost" href="mailto:${escapeHtml(o.customer_email)}">Email</a>`:''}${o.customer_phone?`<a class="btn ghost" href="tel:${escapeHtml(o.customer_phone)}">Call</a>`:''}<button type="button" class="btn ghost order-save">Save</button></div></article>`}).join('');box.querySelectorAll('.order-save').forEach((b,i)=>{const o=items[i];b.onclick=()=>saveOrderStatus(o.id,b.closest('.order-card')?.querySelector('.order-status-select')?.value||'pending')})}
 async function loadOrders(){if(!authUser||!initDb())return;msg('orderStatusMessage','Loading orders...');try{const r=await db.rpc('get_my_orders');if(r.error)throw r.error;dashboardOrders=Array.isArray(r.data)?r.data:(Array.isArray(r.data?.orders)?r.data.orders:[]);renderOrders();msg('orderStatusMessage','')}catch(e){console.error(e);msg('orderStatusMessage','Could not load orders: '+(e.message||'Unknown error'),true)}}
 async function saveOrderStatus(id,status){if(!authUser||!id)return;try{const r=await db.rpc('update_my_order_status',{p_order_id:id,p_status:status});if(r.error)throw r.error;const o=dashboardOrders.find(x=>x.id===id);if(o)o.status=status;renderOrders();msg('orderStatusMessage','Order updated.')}catch(e){msg('orderStatusMessage','Could not update order: '+(e.message||'Unknown error'),true)}}
-function exportOrdersCsv(){if(!dashboardOrders.length){msg('orderStatusMessage','There are no orders to export.',true);return}const headers=['order_number','customer_name','customer_email','customer_phone','customer_address','card_name','username','currency','total','status','note','created_at'];const esc=v=>`"${String(v??'').replace(/"/g,'""').replace(/\r?\n/g,' ')}"`;const csv=[headers.join(','),...dashboardOrders.map(o=>headers.map(h=>esc(o[h])).join(','))].join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='zetacard-orders.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),900);msg('orderStatusMessage','CSV export created.')}
+function exportOrdersCsv(){if(!dashboardOrders.length){msg('orderStatusMessage','There are no orders to export.',true);return}const headers=['order_number','customer_name','customer_email','customer_phone','customer_address','card_name','username','currency','total','status','note','created_at'];const esc=csvEscapeCell;const csv=[headers.join(','),...dashboardOrders.map(o=>headers.map(h=>esc(o[h])).join(','))].join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='zetacard-orders.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),900);msg('orderStatusMessage','CSV export created.')}
 
 
 let catalogProducts = [];
@@ -2589,12 +2600,12 @@ function parseCatalogProducts(raw){
     const arr=JSON.parse(s);
     if(Array.isArray(arr)) return arr.map(x=>({
       name:clean(x.name),price:clean(x.price),description:clean(x.description),
-      category:clean(x.category),url:clean(x.url),model_url:clean(x.model_url),image:clean(x.image),order_price:clean(x.order_price||priceNumber(x.price)||''),orderable:x.orderable!==false
+      category:clean(x.category),url:safeHttpUrl(x.url),model_url:safeHttpUrl(x.model_url),image:safeHttpUrl(x.image),order_price:clean(x.order_price||priceNumber(x.price)||''),orderable:x.orderable!==false
     })).filter(x=>x.name);
   }catch(e){}
   return s.split(/\n+/).map(line=>line.trim()).filter(Boolean).map(line=>{
     const p=line.split(/\s+\|\s+|\s+—\s+/);
-    return {name:clean(p[0]),price:clean(p[1]),description:clean(p[2]),category:clean(p[3]),url:clean(p[4]),model_url:clean(p[5]),image:"",order_price:clean(priceNumber(p[1])||""),orderable:true};
+    return {name:clean(p[0]),price:clean(p[1]),description:clean(p[2]),category:clean(p[3]),url:safeHttpUrl(p[4]),model_url:safeHttpUrl(p[5]),image:"",order_price:clean(priceNumber(p[1])||""),orderable:true};
   }).filter(x=>x.name);
 }
 function syncCatalogField(){
@@ -2665,15 +2676,20 @@ function renderCatalogEditor(){
 function renderCatalogLivePreview(){
   const box=$("catalogLivePreview");if(!box)return;
   const items=catalogProducts.filter(x=>x.name);
-  box.innerHTML=items.length?items.map((p,i)=>`<article class="catalog-live-card">
-    <div class="catalog-live-image">${p.image?`<img src="${escapeHtml(p.image)}" alt="">`:"🛍️"}</div>
-    <h4>${escapeHtml(p.name)}</h4>
-    <div class="price">${escapeHtml(p.price||"Price on request")}</div>
-    <div class="desc">${escapeHtml(p.description||"Explore this product.")}</div>
-    <div class="catalog-live-actions">${p.model_url?`<button type="button" class="primary catalog-preview-3d" data-ci="${i}">View 3D</button>`:""}${p.url?`<a href="${escapeHtml(p.url)}" target="_blank" rel="noopener">Open link</a>`:""}</div>
-  </article>`).join(""):'<div class="catalog-empty">Add your first product.</div>';
+  box.innerHTML=items.length?items.map((p,i)=>{
+    const imageUrl=safeHttpUrl(p.image),modelUrl=safeHttpUrl(p.model_url),productUrl=safeHttpUrl(p.url);
+    return `<article class="catalog-live-card">
+      <div class="catalog-live-image">${imageUrl?`<img src="${escapeHtml(imageUrl)}" alt="">`:"🛍️"}</div>
+      <h4>${escapeHtml(p.name)}</h4>
+      <div class="price">${escapeHtml(p.price||"Price on request")}</div>
+      <div class="desc">${escapeHtml(p.description||"Explore this product.")}</div>
+      <div class="catalog-live-actions">${modelUrl?`<button type="button" class="primary catalog-preview-3d" data-ci="${i}">View 3D</button>`:""}${productUrl?`<a href="${escapeHtml(productUrl)}" target="_blank" rel="noopener noreferrer">Open link</a>`:""}</div>
+    </article>`;
+  }).join(""):'<div class="catalog-empty">Add your first product.</div>';
   box.querySelectorAll(".catalog-preview-3d").forEach(b=>b.addEventListener("click",()=>{
-    const p=items[Number(b.dataset.ci)];const viewer=$("threeDViewer");if(viewer&&p?.model_url){ensureStudioHiddenFields();setStudioValue("ar_model_url",p.model_url);setStudioValue("model_name",p.name);viewer.src=p.model_url;msg("threeDSelected","Catalog 3D preview: "+p.name)}else msg("formStatus","This catalog product has no GLB URL.",true);
+    const p=items[Number(b.dataset.ci)],modelUrl=safeHttpUrl(p?.model_url),viewer=$("threeDViewer");
+    if(viewer&&modelUrl){ensureStudioHiddenFields();setStudioValue("ar_model_url",modelUrl);setStudioValue("model_name",p.name);viewer.src=modelUrl;msg("threeDSelected","Catalog 3D preview: "+p.name)}
+    else msg("formStatus","This catalog product has no valid HTTP(S) GLB URL.",true);
   }));
 }
 function catalogPayload(raw){return parseCatalogProducts(raw)}
@@ -2686,13 +2702,17 @@ function renderPublicCatalogItems(c){
   const grid=$("publicCatalogGrid");if(!grid)return;
   const q=clean($("publicCatalogSearch")?.value||"").toLowerCase();
   const filtered=products.filter(p=>(p.name+" "+p.category+" "+p.description).toLowerCase().includes(q));
-  grid.innerHTML=filtered.length?filtered.map((p,i)=>`<article class="catalog-public-card">
-    <div class="name">${escapeHtml(p.name)}</div>
-    <div class="cat">${escapeHtml(p.category||"Featured")}</div>
-    <div class="price">${escapeHtml(p.price||"Price on request")}</div>
-    <div class="desc">${escapeHtml(p.description||"Explore this product.")}</div>
-    <div class="catalog-public-actions">${p.model_url?`<button type="button" class="primary public-cat-3d" data-index="${i}">View 3D</button>`:""}${p.url?`<a href="${escapeHtml(p.url)}" target="_blank" rel="noopener">Enquire</a>`:""}<button type="button" class="public-cat-details" data-index="${i}">Details</button></div>
-  </article>`).join(""):'<div class="catalog-empty">No matching products.</div>';
+  grid.innerHTML=filtered.length?filtered.map((p,i)=>{
+    const imageUrl=safeHttpUrl(p.image),modelUrl=safeHttpUrl(p.model_url),productUrl=safeHttpUrl(p.url);
+    return `<article class="catalog-public-card">
+      ${imageUrl?`<img class="catalog-public-image" src="${escapeHtml(imageUrl)}" alt="${escapeHtml(p.name)}">`:""}
+      <div class="name">${escapeHtml(p.name)}</div>
+      <div class="cat">${escapeHtml(p.category||"Featured")}</div>
+      <div class="price">${escapeHtml(p.price||"Price on request")}</div>
+      <div class="desc">${escapeHtml(p.description||"Explore this product.")}</div>
+      <div class="catalog-public-actions">${modelUrl?`<button type="button" class="primary public-cat-3d" data-index="${i}">View 3D</button>`:""}${productUrl?`<a href="${escapeHtml(productUrl)}" target="_blank" rel="noopener noreferrer">Enquire</a>`:""}<button type="button" class="public-cat-details" data-index="${i}">Details</button></div>
+    </article>`;
+  }).join(""):'<div class="catalog-empty">No matching products.</div>';
   grid.querySelectorAll(".public-cat-details").forEach(b=>b.addEventListener("click",()=>openCatalogDetails(filtered[Number(b.dataset.index)])));
   grid.querySelectorAll(".public-cat-3d").forEach(b=>b.addEventListener("click",()=>openCatalogDetails(filtered[Number(b.dataset.index)],true)));
 }
@@ -2702,8 +2722,8 @@ function openCatalogDetails(p,showModel=false){
   if(!modal){modal=document.createElement("div");modal.id="catalogDetailModal";modal.className="catalog-detail-modal";modal.innerHTML='<div class="catalog-detail-card"><div class="catalog-detail-head"><div><h3 id="catalogDetailTitle"></h3><div id="catalogDetailPrice" class="price"></div></div><button type="button" id="catalogDetailClose" class="btn ghost">Close</button></div><p id="catalogDetailText"></p><div id="catalogDetailModel" class="catalog-detail-model"></div><div class="controls" id="catalogDetailActions"></div></div>';document.body.appendChild(modal);$("catalogDetailClose").addEventListener("click",()=>modal.classList.remove("show"));modal.addEventListener("click",e=>{if(e.target===modal)modal.classList.remove("show")})}
   $("catalogDetailTitle").textContent=p.name||"Product";$("catalogDetailPrice").textContent=p.price||"Price on request";$("catalogDetailText").textContent=p.description||"";
   const modelBox=$("catalogDetailModel");modelBox.innerHTML="";
-  if(showModel&&p.model_url){const v=document.createElement("model-viewer");v.setAttribute("camera-controls","");v.setAttribute("auto-rotate","");v.setAttribute("ar","");v.setAttribute("ar-modes","webxr scene-viewer quick-look");v.src=p.model_url;modelBox.appendChild(v)}
-  $("catalogDetailActions").innerHTML=p.url?`<a class="btn primary" href="${escapeHtml(p.url)}" target="_blank" rel="noopener">Open product link</a>`:"";
+  const safeModelUrl=safeHttpUrl(p.model_url);if(showModel&&safeModelUrl){const v=document.createElement("model-viewer");v.setAttribute("camera-controls","");v.setAttribute("auto-rotate","");v.setAttribute("ar","");v.setAttribute("ar-modes","webxr scene-viewer quick-look");v.src=safeModelUrl;modelBox.appendChild(v)}
+  const productUrl=safeHttpUrl(p.url);$("catalogDetailActions").innerHTML=productUrl?`<a class="btn primary" href="${escapeHtml(productUrl)}" target="_blank" rel="noopener noreferrer">Open product link</a>`:"";
   modal.classList.add("show");
 }
 function setupPublicCatalog(c){
@@ -2714,7 +2734,7 @@ function setupPublicCatalog(c){
   renderPublicCatalogItems(c);
 }
 
-function updatePreview(){if(!selectedType)return;const c=values();let photo=imageObjectUrl||"";const el=$("mainCard");el.className="card-preview card-"+selectedType+" theme-"+themeClass()+(TYPES[selectedType].theme?" recolorable":"");applyCardAppearance(el,c);applyTemplateStyle(el,selectedType,c.design_template||designTemplate||defaultTemplate(selectedType));el.innerHTML=renderCardMarkup(selectedType,c,photo);renderSocialLinks($("mainSocialLinks"),c.social_links||[],c._appearance||readAppearance(),false);renderShowcaseSections($("mainShowcaseSections"),c.showcase_sections||[],c._appearance||readAppearance(),true);renderTestimonials($("mainTestimonials"),c.testimonials||[],c._appearance||readAppearance(),true);renderFaqs($("mainFaq"),c.faq_items||[],c._appearance||readAppearance(),true);renderCustomForm($(mainCustomForm),c.custom_form_settings||{},c._appearance||readAppearance(),true);renderStorefront($("mainStorefront"),c,selectedType,true);renderBookingWidget($("mainBooking"),c.booking_settings||{},true);if((selectedType==="product"||selectedType==="property")&&c.ar_model_url){el.innerHTML+='<div class="public-ar"><model-viewer class="ar-viewer" src="'+escapeHtml(c.ar_model_url)+'" ar ar-modes="webxr scene-viewer quick-look" camera-controls auto-rotate alt="Interactive 3D experience"><button slot="ar-button" class="ar-action">View in your space</button></model-viewer></div>'}if(selectedType==="catalog"){const wrap=$("mainCard").querySelector("#publicCatalog");if(wrap){const run=()=>{const c2=values();renderPublicCatalogItems(c2)};$("mainCard").querySelector("#publicCatalogSearchBtn")?.addEventListener("click",run);$("mainCard").querySelector("#publicCatalogSearch")?.addEventListener("keydown",e=>{if(e.key==="Enter")run()});}}}
+function updatePreview(){if(!selectedType)return;const c=values();let photo=imageObjectUrl||"";const el=$("mainCard");el.className="card-preview card-"+selectedType+" theme-"+themeClass()+(TYPES[selectedType].theme?" recolorable":"");applyCardAppearance(el,c);applyTemplateStyle(el,selectedType,c.design_template||designTemplate||defaultTemplate(selectedType));el.innerHTML=renderCardMarkup(selectedType,c,photo);renderSocialLinks($("mainSocialLinks"),c.social_links||[],c._appearance||readAppearance(),false);renderShowcaseSections($("mainShowcaseSections"),c.showcase_sections||[],c._appearance||readAppearance(),true);renderTestimonials($("mainTestimonials"),c.testimonials||[],c._appearance||readAppearance(),true);renderFaqs($("mainFaq"),c.faq_items||[],c._appearance||readAppearance(),true);renderCustomForm($(mainCustomForm),c.custom_form_settings||{},c._appearance||readAppearance(),true);renderStorefront($("mainStorefront"),c,selectedType,true);renderBookingWidget($("mainBooking"),c.booking_settings||{},true);const previewModelUrl=safeMediaPreviewUrl(c.ar_model_url);if((selectedType==="product"||selectedType==="property")&&previewModelUrl){el.innerHTML+='<div class="public-ar"><model-viewer class="ar-viewer" src="'+escapeHtml(previewModelUrl)+'" ar ar-modes="webxr scene-viewer quick-look" camera-controls auto-rotate alt="Interactive 3D experience"><button slot="ar-button" class="ar-action">View in your space</button></model-viewer></div>'}if(selectedType==="catalog"){const wrap=$("mainCard").querySelector("#publicCatalog");if(wrap){const run=()=>{const c2=values();renderPublicCatalogItems(c2)};$("mainCard").querySelector("#publicCatalogSearchBtn")?.addEventListener("click",run);$("mainCard").querySelector("#publicCatalogSearch")?.addEventListener("keydown",e=>{if(e.key==="Enter")run()});}}}
 function experienceData(profile){const content=profile.card_data||{};return {...content}}
 function normalizedProfile(p){const q={...p};q.card_type=TYPES[p.card_type]?p.card_type:"visiting";q.card_data=q.card_data||{};q.theme=safeTheme(p.theme);q.avatar_url=p.avatar_url||"";q.ar_model_url=p.ar_model_url||q.card_data.ar_model_url||"";q.ar_usdz_url=p.ar_usdz_url||q.card_data.ar_usdz_url||"";q.model_name=p.model_name||q.card_data.model_name||"";q.model_scale=Number(p.model_scale||q.card_data.model_scale||100);q.hotspots=p.hotspots||q.card_data.hotspots||[];return q}
 async function findAvailableUsername(base){
@@ -2801,6 +2821,7 @@ function openBuilder(){
   if(typeof modelFile!=="undefined")modelFile=null;
   if(typeof threeDHotspots!=="undefined")threeDHotspots=[];
   if(typeof threeDScale!=="undefined")threeDScale=2.8;
+  clearImage();imageRemoved=false;
   selectedType="";mainTheme="midnight";designTemplate="";currentProfile=null;ownerSession=false;editToken="";editing=false;showcaseSections=[];socialLinks=[];testimonials=[];faqItems=[];bookingSettings=sanitizeBookingSettings({});customFormSettings=sanitizeCustomFormSettings({});storeSettings=sanitizeStoreSettings({});publicStoreCart=[];
   $("typeStatus").textContent="";$("continueBtn").disabled=true;$("typePill").textContent="Choose a type";
   document.querySelectorAll(".type-option").forEach(b=>b.classList.remove("selected"));
@@ -2832,10 +2853,11 @@ function renderPublicCard(p){
   applyCardAppearance(el,c);
   applyTemplateStyle(el,p.card_type,c.design_template||defaultTemplate(p.card_type));
   el.innerHTML=renderCardMarkup(p.card_type,c,photo);renderSocialLinks($("publicSocialLinks"),c.social_links||[],c._appearance||{},true);renderShowcaseSections($("publicShowcaseSections"),c.showcase_sections||[],c._appearance||{},false);renderTestimonials($("publicTestimonials"),c.testimonials||[],c._appearance||{},false);renderFaqs($("publicFaq"),c.faq_items||[],c._appearance||{},false);{const fb=$("publicCustomForm");if(fb){fb.innerHTML="";fb.style.display="none";fb.hidden=true;fb.setAttribute("aria-hidden","true")}}renderStorefront($("publicStorefront"),c,p.card_type,false);renderOrderTracking(c,p.card_type);if(ssafeStoreEnabled(c,p.card_type))recordEvent(p.username,'store_open');if(p.card_type==="catalog")setupPublicCatalog(c);
-  if((p.card_type==="product"||p.card_type==="property")&&p.ar_model_url){
+  const publicModelUrl=safeHttpUrl(p.ar_model_url||c.ar_model_url),publicUsdzUrl=safeHttpUrl(p.ar_usdz_url||c.ar_usdz_url);
+  if((p.card_type==="product"||p.card_type==="property")&&publicModelUrl){
     const box=document.createElement("div");box.className="public-ar";
-    const v=document.createElement("model-viewer");v.className="ar-viewer";v.setAttribute("camera-controls","");v.setAttribute("auto-rotate","");v.setAttribute("ar","");v.setAttribute("ar-modes","webxr scene-viewer quick-look");v.setAttribute("shadow-intensity","1");v.setAttribute("exposure","1");v.setAttribute("alt","Interactive 3D experience");v.src=p.ar_model_url;
-    if(p.ar_usdz_url)v.setAttribute("ios-src",p.ar_usdz_url);
+    const v=document.createElement("model-viewer");v.className="ar-viewer";v.setAttribute("camera-controls","");v.setAttribute("auto-rotate","");v.setAttribute("ar","");v.setAttribute("ar-modes","webxr scene-viewer quick-look");v.setAttribute("shadow-intensity","1");v.setAttribute("exposure","1");v.setAttribute("alt","Interactive 3D experience");v.src=publicModelUrl;
+    if(publicUsdzUrl)v.setAttribute("ios-src",publicUsdzUrl);
     const scale=Number(p.model_scale||100);const radius=5.4-(scale/100)*2.6;v.cameraOrbit=`0deg 75deg ${Math.max(1.2,Math.min(5.2,radius))}m`;
     (Array.isArray(p.hotspots)?p.hotspots:[]).forEach((h,i)=>{const b=document.createElement("button");b.type="button";b.className="zc-hotspot";b.slot="hotspot-"+i;b.textContent=h.title||("Detail "+(i+1));b.setAttribute("data-position",h.position||"0m 1m 0m");b.setAttribute("data-normal",h.normal||"0m 1m 0m");b.style.cssText="padding:6px 9px;border-radius:999px;border:2px solid #536dfe;background:#fff;color:#26335f;font-size:10px;font-weight:900;box-shadow:0 4px 14px rgba(0,0,0,.15)";v.appendChild(b)});
     const ar=document.createElement("button");ar.slot="ar-button";ar.type="button";ar.className="ar-action";ar.textContent="View in your space";v.appendChild(ar);
@@ -2891,19 +2913,22 @@ async function syncLeadVisibility(){
   const leadBox=$("leadCapture");
   if(!leadBox||!currentProfile)return;
 
-  // Never retain visibility from a previously opened card.
-  leadBox.hidden=false;
-  leadBox.style.display="block";
-  leadBox.removeAttribute("aria-hidden");
-
-  const owner=await resolveViewerIsOwner(currentProfile);
-  if(owner){
-    leadBox.hidden=true;
-    leadBox.style.display="none";
-    leadBox.setAttribute("aria-hidden","true");
+  // Default to hidden while checking. This prevents a brief owner-only leak/flicker.
+  leadBox.hidden=true;
+  leadBox.style.display="none";
+  leadBox.setAttribute("aria-hidden","true");
+  try{
+    const owner=await resolveViewerIsOwner(currentProfile);
+    if(!owner){
+      leadBox.hidden=false;
+      leadBox.style.display="block";
+      leadBox.removeAttribute("aria-hidden");
+    }
+  }catch(error){
+    console.warn("ZetaCard lead form visibility check failed",error);
+    // Fail closed if ownership cannot be determined.
   }
 }
-
 async function openShared(p){
   currentProfile=p;
   showShared();
@@ -2924,11 +2949,128 @@ async function openShared(p){
   if(back)back.textContent=openedFromDashboard?"← My Cards":"← Home";
   await syncOwnerUi();
 }
-async function syncOwnerUi(){const show=!!(ownerSession&&currentProfile&&editToken&&await verifyOwner(currentProfile.username,editToken));$("ownerActions").style.display=show?"flex":"none";$("ownerNote").style.display=show?"block":"none";$("analytics").classList.toggle("show",show);if(show)loadAnalytics()}
+async function syncOwnerUi(){
+  const tokenOwner=!!(currentProfile&&editToken&&await verifyOwner(currentProfile.username,editToken));
+  const accountOwner=!!(currentProfile&&authUser&&currentProfile.id&&await isMyCard(currentProfile.id));
+  const show=tokenOwner||accountOwner;
+  const actions=$("ownerActions"),note=$("ownerNote"),analytics=$("analytics");
+  if(actions)actions.style.display=show?"flex":"none";
+  if(note)note.style.display=show?"block":"none";
+  if($("editBtn"))$("editBtn").style.display=show?"inline-flex":"none";
+  if($("copyEditBtn"))$("copyEditBtn").style.display=tokenOwner?"inline-flex":"none";
+  if(analytics)analytics.classList.toggle("show",tokenOwner);
+  if(tokenOwner)loadAnalytics();
+}
 async function loadAnalytics(){if(!currentProfile||!editToken)return;msg("analyticsStatus","Loading...");try{const r=await db.rpc("get_profile_analytics",{p_username:currentProfile.username,p_token_hash:await hash(editToken)});if(r.error)throw r.error;const counts={view:0,phone_click:0,email_click:0,share:0,share_whatsapp:0,share_telegram:0,share_email:0,copy_link:0,booking_open:0,booking_submit:0,form_open:0,form_submit:0,store_open:0,cart_add:0,checkout_open:0,order_submit:0,order_track:0};let socialClicks=0;(r.data||[]).forEach(x=>{counts[x.event_type]=Number(x.event_count)||0;if(/^social_click_/i.test(x.event_type||""))socialClicks+=Number(x.event_count)||0});$("viewsCount").textContent=counts.view;$("phoneCount").textContent=counts.phone_click;$("emailCount").textContent=counts.email_click;$("shareCount").textContent=counts.share;$("socialClicksCount").textContent=socialClicks;$("bookingSubmitCount").textContent=counts.booking_submit;$("orderSubmitCount").textContent=counts.order_submit;$("orderTrackCount").textContent=counts.order_track;if($("formSubmitCount"))$("formSubmitCount").textContent=counts.form_submit;$("shareWhatsappCount").textContent=counts.share_whatsapp;$("shareTelegramCount").textContent=counts.share_telegram;$("shareEmailCount").textContent=counts.share_email;$("copyLinkCount").textContent=counts.copy_link;const bd=$("shareBreakdown");if(bd)bd.style.display="grid";msg("analyticsStatus","")}catch(e){msg("analyticsStatus","Could not load analytics.",true)}}
-async function openProfileFromUrl(){const params=new URLSearchParams(location.search);let u=uname(params.get("u")||"");let privateEdit=false;let key="";if(location.hash.startsWith("#edit=")){const h=new URLSearchParams(location.hash.slice(1));u=uname(h.get("edit"));key=h.get("key")||"";privateEdit=true}if(!u)return false;if(!initDb())return false;try{await refreshAuth();const r=await db.rpc("get_public_profile",{p_username:u});if(r.error)throw r.error;if(!r.data)throw new Error("Profile not found.");const p=normalizedProfile(r.data);ownerSession=false;editToken="";openedFromDashboard=false;if(privateEdit&&key){storeToken(u,key);editToken=key;ownerSession=await verifyOwner(u,key)}await openShared(p);recordEvent(p.username,"view");history.replaceState(null,"",profileUrl(u));if(privateEdit&&ownerSession){startEdit(p)}return true}catch(e){showShared();msg("sharedError",e.message||"Could not load this card.",true);return true}}
-function startEdit(p){editing=true;selectedType=p.card_type;mainTheme=p.theme;designTemplate=sanitizeDesignTemplate(selectedType,p.card_data?.design_template||defaultTemplate(selectedType));showBuilder();showFormStep();renderForm(p.card_data||{});document.querySelectorAll(".type-option").forEach(b=>b.classList.toggle("selected",b.dataset.type===selectedType));$("typePill").textContent=TYPES[selectedType].icon+" "+TYPES[selectedType].label;Object.entries(p.card_data||{}).forEach(([k,v])=>{const el=document.querySelector('#dynamicForm [data-key="'+CSS.escape(k)+'"]');if(el)el.value=v});if(TYPES[selectedType].photo&&p.avatar_url&&p.avatar_url.startsWith("http")){$("identityPreview").innerHTML='<img alt="Card image" src="'+escapeHtml(p.avatar_url)+'">'}updatePreview();msg("formStatus","You are editing this card.")}
-async function saveEdit(){if(!currentProfile)return;if(!authUser&&!editToken)return;const c=values();const base=baseProfile(c);const required=SCHEMAS[selectedType].filter(x=>x[4]).map(x=>x[0]);const missing=required.find(k=>!clean(c[k]));if(missing){msg("formStatus","Please complete: "+missing,true);return}try{msg("formStatus","Saving changes...");let avatarUrl=currentProfile.avatar_url||"avatar:initials";if(imageFile)avatarUrl=await uploadImage(imageFile,currentProfile.username);let r;if(authUser&&currentProfile.id){r=await db.rpc("update_my_card",{p_profile_id:currentProfile.id,p_name:base.name,p_job_title:base.job_title,p_company:base.company,p_phone:base.phone,p_email:base.email,p_bio:base.bio,p_theme:mainTheme,p_avatar_url:avatarUrl,p_card_type:selectedType,p_card_data:c,p_ar_model_url:c.ar_model_url||"",p_ar_usdz_url:c.ar_usdz_url||""});}else{r=await db.rpc("update_card_with_owner",{p_token_hash:await hash(editToken),p_username:currentProfile.username,p_name:base.name,p_job_title:base.job_title,p_company:base.company,p_phone:base.phone,p_email:base.email,p_bio:base.bio,p_theme:mainTheme,p_avatar_url:avatarUrl,p_card_type:selectedType,p_card_data:c,p_ar_model_url:c.ar_model_url||"",p_ar_usdz_url:c.ar_usdz_url||""});}if(r.error)throw r.error;const saved=normalizedProfile(r.data);currentProfile=saved;openedFromDashboard=false;await openShared(saved);history.replaceState(null,"",profileUrl(saved.username));if(authUser)await logSecurityEvent("card_updated",{username:saved.username,card_type:selectedType});msg("sharedStatus","Card updated successfully.");}catch(e){msg("formStatus",e.message||"Could not update the card.",true)}}
+async function openProfileFromUrl(){
+  const params=new URLSearchParams(location.search);
+  let u=uname(params.get("u")||"");
+  let privateEdit=false,key="";
+  if(location.hash.startsWith("#edit=")){
+    const h=new URLSearchParams(location.hash.slice(1));
+    u=uname(h.get("edit"));key=h.get("key")||"";privateEdit=true;
+  }
+  // Backward compatibility for older /username links when the host has a SPA fallback.
+  if(!u){
+    try{
+      const basePath=new URL(SITE_BASE,location.origin).pathname;
+      let remainder=location.pathname;
+      if(remainder.startsWith(basePath))remainder=remainder.slice(basePath.length);
+      const last=remainder.split("/").filter(Boolean).pop()||"";
+      const candidate=uname(decodeURIComponent(last));
+      if(validUsername(candidate))u=candidate;
+    }catch(e){}
+  }
+  if(!u)return false;
+  if(!initDb())return false;
+  try{
+    await refreshAuth();
+    const r=await db.rpc("get_public_profile",{p_username:u});
+    if(r.error)throw r.error;
+    if(!r.data)throw new Error("Profile not found.");
+    const p=normalizedProfile(r.data);
+    ownerSession=false;editToken="";openedFromDashboard=false;
+    if(privateEdit&&key){storeToken(u,key);editToken=key;ownerSession=await verifyOwner(u,key)}
+    await openShared(p);recordEvent(p.username,"view");
+    history.replaceState(null,"",profileUrl(u));
+    if(privateEdit&&ownerSession)startEdit(p);
+    return true;
+  }catch(e){showShared();msg("sharedError",e.message||"Could not load this card.",true);return true}
+}
+function startEdit(p){
+  if(imageObjectUrl)URL.revokeObjectURL(imageObjectUrl);
+  imageObjectUrl=null;imageFile=null;imageRemoved=false;
+  if(modelObjectUrl)URL.revokeObjectURL(modelObjectUrl);
+  modelObjectUrl="";modelFile=null;
+  currentProfile=p;editing=true;selectedType=p.card_type;mainTheme=p.theme;
+  designTemplate=sanitizeDesignTemplate(selectedType,p.card_data?.design_template||defaultTemplate(selectedType));
+  showBuilder();showFormStep();renderForm(p.card_data||{});
+  document.querySelectorAll(".type-option").forEach(b=>b.classList.toggle("selected",b.dataset.type===selectedType));
+  $("typePill").textContent=TYPES[selectedType].icon+" "+TYPES[selectedType].label;
+  Object.entries(p.card_data||{}).forEach(([k,v])=>{const el=document.querySelector('#dynamicForm [data-key="'+CSS.escape(k)+'"]');if(el)el.value=v});
+  if(TYPES[selectedType].photo&&p.avatar_url&&p.avatar_url.startsWith("http")){$("identityPreview").innerHTML='<img alt="Card image" src="'+escapeHtml(p.avatar_url)+'">';$("fileName").textContent="Current image"}
+  else renderIdentityPreview();
+  updatePreview();msg("formStatus","You are editing this card.");
+}
+async function saveEdit(){
+  if(!currentProfile)return;
+  if(!authUser&&!editToken)return;
+  const c=values();
+  const base=baseProfile(c);
+  const required=SCHEMAS[selectedType].filter(x=>x[4]).map(x=>x[0]);
+  const missing=required.find(k=>!clean(c[k]));
+  if(missing){msg("formStatus","Please complete: "+missing,true);return}
+  const accountOwner=!!(authUser&&currentProfile.id&&await isMyCard(currentProfile.id));
+  const tokenOwner=!!(editToken&&await verifyOwner(currentProfile.username,editToken));
+  if(!accountOwner&&!tokenOwner){msg("formStatus","You do not have permission to edit this card.",true);return}
+  try{
+    msg("formStatus","Saving changes...");
+    let avatarUrl=currentProfile.avatar_url||"avatar:initials";
+    if(imageFile){msg("formStatus","Uploading image...");avatarUrl=await uploadImage(imageFile,currentProfile.username)}
+    else if(imageRemoved){avatarUrl="avatar:initials"}
+
+    let modelUrl=Object.prototype.hasOwnProperty.call(c,"ar_model_url")?clean(c.ar_model_url):clean(currentProfile.ar_model_url||currentProfile.card_data?.ar_model_url||"");
+    if(modelFile){
+      msg("formStatus","Uploading 3D model...");
+      modelUrl=await uploadModel(modelFile,currentProfile.username);
+      c.ar_model_url=modelUrl;
+      setStudioValue("ar_model_url",modelUrl);
+    }else if(modelUrl.startsWith("blob:")){
+      throw new Error("This is a temporary local 3D preview. Please select the GLB file again before saving.");
+    }else if(modelUrl){
+      const safeModelUrl=safeHttpUrl(modelUrl);
+      if(!safeModelUrl)throw new Error("The 3D model URL must use HTTP or HTTPS.");
+      modelUrl=safeModelUrl;c.ar_model_url=modelUrl;
+    }else if(Object.prototype.hasOwnProperty.call(c,"ar_model_url")){
+      c.ar_model_url="";
+    }
+    const usdzUrl=safeHttpUrl(c.ar_usdz_url||"");
+    if(Object.prototype.hasOwnProperty.call(c,"ar_usdz_url"))c.ar_usdz_url=usdzUrl;
+
+    let r;
+    const args={
+      p_name:base.name,p_job_title:base.job_title,p_company:base.company,
+      p_phone:base.phone,p_email:base.email,p_bio:base.bio,p_theme:mainTheme,
+      p_avatar_url:avatarUrl,p_card_type:selectedType,p_card_data:c,
+      p_ar_model_url:modelUrl,p_ar_usdz_url:usdzUrl
+    };
+    if(accountOwner){
+      r=await db.rpc("update_my_card",{p_profile_id:currentProfile.id,...args});
+    }else{
+      r=await db.rpc("update_card_with_owner",{p_token_hash:await hash(editToken),p_username:currentProfile.username,...args});
+    }
+    if(r.error)throw r.error;
+    const saved=normalizedProfile(r.data);
+    currentProfile=saved;openedFromDashboard=false;
+    imageFile=null;imageRemoved=false;
+    if(imageObjectUrl)URL.revokeObjectURL(imageObjectUrl);imageObjectUrl=null;
+    if(modelObjectUrl)URL.revokeObjectURL(modelObjectUrl);modelObjectUrl="";modelFile=null;
+    await openShared(saved);
+    history.replaceState(null,"",profileUrl(saved.username));
+    if(authUser)await logSecurityEvent("card_updated",{username:saved.username,card_type:selectedType});
+    msg("sharedStatus","Card updated successfully.");
+  }catch(e){msg("formStatus",e.message||"Could not update the card.",true)}
+}
 function editOrCreate(){if(editing)saveEdit();else createProfile()}
 async function recordEvent(u,type){if(!u||!initDb())return;try{await db.rpc("record_profile_event",{p_username:u,p_event_type:type})}catch(e){}}
 
@@ -2997,7 +3139,7 @@ function v47Vars(el,type,id){
   el.style.setProperty('--v48-pattern',d.pattern);el.style.backgroundImage=type==='wedding'?(family==='royal'||family==='temple'?'none':d.pattern):d.pattern;
   return {d,p,family,idx}
 }
-function applyTemplateStyle(el,type,id){
+function applyTemplateStyleV47Base(el,type,id){
   if(!el||!type)return;
   const v=sanitizeDesignTemplate(type,id||defaultTemplate(type));
   // keep older classes so add-ons still inherit them, then layer v47.
@@ -3294,7 +3436,7 @@ function v49ApplyVariationClass(el,type,id){
   el.classList.add('v48-realized',type==='wedding'?'v48-wedding':type==='identity'?'v48-identity':'v48-generic',code+v49Variant(type,d,max));
   return d;
 }
-const _zcV47ApplyTemplateStyle=applyTemplateStyle;
+const _zcV47ApplyTemplateStyle=applyTemplateStyleV47Base;
 function applyTemplateStyle(el,type,id){
   if(!el||!type)return;
   _zcV47ApplyTemplateStyle(el,type,id);
@@ -3414,8 +3556,14 @@ window.addEventListener("DOMContentLoaded",async()=>{
   $("landingCreate").onclick=openBuilder;$("landingCreateTop").onclick=openBuilder;$("createOwnBtn").onclick=openBuilder;$("sharedHome").onclick=()=>{if(openedFromDashboard){openedFromDashboard=false;showDashboard()}else showLanding()};
   $("builderBack").onclick=backAction;$("backToTypes").onclick=showTypeStep;$("continueBtn").onclick=()=>showFormStep();$("createBtn").onclick=editOrCreate;$("clearBtn").onclick=clearForm;
   $("copyLinkBtn").onclick=copyLink;$("shareBtn").onclick=()=>toggleShareMenu();$("saveContactBtn").onclick=saveContact;$("closeShareMenu").onclick=()=>toggleShareMenu(false);$("nativeShareBtn").onclick=shareNative;$("whatsappShareBtn").onclick=()=>openChannelShare("whatsapp");$("telegramShareBtn").onclick=()=>openChannelShare("telegram");$("emailShareBtn").onclick=()=>openChannelShare("email");$("downloadQrBtn").onclick=downloadQr;$("copyQrBtn").onclick=copyQr;$("refreshAnalytics").onclick=loadAnalytics;
-  $("editBtn").onclick=()=>{if(currentProfile&&editToken)startEdit(currentProfile)};$("copyEditBtn").onclick=async()=>{if(!currentProfile||!editToken)return;try{await navigator.clipboard.writeText(editUrl(currentProfile.username,editToken));msg("sharedStatus","Private edit link copied. Keep it secret.")}catch(e){msg("sharedStatus","Copy unavailable. Your private edit link is in the current browser hash.")}};
-  $("cardPhoto").onchange=()=>{const f=$("cardPhoto").files&&$("cardPhoto").files[0];if(!f)return;imageFile=f;if(imageObjectUrl)URL.revokeObjectURL(imageObjectUrl);imageObjectUrl=URL.createObjectURL(f);$("fileName").textContent=f.name;renderIdentityPreview();updatePreview()};$("removePhoto").onclick=()=>{clearImage();updatePreview()};
+  $("editBtn").onclick=async()=>{
+    if(!currentProfile)return;
+    const tokenOwner=!!(editToken&&await verifyOwner(currentProfile.username,editToken));
+    const accountOwner=!!(authUser&&currentProfile.id&&await isMyCard(currentProfile.id));
+    if(tokenOwner||accountOwner){ownerSession=tokenOwner;startEdit(currentProfile)}
+    else msg("sharedStatus","Owner verification failed. Open this card from My Cards or use its private edit link.",true);
+  };$("copyEditBtn").onclick=async()=>{if(!currentProfile||!editToken)return;try{await navigator.clipboard.writeText(editUrl(currentProfile.username,editToken));msg("sharedStatus","Private edit link copied. Keep it secret.")}catch(e){msg("sharedStatus","Copy unavailable. Your private edit link is in the current browser hash.")}};
+  $("cardPhoto").onchange=()=>{const f=$("cardPhoto").files&&$("cardPhoto").files[0];if(!f)return;imageFile=f;imageRemoved=false;if(imageObjectUrl)URL.revokeObjectURL(imageObjectUrl);imageObjectUrl=URL.createObjectURL(f);$("fileName").textContent=f.name;renderIdentityPreview();updatePreview()};$("removePhoto").onclick=()=>{clearImage();updatePreview()};
   showLanding();
   await openProfileFromUrl();
   window.addEventListener("popstate",()=>openProfileFromUrl());
