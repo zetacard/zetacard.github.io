@@ -16,7 +16,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Create professional digital cards for people, businesses, products and events with ZetaCard.">
-<title>ZetaCard v52 — Professional Digital Card Studio</title>
+<title>ZetaCard v53 — Traditional Card Studio</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.3.1/model-viewer.min.js"></script>
@@ -577,6 +577,8 @@ button:disabled{cursor:not-allowed;opacity:.55}
 .password-reset-card p { color:var(--muted); font-size:12px; line-height:1.55; }
 .password-reset-card input { width:100%; padding:12px; border:1px solid var(--line); border-radius:10px; margin:8px 0 12px; }
 @media(max-width:760px){.admin-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-grid{grid-template-columns:1fr}.admin-event-card{grid-template-columns:1fr}}
+
+
 
 </style>
 
@@ -1320,8 +1322,282 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
 </style>
 
+<style id="zc-v53-traditional">
+/* ZetaCard v53 — type-first traditional card layouts and focused card forms */
+.zc-form-intro{display:flex;gap:14px;align-items:center;padding:18px 0 20px;border-bottom:1px solid #e5eaf1;margin-bottom:2px}
+.zc-form-type-icon{width:54px;height:54px;flex:0 0 54px;display:grid;place-items:center;border-radius:16px;background:#eef2ff;border:1px solid #dbe4ff;font-size:27px}
+.zc-form-overline{font-size:9px;font-weight:900;letter-spacing:1.7px;color:#586bdb;margin-bottom:5px}
+.zc-form-intro h3{font-size:21px;line-height:1.2;margin:0;color:#17233d;letter-spacing:-.4px}
+.zc-form-intro p{margin:5px 0 0;color:#66738a;font-size:12px;line-height:1.5}
+.zc-form-section{padding:19px 0 8px;border-bottom:1px solid #edf0f5}
+.zc-form-section:last-of-type{border-bottom:0}
+.zc-form-section>header{display:flex;gap:11px;align-items:flex-start;margin-bottom:5px}
+.zc-section-number{width:28px;height:28px;flex:0 0 28px;display:grid;place-items:center;border:1px solid #dbe3f0;border-radius:9px;background:#f7f9fc;color:#5264c9;font-size:10px;font-weight:900}
+.zc-form-section h4{margin:1px 0 4px;font-size:14px;color:#1c2940}
+.zc-form-section header p{margin:0;color:#6b778b;font-size:11px;line-height:1.45}
+.zc-field-help{padding:8px 10px;border-left:2px solid #c8d1ff;background:#f7f8ff;border-radius:0 7px 7px 0}
+.zc-addon-drawer{margin-top:20px;border:1px solid #dde5f0;border-radius:16px;background:#fff;overflow:hidden}
+.zc-addon-drawer>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px;cursor:pointer;background:#f8faff}
+.zc-addon-drawer>summary::-webkit-details-marker{display:none}
+.zc-addon-drawer>summary:after{content:'＋';font-size:20px;color:#5263cb}
+.zc-addon-drawer[open]>summary:after{content:'−'}
+.zc-addon-drawer>summary>span:first-child{display:flex;flex-direction:column;gap:4px}
+.zc-addon-drawer>summary strong{font-size:13px;color:#1b2842}
+.zc-addon-drawer>summary small{font-size:11px;font-weight:500;color:#6b778b;line-height:1.4}
+.zc-addon-count{padding:6px 8px;border:1px solid #dce4f4;border-radius:999px;font-size:10px;font-weight:800;color:#4758b5;background:#fff;white-space:nowrap}
+.zc-addon-content{padding:0 14px 14px}
+.zc-addon-content>.showcase-studio,.zc-addon-content>.faq-studio,.zc-addon-content>.custom-form-studio,.zc-addon-content>.social-studio,.zc-addon-content>.testimonial-studio,.zc-addon-content>.booking-studio,.zc-addon-content>.storefront-studio{margin-top:16px}
+.zc-addon-content>[hidden]{display:none!important}
+
+.card-preview.card-visiting{background:linear-gradient(145deg,var(--tpl-bg,#111b35),var(--tpl-bg2,#2c3b62))!important;color:var(--tpl-ink,#fff)!important;border-radius:22px}
+.card-preview.card-menu{background:linear-gradient(180deg,var(--tpl-bg,#fff8e9),var(--tpl-paper,#fffdf7))!important;color:var(--tpl-ink,#2d2119)!important;border-radius:7px;box-shadow:0 0 0 1px #cbbd9b,0 0 0 5px #fffdf7,0 0 0 6px #cbbd9b,0 20px 45px #34271918}
+.card-preview.card-wedding{background:linear-gradient(180deg,var(--tpl-bg,#fff9ef),var(--tpl-paper,#fffdf8))!important;color:var(--tpl-ink,#582637)!important;border-radius:6px;box-shadow:0 0 0 1px var(--tpl-accent,#a68149),0 0 0 5px var(--tpl-paper,#fffdf8),0 0 0 6px var(--tpl-accent,#a68149),0 24px 55px #3a17251e}
+.card-preview.card-identity{background:linear-gradient(145deg,var(--tpl-bg,#eaf0f9),var(--tpl-paper,#fff))!important;color:var(--tpl-ink,#172943)!important;border-radius:13px}
+.card-preview.card-catalog{background:linear-gradient(180deg,var(--tpl-bg,#f7f1e8),var(--tpl-paper,#fff))!important;color:var(--tpl-ink,#26231e)!important;border-radius:8px}
+.card-preview.card-event{background:linear-gradient(145deg,var(--tpl-bg,#17233b),var(--tpl-bg2,#293d5f))!important;color:var(--tpl-ink,#fff)!important;border-radius:18px}
+.card-preview.card-product{background:linear-gradient(160deg,var(--tpl-bg,#f4f6f7),var(--tpl-paper,#fff))!important;color:var(--tpl-ink,#17243a)!important;border-radius:19px}
+.card-preview.card-property{background:linear-gradient(155deg,var(--tpl-bg,#e9f0e8),var(--tpl-paper,#fff))!important;color:var(--tpl-ink,#24382e)!important;border-radius:14px}
+.card-preview .zc-trad{padding:26px 25px;gap:0;min-height:510px;font-family:var(--v46-font-secondary,Inter,system-ui,sans-serif);color:inherit}
+.card-preview .zc-trad h2,.card-preview .zc-trad h3,.card-preview .zc-trad p{margin-left:0;margin-right:0}
+.card-preview .zc-trad h2{margin-top:0;font-size:clamp(25px,4.2vw,34px);line-height:1.08;letter-spacing:-.5px;font-weight:850;color:inherit}
+.card-preview .zc-trad p{line-height:1.55}
+.card-preview .zc-trad a{text-decoration:none}
+.card-preview .zc-trad .zc-action-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.card-preview .zc-trad .zc-card-action{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:10px 13px;border-radius:9px;font-size:11px;font-weight:850;border:1px solid transparent}
+.card-preview .zc-trad .zc-card-action.primary{background:var(--tpl-accent,#4659b8);color:#fff!important}
+.card-preview .zc-trad .zc-card-action.outline{border-color:color-mix(in srgb,var(--tpl-accent,#4659b8) 42%,transparent);background:transparent;color:inherit!important}
+.card-preview .zc-trad .zc-contact-list{display:grid;gap:0;margin-top:6px}
+.card-preview .zc-trad .zc-contact-item{min-width:0;padding:8px 0;border-bottom:1px solid color-mix(in srgb,currentColor 14%,transparent);font-size:11px;overflow-wrap:anywhere}
+.card-preview .zc-trad .zc-contact-item>a,.card-preview .zc-trad .zc-contact-item>div{display:flex;gap:12px;justify-content:space-between;text-decoration:none;color:inherit}
+.card-preview .zc-trad .zc-contact-item span{font-size:9px;letter-spacing:1px;font-weight:850;opacity:.62;flex:0 0 83px}
+.card-preview .zc-trad .zc-contact-item b{font-size:11px;font-weight:700;text-align:right;overflow-wrap:anywhere}
+.card-preview .zc-trad .zc-fact{display:flex;flex-direction:column;gap:5px;padding:10px 11px;background:color-mix(in srgb,var(--tpl-paper,#fff) 68%,transparent);border:1px solid color-mix(in srgb,currentColor 13%,transparent);border-radius:9px;min-width:0}
+.card-preview .zc-trad .zc-fact span{font-size:8px;letter-spacing:1.1px;font-weight:900;opacity:.63}
+.card-preview .zc-trad .zc-fact strong{font-size:12px;line-height:1.35;overflow-wrap:anywhere}
+.card-preview .zc-trad .zc-spec-list{margin:7px 0 0;padding-left:17px;display:grid;gap:6px;font-size:11px;line-height:1.45}
+.card-preview .zc-trad .zc-spec-list li::marker{color:var(--tpl-accent,#536dfe)}
+
+/* Visiting / professional identity */
+.zc-trad-visiting .zc-visit-top{display:flex;align-items:center;gap:11px;padding-bottom:18px;border-bottom:1px solid #ffffff38}
+.zc-trad-visiting .zc-monogram{width:52px;height:52px;flex:0 0 52px;display:grid;place-items:center;border:1px solid #ffffff66;border-radius:13px;background:#ffffff12;font-size:16px;font-weight:900;overflow:hidden}
+.zc-trad-visiting .zc-monogram-image{width:52px;height:52px;border-radius:12px;overflow:hidden;display:grid;place-items:center}
+.zc-trad-visiting .zc-monogram-image img{width:100%;height:100%;object-fit:cover}
+.zc-trad-visiting .zc-visit-brand{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.zc-trad-visiting .zc-visit-brand .preview-kicker{font-size:8px;letter-spacing:1.5px;opacity:.65}
+.zc-trad-visiting .zc-visit-brand strong{font-size:14px;line-height:1.25;overflow-wrap:anywhere}
+.zc-trad-visiting .zc-visit-brand small{font-size:10px;line-height:1.35;opacity:.72}
+.zc-trad-visiting .zc-visit-stamp{border:1px solid #ffffff5a;border-radius:50%;width:32px;height:32px;display:grid;place-items:center;font-size:9px;font-weight:900;letter-spacing:1px}
+.zc-trad-visiting .zc-visit-person{padding:27px 0 20px}
+.zc-trad-visiting .zc-visit-person h2{font-size:34px;margin:0;color:inherit}
+.zc-trad-visiting .zc-visit-role{font-weight:800;color:var(--tpl-accent,#c9b98d);font-size:12px;margin-top:8px}
+.zc-trad-visiting .zc-visit-person p{font-size:12px;opacity:.77;margin-top:12px;margin-bottom:0}
+.zc-trad-visiting .zc-visit-divider{display:flex;align-items:center;gap:9px;margin:0 0 5px;color:var(--tpl-accent,#c9b98d)}
+.zc-trad-visiting .zc-visit-divider span{height:1px;flex:1;background:currentColor;opacity:.45}
+.zc-trad-visiting .zc-visit-divider i{font-style:normal;font-size:8px;letter-spacing:2px;font-weight:900}
+.zc-trad-visiting .zc-visit-footer{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:auto;padding-top:22px;font-size:9px;letter-spacing:1.3px;opacity:.72}
+.zc-trad-visiting .zc-visit-footer b{font-size:11px;letter-spacing:0;text-align:right;overflow-wrap:anywhere}
+
+/* Restaurant menu */
+.zc-trad-menu{font-family:Georgia,"Times New Roman",serif!important}
+.zc-trad-menu .zc-menu-crest{display:flex;align-items:center;justify-content:center;gap:12px;color:var(--tpl-accent,#916c35);font-size:14px}
+.zc-trad-menu .zc-menu-crest small{font-family:Inter,system-ui,sans-serif;font-size:8px;font-weight:900;letter-spacing:2px}
+.zc-trad-menu .zc-menu-brand{text-align:center;font-size:25px;line-height:1.15;font-weight:700;margin-top:15px;overflow-wrap:anywhere}
+.zc-trad-menu .zc-menu-cuisine{text-align:center;font-family:Inter,system-ui,sans-serif;font-size:9px;text-transform:uppercase;letter-spacing:1.6px;margin-top:7px;opacity:.7}
+.zc-trad-menu .zc-menu-rule{height:1px;background:var(--tpl-accent,#916c35);position:relative;margin:20px 0 16px;opacity:.75}
+.zc-trad-menu .zc-menu-rule span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:0 10px;background:var(--tpl-bg,#fff8e9);font-size:16px}
+.zc-trad-menu .zc-menu-heading{font-family:Georgia,serif;text-align:center;letter-spacing:5px;font-size:26px;margin:0}
+.zc-trad-menu .zc-menu-tagline{text-align:center;font-size:12px;font-style:italic;opacity:.75;margin:7px 0 0}
+.zc-trad-menu .zc-menu-description{text-align:center;font-family:Inter,system-ui,sans-serif;font-size:11px;line-height:1.5;opacity:.7;margin:14px 0 18px}
+.zc-trad-menu .zc-menu-items{border-top:1px solid var(--tpl-accent,#916c35);padding-top:7px}
+.zc-trad-menu .preview-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dotted color-mix(in srgb,var(--tpl-ink,#2d2119) 25%,transparent)}
+.zc-trad-menu .preview-row b{font-family:Georgia,serif;font-size:12px;font-weight:600}
+.zc-trad-menu .preview-row span{font-family:Inter,system-ui,sans-serif;font-size:11px;font-weight:800;white-space:nowrap}
+.zc-trad-menu .zc-menu-dietary{display:flex;flex-direction:column;gap:4px;padding:10px;background:color-mix(in srgb,var(--tpl-accent,#916c35) 10%,transparent);margin-top:13px}
+.zc-trad-menu .zc-menu-dietary b{font-family:Inter,system-ui,sans-serif;font-size:8px;letter-spacing:1.3px}
+.zc-trad-menu .zc-menu-dietary span{font-family:Inter,system-ui,sans-serif;font-size:10px;line-height:1.4}
+.zc-trad-menu .zc-menu-footer{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--tpl-accent,#916c35);padding-top:12px;margin-top:17px;font-family:Inter,system-ui,sans-serif;font-size:9px;line-height:1.4;opacity:.75}
+.zc-trad-menu .zc-menu-contact{margin-top:10px;font-family:Inter,system-ui,sans-serif}
+.zc-trad-menu .zc-contact-item{padding:5px 0}
+
+/* Traditional Indian wedding invitation */
+.zc-trad-wedding{font-family:Georgia,"Times New Roman",serif!important;text-align:center;position:relative}
+.zc-trad-wedding:before{content:"";position:absolute;inset:9px;border:1px solid var(--tpl-accent,#b18a51);pointer-events:none;opacity:.72}
+.zc-trad-wedding:after{content:"✿";position:absolute;right:15px;top:12px;font-size:30px;color:var(--tpl-accent,#b18a51);opacity:.55;pointer-events:none}
+.zc-trad-wedding .zc-wedding-border{display:flex;justify-content:center;gap:17px;color:var(--tpl-accent,#b18a51);font-size:21px;margin:1px 0 12px}
+.zc-trad-wedding .zc-wedding-seal{font-size:23px;letter-spacing:2px;color:var(--tpl-accent,#b18a51);font-weight:700;margin:0 auto 8px}
+.zc-trad-wedding .zc-wedding-english{font-family:Inter,system-ui,sans-serif;font-size:8px;letter-spacing:3px;font-weight:900;opacity:.64}
+.zc-trad-wedding .zc-wedding-photo{height:155px;width:100%;max-width:280px;margin:13px auto 10px;border:3px double var(--tpl-accent,#b18a51);padding:3px;overflow:hidden}
+.zc-trad-wedding .zc-wedding-photo img{width:100%;height:100%;object-fit:cover}
+.zc-trad-wedding .zc-wedding-blessing{font-family:Inter,system-ui,sans-serif;font-size:10px;line-height:1.5;letter-spacing:.15px;margin:12px auto 0;max-width:300px;opacity:.75}
+.zc-trad-wedding .zc-wedding-family{font-family:Inter,system-ui,sans-serif;font-size:9px;line-height:1.5;margin-top:8px;color:var(--tpl-accent,#9a723f)}
+.zc-trad-wedding .zc-wedding-couple{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:14px}
+.zc-trad-wedding .zc-wedding-couple span{font-size:clamp(25px,4.2vw,34px);line-height:1.05;font-weight:500;overflow-wrap:anywhere}
+.zc-trad-wedding .zc-wedding-couple i{font-size:19px;color:var(--tpl-accent,#b18a51);font-style:italic}
+.zc-trad-wedding .zc-wedding-message{font-size:12px;line-height:1.6;max-width:330px;margin:14px auto 0;font-style:italic;opacity:.8}
+.zc-trad-wedding .zc-wedding-divider{display:flex;align-items:center;gap:12px;color:var(--tpl-accent,#b18a51);margin:17px 0 10px}
+.zc-trad-wedding .zc-wedding-divider:before,.zc-trad-wedding .zc-wedding-divider:after{content:"";height:1px;background:currentColor;flex:1;opacity:.7}
+.zc-trad-wedding .zc-wedding-event{font-size:14px;font-weight:700;margin-bottom:12px}
+.zc-trad-wedding .zc-wedding-date-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid color-mix(in srgb,var(--tpl-accent,#b18a51) 58%,transparent)}
+.zc-trad-wedding .zc-wedding-date-grid>div{padding:11px 7px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.zc-trad-wedding .zc-wedding-date-grid>div+div{border-left:1px solid color-mix(in srgb,var(--tpl-accent,#b18a51) 58%,transparent)}
+.zc-trad-wedding .zc-wedding-date-grid small,.zc-trad-wedding .zc-wedding-venue small{font-family:Inter,system-ui,sans-serif;font-size:8px;letter-spacing:1.2px;font-weight:900;opacity:.68}
+.zc-trad-wedding .zc-wedding-date-grid strong{font-size:12px;line-height:1.35;overflow-wrap:anywhere}
+.zc-trad-wedding .zc-wedding-venue{display:flex;flex-direction:column;gap:5px;padding:13px 8px}
+.zc-trad-wedding .zc-wedding-venue strong{font-size:15px;overflow-wrap:anywhere}
+.zc-trad-wedding .zc-wedding-venue span{font-family:Inter,system-ui,sans-serif;font-size:10px;line-height:1.4;opacity:.7}
+.zc-trad-wedding .zc-wedding-reception{padding:9px;border-top:1px dotted var(--tpl-accent,#b18a51);border-bottom:1px dotted var(--tpl-accent,#b18a51);font-size:11px}
+.zc-trad-wedding .zc-wedding-bottom{display:flex;flex-direction:column;gap:7px;border-top:1px solid color-mix(in srgb,var(--tpl-accent,#b18a51) 55%,transparent);padding-top:13px;margin-top:auto;font-family:Inter,system-ui,sans-serif;font-size:8px;letter-spacing:1.1px;line-height:1.5}
+.zc-trad-wedding .wedding-actions{justify-content:center}
+.zc-trad-wedding .zc-wedding-ornament-bottom{font-size:16px;color:var(--tpl-accent,#b18a51);margin-top:14px}
+
+/* Official ID / staff badge */
+.zc-trad-identity{font-family:Inter,system-ui,sans-serif!important}
+.zc-trad-identity .zc-id-topbar{display:flex;align-items:center;gap:10px;margin:-26px -25px 20px;padding:18px 20px;background:linear-gradient(110deg,var(--tpl-accent,#243f69),var(--tpl-bg2,#45668e));color:#fff}
+.zc-trad-identity .zc-id-emblem{display:grid;place-items:center;border:1px solid #ffffff78;border-radius:50%;width:35px;height:35px;font-size:16px}
+.zc-trad-identity .zc-id-topbar>div{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.zc-trad-identity .zc-id-topbar b{font-size:12px;line-height:1.3;overflow-wrap:anywhere}
+.zc-trad-identity .zc-id-topbar small{font-size:8px;letter-spacing:1.3px;font-weight:800;opacity:.8}
+.zc-trad-identity .zc-id-chip{display:grid;place-items:center;width:30px;height:30px;border:1px solid #ffffff76;border-radius:8px;font-size:9px;font-weight:900}
+.zc-trad-identity .zc-id-main{display:grid;grid-template-columns:105px minmax(0,1fr);gap:16px;align-items:start}
+.zc-trad-identity .zc-id-portrait{width:105px;height:132px;border:4px solid #fff;box-shadow:0 0 0 1px color-mix(in srgb,var(--tpl-accent,#243f69) 35%,transparent);border-radius:5px;overflow:hidden;display:grid;place-items:center;background:color-mix(in srgb,var(--tpl-accent,#243f69) 12%,white)}
+.zc-trad-identity .zc-id-portrait img{width:100%;height:100%;object-fit:cover}
+.zc-trad-identity .zc-id-initials{font-size:27px;font-weight:900;color:var(--tpl-accent,#243f69)}
+.zc-trad-identity .zc-id-details{min-width:0}
+.zc-trad-identity .zc-id-role{font-size:9px;text-transform:uppercase;letter-spacing:1.4px;font-weight:900;color:var(--tpl-accent,#243f69)}
+.zc-trad-identity .zc-id-details h2{font-size:22px;line-height:1.05;margin:7px 0 5px;overflow-wrap:anywhere}
+.zc-trad-identity .zc-id-department{font-size:11px;opacity:.7;line-height:1.45}
+.zc-trad-identity .zc-id-number{display:flex;flex-direction:column;gap:4px;margin-top:18px;padding-top:10px;border-top:1px solid #d4dce8}
+.zc-trad-identity .zc-id-number span{font-size:8px;letter-spacing:1px;font-weight:900;opacity:.6}
+.zc-trad-identity .zc-id-number b{font-size:12px;letter-spacing:.6px;overflow-wrap:anywhere}
+.zc-trad-identity .zc-id-validity{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px;margin-top:18px}
+.zc-trad-identity .zc-id-contact{margin-top:14px}
+.zc-trad-identity .zc-emergency{margin-top:10px;padding:9px;border:1px solid #e4b8b5;background:#fff7f6;border-radius:8px;display:flex;flex-direction:column;gap:4px}
+.zc-trad-identity .zc-emergency span{font-size:8px;letter-spacing:1px;color:#9b3939;font-weight:900}
+.zc-trad-identity .zc-emergency b{font-size:11px}
+.zc-trad-identity .zc-id-note{font-size:10px;opacity:.7}
+.zc-trad-identity .zc-id-footer{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;border-top:1px solid #cbd5e1;padding-top:12px;margin-top:auto}
+.zc-trad-identity .zc-id-footer span{font-size:7px;letter-spacing:1px;font-weight:850;opacity:.6;text-align:right}
+.zc-trad-identity .zc-barcode{height:22px;width:100px;background:repeating-linear-gradient(90deg,#182b43 0 2px,transparent 2px 4px,#182b43 4px 5px,transparent 5px 7px,#182b43 7px 10px,transparent 10px 12px)}
+
+/* Product catalogue / catalogue cover */
+.zc-trad-catalog .zc-catalog-cover{text-align:center;padding:18px 16px 23px;border:1px solid var(--tpl-accent,#a27c48);background:color-mix(in srgb,var(--tpl-paper,#fff) 88%,var(--tpl-accent,#a27c48));margin:-8px -7px 20px}
+.zc-trad-catalog .zc-catalog-mark{display:grid;place-items:center;width:43px;height:43px;border:1px solid var(--tpl-accent,#a27c48);border-radius:50%;margin:0 auto 11px;font-size:12px;font-weight:900}
+.zc-trad-catalog .zc-catalog-overline{font-size:8px;letter-spacing:2.5px;font-weight:900;opacity:.7}
+.zc-trad-catalog .zc-catalog-cover h2{font-family:Georgia,serif;font-size:31px;font-weight:600;margin:10px 0 5px;overflow-wrap:anywhere}
+.zc-trad-catalog .zc-catalog-cover p{font-size:11px;line-height:1.5;margin:0;opacity:.73}
+.zc-trad-catalog .zc-catalog-rule{display:flex;align-items:center;gap:10px;color:var(--tpl-accent,#a27c48);margin:15px 0}
+.zc-trad-catalog .zc-catalog-rule:before,.zc-trad-catalog .zc-catalog-rule:after{content:"";height:1px;background:currentColor;flex:1;opacity:.55}
+.zc-trad-catalog .zc-catalog-cover small{font-size:10px;line-height:1.55;display:block;opacity:.72}
+.zc-trad-catalog .catalog-public-wrap{margin-top:12px}
+.zc-trad-catalog .public-catalog-head{display:flex;gap:10px;align-items:flex-start}
+.zc-trad-catalog .public-catalog-title{font-size:17px!important;font-weight:850}
+.zc-trad-catalog .public-catalog-search{display:flex;gap:7px;margin:12px 0}
+.zc-trad-catalog .catalog-public-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.zc-trad-catalog .catalog-public-card{background:var(--tpl-paper,#fff);border:1px solid color-mix(in srgb,var(--tpl-accent,#a27c48) 22%,#dfe4ec);border-radius:10px;padding:10px;min-width:0}
+.zc-trad-catalog .catalog-public-image{width:100%;height:100px;object-fit:cover;border-radius:7px}
+.zc-trad-catalog .catalog-public-card .name{font-size:12px;font-weight:850;overflow-wrap:anywhere}
+.zc-trad-catalog .catalog-public-card .price{color:var(--tpl-accent,#8c6b3d);font-weight:900;font-size:12px}
+.zc-trad-catalog .catalog-public-card .desc{font-size:10px;line-height:1.4;opacity:.7}
+.zc-trad-catalog .zc-catalog-sales{margin-top:18px}
+
+/* Admission ticket / event pass */
+.zc-trad-event{font-family:Inter,system-ui,sans-serif!important}
+.zc-trad-event:before{content:"";position:absolute;inset:12px;border:1px dashed color-mix(in srgb,var(--tpl-accent,#cfb36c) 74%,transparent);border-radius:12px;pointer-events:none}
+.zc-trad-event .zc-ticket-top{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid #ffffff2e;padding:2px 0 15px}
+.zc-trad-event .zc-ticket-brand{display:flex;align-items:center;gap:7px;font-size:10px;letter-spacing:1.1px;min-width:0}
+.zc-trad-event .zc-ticket-brand span{color:var(--tpl-accent,#cfb36c);font-size:16px}
+.zc-trad-event .zc-ticket-brand b{overflow-wrap:anywhere}
+.zc-trad-event .zc-ticket-class{border:1px solid color-mix(in srgb,var(--tpl-accent,#cfb36c) 65%,transparent);padding:6px 8px;border-radius:5px;color:var(--tpl-accent,#cfb36c);font-size:8px;letter-spacing:1px;font-weight:900;flex-shrink:0}
+.zc-trad-event .zc-ticket-main{padding:25px 0 20px}
+.zc-trad-event .zc-ticket-overline{font-size:9px;letter-spacing:2px;font-weight:900;color:var(--tpl-accent,#cfb36c)}
+.zc-trad-event .zc-ticket-main h2{font-size:35px;line-height:1.02;margin:10px 0;overflow-wrap:anywhere}
+.zc-trad-event .zc-ticket-main p{margin:0;font-size:12px;opacity:.74}
+.zc-trad-event .zc-ticket-facts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.zc-trad-event .zc-ticket-facts .zc-fact{background:#ffffff09;border:1px solid #ffffff20}
+.zc-trad-event .zc-ticket-facts .zc-fact span{color:var(--tpl-accent,#cfb36c)}
+.zc-trad-event .zc-ticket-perforation{display:flex;justify-content:space-between;position:relative;margin:22px -25px 16px;height:1px;border-top:2px dashed #ffffff43}
+.zc-trad-event .zc-ticket-perforation span{width:16px;height:16px;background:#1e2a45;border-radius:50%;position:relative;top:-9px}
+.zc-trad-event .zc-ticket-bottom{display:grid;grid-template-columns:minmax(0,1fr) 75px;gap:10px;align-items:center}
+.zc-trad-event .zc-ticket-bottom small{display:block;font-size:8px;letter-spacing:1.5px;color:var(--tpl-accent,#cfb36c);font-weight:900}
+.zc-trad-event .zc-ticket-bottom b{display:block;font-size:15px;margin-top:5px;overflow-wrap:anywhere}
+.zc-trad-event .zc-ticket-bottom p{font-size:10px;line-height:1.4;opacity:.7;margin:6px 0 0}
+.zc-trad-event .zc-ticket-code{height:68px;display:flex;gap:3px;align-items:stretch;justify-content:center;background:#fff;padding:8px;border-radius:5px}
+.zc-trad-event .zc-ticket-code i{display:block;flex:1;background:#142139}
+.zc-trad-event .zc-ticket-code i:nth-child(2n){flex:2}.zc-trad-event .zc-ticket-code i:nth-child(3n){flex:3}
+.zc-trad-event .zc-ticket-contact{margin-top:auto;padding-top:15px}
+
+/* Retail product detail */
+.zc-trad-product .zc-product-top,.zc-trad-property .zc-property-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;font-size:9px;letter-spacing:1.2px;font-weight:900}
+.zc-trad-product .zc-stock-badge{font-size:8px;letter-spacing:.2px;padding:6px 8px;border-radius:999px;border:1px solid color-mix(in srgb,var(--tpl-accent,#496d62) 30%,transparent);background:color-mix(in srgb,var(--tpl-accent,#496d62) 9%,transparent)}
+.zc-trad-product .zc-product-hero-image{height:225px;width:100%;border-radius:13px;overflow:hidden;background:#fff;border:1px solid #e0e6ed}
+.zc-trad-product .zc-product-hero-image img{width:100%;height:100%;object-fit:contain;display:block}
+.zc-trad-product .zc-product-placeholder{height:205px;border-radius:13px;background:linear-gradient(140deg,color-mix(in srgb,var(--tpl-accent,#536dfe) 12%,white),var(--tpl-paper,#fff));border:1px solid color-mix(in srgb,var(--tpl-accent,#536dfe) 16%,transparent);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px}
+.zc-trad-product .zc-product-placeholder span{font-size:8px;letter-spacing:3px;font-weight:900;opacity:.55}
+.zc-trad-product .zc-product-placeholder b{font-family:Georgia,serif;font-size:42px;color:var(--tpl-accent,#536dfe)}
+.zc-trad-product .zc-product-overline{font-size:9px;letter-spacing:1.8px;font-weight:900;opacity:.62;margin-top:20px}
+.zc-trad-product h2{font-size:31px;margin:7px 0 0;overflow-wrap:anywhere}
+.zc-trad-product .zc-product-description{font-size:12px;opacity:.75;margin:8px 0 0}
+.zc-trad-product .zc-product-price-row{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-top:18px;padding:15px;border:1px solid #dce3e9;background:var(--tpl-paper,#fff);border-radius:12px}
+.zc-trad-product .zc-product-price-row>div{display:flex;flex-direction:column;gap:5px}
+.zc-trad-product .zc-product-price-row small{font-size:8px;letter-spacing:1.2px;font-weight:900;opacity:.6}
+.zc-trad-product .zc-product-price-row strong{font-size:25px;line-height:1.1;color:var(--tpl-accent,#304b7a);overflow-wrap:anywhere}
+.zc-trad-product .zc-product-price-row>span{font-size:9px;opacity:.65;text-align:right;overflow-wrap:anywhere}
+.zc-trad-product .zc-product-specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(85px,1fr));gap:8px;margin-top:12px}
+.zc-trad-product .zc-product-specs:empty{display:none}
+.zc-trad-product .zc-product-features{margin-top:18px}
+.zc-trad-product .zc-product-features h3,.zc-trad-property .zc-property-amenities h3{font-size:9px;letter-spacing:1.3px;margin:0;font-weight:900}
+.zc-trad-product .zc-product-footer{border-top:1px solid #dce3e9;padding-top:12px;margin-top:auto;font-size:9px;letter-spacing:.4px;opacity:.64}
+
+/* Real-estate brochure */
+.zc-trad-property .zc-property-top{margin-bottom:12px}
+.zc-trad-property .zc-property-top span{color:var(--tpl-accent,#426e58)}
+.zc-trad-property .zc-property-top b{padding:6px 8px;background:color-mix(in srgb,var(--tpl-accent,#426e58) 12%,transparent);border:1px solid color-mix(in srgb,var(--tpl-accent,#426e58) 25%,transparent);border-radius:5px;font-size:8px}
+.zc-trad-property .zc-property-hero-image{height:225px;width:100%;border-radius:12px;overflow:hidden;background:#e3eae4}
+.zc-trad-property .zc-property-hero-image img{width:100%;height:100%;object-fit:cover;display:block}
+.zc-trad-property .zc-property-placeholder{height:190px;border:1px solid #c8d7cd;border-radius:12px;background:linear-gradient(135deg,#e1ece5,#f8f8ef);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--tpl-accent,#426e58)}
+.zc-trad-property .zc-property-placeholder span{font-size:8px;letter-spacing:3px;font-weight:900;opacity:.55}
+.zc-trad-property .zc-property-placeholder b{font-size:58px;line-height:1;font-family:Georgia,serif}
+.zc-trad-property .zc-property-overline{font-size:9px;letter-spacing:1.5px;font-weight:900;margin-top:17px;opacity:.65}
+.zc-trad-property h2{font-size:30px;margin:6px 0 0;overflow-wrap:anywhere}
+.zc-trad-property .zc-property-location{font-size:11px;opacity:.7;margin-top:8px}
+.zc-trad-property .zc-property-price{display:flex;flex-direction:column;gap:5px;padding:15px;background:color-mix(in srgb,var(--tpl-accent,#426e58) 9%,var(--tpl-paper,#fff));border:1px solid color-mix(in srgb,var(--tpl-accent,#426e58) 20%,transparent);border-radius:10px;margin-top:16px}
+.zc-trad-property .zc-property-price small{font-size:8px;letter-spacing:1.3px;font-weight:900;opacity:.65}
+.zc-trad-property .zc-property-price strong{font-size:24px;line-height:1.2;overflow-wrap:anywhere}
+.zc-trad-property .zc-property-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}
+.zc-trad-property .zc-property-amenities{margin-top:17px}
+.zc-trad-property .zc-property-description{font-size:11px;line-height:1.55;opacity:.77;margin-top:15px}
+.zc-trad-property .zc-property-footer{margin-top:auto;padding-top:14px;border-top:1px solid color-mix(in srgb,currentColor 15%,transparent)}
+.zc-trad-property .zc-property-footer>.zc-contact-item{font-size:10px;padding:5px 0}
+.zc-trad-property .zc-property-footer>.zc-contact-item b{font-size:10px}
+
+
+.card-preview.card-identity .zc-trad-identity{display:flex;flex-direction:column}
+.card-preview.card-identity.tpl-layout-id-horizontal .zc-trad-identity{display:flex}
+.card-preview.card-wedding .zc-trad-wedding{display:flex;flex-direction:column}
+.card-preview.card-menu .zc-trad-menu{display:flex;flex-direction:column}
+.card-preview.card-event .zc-trad-event{display:flex;flex-direction:column}
+.card-preview.card-catalog .zc-trad-catalog{display:flex;flex-direction:column}
+@media(max-width:760px){
+ .card-preview .zc-trad{padding:23px 20px}
+ .zc-trad-identity .zc-id-topbar{margin:-23px -20px 18px;padding:16px}
+ .zc-trad-event .zc-ticket-perforation{margin-left:-20px;margin-right:-20px}
+ .zc-trad-wedding .zc-wedding-photo{height:135px}
+ .zc-trad-product .zc-product-hero-image,.zc-trad-property .zc-property-hero-image{height:190px}
+}
+@media(max-width:420px){
+ .zc-trad-identity .zc-id-main{grid-template-columns:86px minmax(0,1fr);gap:12px}
+ .zc-trad-identity .zc-id-portrait{width:86px;height:115px}
+ .zc-trad-identity .zc-id-details h2{font-size:18px}
+ .zc-trad-event .zc-ticket-main h2{font-size:29px}
+ .zc-trad-property h2,.zc-trad-product h2{font-size:26px}
+ .zc-trad-menu .zc-menu-brand{font-size:22px}
+ .zc-trad-catalog .catalog-public-grid{grid-template-columns:1fr 1fr}
+}
+
+</style>
 </head>
 <body>
 
@@ -1637,28 +1913,28 @@ const TYPES={
 };
 const SCHEMAS={
  visiting:[
-  ["name","Full name","e.g. Alex Morgan","text",true],["username","Username","e.g. alex-morgan","text",true],["job_title","Job title","e.g. Founder"],["company","Company / brand","e.g. Zeta Studio"],["phone","Phone","+91 98765 43210"],["email","Email","hello@example.com","email"],["website","Website","https://example.com"],["address","Address","City, state or business address"],["bio","About you","What do you do?","textarea",false,true]
+  ["name","Full name","e.g. Alex Morgan","text",true],["username","Username","e.g. alex-morgan","text",true],["job_title","Job title","e.g. Founder"],["company","Company / brand","e.g. Zeta Studio"],["tagline","Professional tagline","Designing thoughtful digital experiences"],["phone","Phone","+91 98765 43210"],["email","Email","hello@example.com","email"],["whatsapp","WhatsApp number","+91 98765 43210"],["website","Website","https://example.com"],["address","Office / service area","City, state or business address"],["bio","About you","What do you do?","textarea",false,true]
  ],
  menu:[
-  ["restaurant_name","Restaurant / business name","e.g. The Zeta Kitchen","text",true],["username","Username","e.g. zeta-kitchen","text",true],["tagline","Tagline","Fresh food. Great moments."],["phone","Phone","+91 98765 43210"],["email","Email","hello@restaurant.com","email"],["address","Address","Restaurant address"],["opening_hours","Opening hours","Mon–Sun · 11 AM–11 PM"],["currency","Currency","₹"],["menu_items","Menu items","Paneer Tikka — ₹280\nButter Chicken — ₹360\nVeg Biryani — ₹260","textarea",false,true],["order_url","Order online URL","https://..."],["reservation_url","Reservation URL","https://..."],["description","About the restaurant","Tell guests about your food and experience.","textarea",false,true]
+  ["restaurant_name","Restaurant / business name","e.g. The Zeta Kitchen","text",true],["username","Username","e.g. zeta-kitchen","text",true],["cuisine","Cuisine / food style","North Indian · Tandoor · Family dining"],["tagline","Menu tagline","Fresh food. Great moments."],["phone","Phone","+91 98765 43210"],["email","Email","hello@restaurant.com","email"],["address","Restaurant address","Street, area, city"],["opening_hours","Opening hours","Mon–Sun · 11 AM–11 PM"],["currency","Currency symbol","₹"],["menu_items","Menu items and prices","Starters: Paneer Tikka — ₹280\nMains: Veg Biryani — ₹260\nDessert: Gulab Jamun — ₹120","textarea",false,true],["dietary_options","Dietary options","Veg · Jain options · Vegan · Allergens noted"],["order_url","Order online URL","https://..."],["reservation_url","Table reservation URL","https://..."],["description","About the restaurant","Tell guests about your food and experience.","textarea",false,true]
  ],
  wedding:[
-  ["bride_name","Bride name","e.g. Ananya","text",true],["groom_name","Groom name","e.g. Arjun","text",true],["username","Username","e.g. ananya-arjun","text",true],["date","Wedding date","e.g. 18 December 2026"],["time","Time","e.g. 7:00 PM"],["venue","Venue","e.g. The Grand Palace"],["address","Venue address","Full venue address"],["rsvp_name","RSVP contact","e.g. Priya"],["rsvp_phone","RSVP phone","+91 98765 43210"],["rsvp_url","RSVP / response URL","https://..."],["map_url","Google Maps URL","https://maps.google.com/..."],["dress_code","Dress code","Traditional / Formal"],["message","Invitation message","We would love to celebrate this special day with you...","textarea",false,true]
+  ["bride_name","Bride name","e.g. Ananya","text",true],["groom_name","Groom name","e.g. Arjun","text",true],["username","Username","e.g. ananya-arjun","text",true],["bride_family","Bride family / parents","With love from the Sharma family"],["groom_family","Groom family / parents","With love from the Verma family"],["date","Wedding date","Select the wedding date"],["time","Muhurta / ceremony time","e.g. 7:00 PM"],["ceremony","Ceremony details","Wedding ceremony · dinner to follow"],["venue","Wedding venue","Venue / banquet / temple name"],["address","Full venue address","Street, area, city"],["reception","Reception details","Reception date, time or note"],["rsvp_name","RSVP contact name","e.g. Priya Sharma"],["rsvp_phone","RSVP phone","+91 98765 43210"],["rsvp_url","RSVP / response URL","https://..."],["map_url","Venue map URL","https://maps.google.com/..."],["dress_code","Dress code","Traditional Indian · Festive attire"],["message","Invitation message","With joy in our hearts, we invite you to celebrate this auspicious occasion...","textarea",false,true]
  ],
  identity:[
-  ["name","Full name","e.g. Alex Morgan","text",true],["username","Username","e.g. alex-morgan","text",true],["organization","Organization","e.g. Zeta Corporation"],["designation","Designation","e.g. Product Manager"],["id_number","ID number","e.g. ZC-2026-0042"],["department","Department","e.g. Operations"],["issue_date","Issue date","e.g. 01 Jan 2026"],["expiry_date","Expiry date","e.g. 31 Dec 2027"],["phone","Phone","+91 98765 43210"],["email","Email","name@organization.com","email"],["emergency_contact","Emergency contact","Name · phone"],["bio","Additional information","Any useful identity information.","textarea",false,true]
+  ["name","Full name","e.g. Alex Morgan","text",true],["username","Username","e.g. alex-morgan","text",true],["organization","Organization / institution","e.g. Zeta Corporation"],["designation","Designation / role","e.g. Product Manager"],["department","Department / class","e.g. Operations"],["id_type","Card type","Employee · Student · Member · Visitor"],["id_number","ID / membership number","e.g. ZC-2026-0042"],["issue_date","Issue date","Select issue date"],["expiry_date","Expiry date","Select expiry date"],["blood_group","Blood group (optional)","e.g. O+"],["phone","Phone","+91 98765 43210"],["email","Official email","name@organization.com","email"],["emergency_contact","Emergency contact","Name · phone"],["bio","Additional information","Only add information appropriate for this ID card.","textarea",false,true]
  ],
  catalog:[
-  ["business_name","Business / brand name","e.g. Zeta Home","text",true],["username","Username","e.g. zeta-home","text",true],["tagline","Tagline","Modern products for modern living"],["phone","Phone","+91 98765 43210"],["email","Email","sales@example.com","email"],["website","Website","https://example.com"],["catalog_items","Catalog items","Product A — ₹1,999\nProduct B — ₹2,499\nProduct C — ₹3,299","textarea",false,true],["enquiry_url","Enquiry / WhatsApp URL","https://..."],["description","Catalog description","Introduce this collection.","textarea",false,true]
+  ["business_name","Business / brand name","e.g. Zeta Home","text",true],["username","Username","e.g. zeta-home","text",true],["tagline","Collection tagline","Modern products for modern living"],["phone","Sales phone","+91 98765 43210"],["email","Sales email","sales@example.com","email"],["website","Brand website","https://example.com"],["catalog_items","Product catalogue","Use the structured product editor below.","textarea",false,true],["enquiry_url","Enquiry / WhatsApp URL","https://..."],["description","About this collection","What makes this collection useful or different?","textarea",false,true]
  ],
  event:[
-  ["event_name","Event name","e.g. Zeta Future Expo","text",true],["username","Username","e.g. zeta-future-expo","text",true],["organizer","Organizer","e.g. Zeta Events"],["date","Date","e.g. 20 March 2027"],["time","Time","e.g. 10:00 AM – 6:00 PM"],["venue","Venue","e.g. Convention Centre"],["address","Address","Full venue address"],["registration_url","Registration URL","https://..."],["ticket_info","Ticket information","Free / ₹499 / VIP","text",false,true],["contact_phone","Contact phone","+91 98765 43210"],["contact_email","Contact email","events@example.com","email"],["description","Event description","What should attendees know?","textarea",false,true]
+  ["event_name","Event name","e.g. Zeta Future Expo","text",true],["username","Username","e.g. zeta-future-expo","text",true],["event_category","Event type","Conference · Wedding · Concert · Workshop"],["organizer","Organizer / host","e.g. Zeta Events"],["date","Start date","Select event date"],["event_end_date","End date (optional)","Select end date"],["time","Event time","e.g. 10:00 AM – 6:00 PM"],["venue","Venue / hall","e.g. Convention Centre"],["address","Full address","Street, area, city"],["ticket_info","Ticket / entry type","Free · ₹499 · VIP · Invite-only","text",false,true],["registration_url","Registration / ticket URL","https://..."],["contact_phone","Organizer phone","+91 98765 43210"],["contact_email","Organizer email","events@example.com","email"],["entry_guidelines","Entry instructions","Bring your ticket and a valid ID.","textarea",false,true],["description","About the event","Schedule, highlights and what attendees should know.","textarea",false,true]
  ],
  product:[
-  ["product_name","Product name","e.g. Zeta Chair Pro","text",true],["username","Username","e.g. zeta-chair-pro","text",true],["brand","Brand","e.g. Zeta Living"],["sku","SKU / model number","e.g. ZC-PRO-01"],["price","Price","e.g. ₹12,999"],["currency","Currency","₹"],["buy_url","Buy / enquiry URL","https://..."],["support_url","Support / specifications URL","https://..."],["ar_model_url","3D model URL (.glb/.gltf)","https://.../product.glb"],["ar_usdz_url","iPhone/iPad USDZ URL","https://.../product.usdz"],["description","Product description","Explain the product, materials and use cases.","textarea",false,true],["features","Key features","Feature 1\nFeature 2\nFeature 3","textarea",false,true]
+  ["product_name","Product name","e.g. Zeta Chair Pro","text",true],["username","Username","e.g. zeta-chair-pro","text",true],["brand","Brand","e.g. Zeta Living"],["sku","SKU / model number","e.g. ZC-PRO-01"],["price","Selling price","e.g. ₹12,999"],["currency","Currency symbol","₹"],["availability","Availability","In stock · Made to order · Pre-order"],["material","Material / finish","Solid wood · Brushed steel · Cotton"],["dimensions","Size / dimensions","e.g. 80 × 60 × 75 cm"],["warranty","Warranty / care","e.g. 1 year limited warranty"],["buy_url","Buy / enquiry URL","https://..."],["support_url","Specifications / support URL","https://..."],["ar_model_url","3D model URL (.glb/.gltf)","https://.../product.glb"],["ar_usdz_url","iPhone/iPad USDZ URL","https://.../product.usdz"],["description","Product description","Explain the product, materials and use cases.","textarea",false,true],["features","Key features","Feature 1\nFeature 2\nFeature 3","textarea",false,true]
  ],
  property:[
-  ["property_title","Property title","e.g. 3 BHK Modern Villa","text",true],["username","Username","e.g. modern-villa-patna","text",true],["property_type","Property type","Villa / Apartment / Office / Land"],["price","Price","e.g. ₹85 lakh"],["location","Location","Area, city"],["area","Area","e.g. 1,850 sq ft"],["bedrooms","Bedrooms","e.g. 3"],["bathrooms","Bathrooms","e.g. 3"],["contact_phone","Contact phone","+91 98765 43210"],["contact_email","Contact email","sales@example.com","email"],["map_url","Map URL","https://maps.google.com/..."],["tour_url","Virtual tour URL","https://..."],["ar_model_url","3D model URL (.glb/.gltf)","https://.../property.glb"],["ar_usdz_url","iPhone/iPad USDZ URL","https://.../property.usdz"],["description","Property description","Describe the property.","textarea",false,true],["amenities","Amenities","Parking\nPool\nSecurity\nGarden","textarea",false,true]
+  ["property_title","Property title","e.g. 3 BHK Modern Villa","text",true],["username","Username","e.g. modern-villa-patna","text",true],["property_type","Property type","Villa · Apartment · Office · Land"],["listing_status","Listing status","For sale · For rent · New launch"],["price","Asking price / rent","e.g. ₹85 lakh or ₹25,000/month"],["location","Neighbourhood / city","Area, city"],["area","Built-up / plot area","e.g. 1,850 sq ft"],["bedrooms","Bedrooms","e.g. 3"],["bathrooms","Bathrooms","e.g. 3"],["furnishing","Furnishing","Fully furnished · Semi-furnished · Unfurnished"],["possession","Possession / availability","Ready to move · Under construction"],["contact_phone","Agent / owner phone","+91 98765 43210"],["contact_email","Agent / owner email","sales@example.com","email"],["map_url","Map / location URL","https://maps.google.com/..."],["tour_url","Virtual tour URL","https://..."],["ar_model_url","3D model URL (.glb/.gltf)","https://.../property.glb"],["ar_usdz_url","iPhone/iPad USDZ URL","https://.../property.usdz"],["description","Property description","Describe layout, natural light, nearby places and key details.","textarea",false,true],["amenities","Amenities / facilities","Parking\nSecurity\nGarden\nLift","textarea",false,true]
  ]
 };
 // Username is generated automatically from card details; it is not shown in the builder.
@@ -2054,7 +2330,7 @@ function typeCards(){return Object.entries(TYPES).map(([key,t])=>'<button type="
 function setSelectedType(type){if(!TYPES[type])return;selectedType=type;designTemplate=defaultTemplate(type);document.querySelectorAll(".type-option").forEach(b=>{const on=b.dataset.type===type;b.classList.toggle("selected",on);b.setAttribute("aria-pressed",on?"true":"false")});$("typePill").textContent=TYPES[type].icon+" "+TYPES[type].label;$("continueBtn").disabled=false;updateBackButton();updatePreview()}
 function clearImage(){if(imageObjectUrl)URL.revokeObjectURL(imageObjectUrl);imageObjectUrl=null;imageFile=null;imageRemoved=true;$('cardPhoto').value="";$('fileName').textContent="No image selected";renderIdentityPreview()}
 function renderIdentityPreview(){const el=$("identityPreview");if(!el)return;if(imageObjectUrl){el.innerHTML='<img alt="Card image" src="'+imageObjectUrl+'">';return}el.textContent="Z"}
-const AI_TYPE_FIELDS={visiting:["name","job_title","company","phone","email","website","address","bio"],menu:["restaurant_name","tagline","phone","email","address","opening_hours","currency","menu_items","order_url","reservation_url","description"],wedding:["bride_name","groom_name","date","time","venue","address","rsvp_name","rsvp_phone","rsvp_url","map_url","dress_code","message"],identity:["name","organization","designation","id_number","department","issue_date","expiry_date","phone","email","emergency_contact","bio"],catalog:["business_name","tagline","phone","email","website","catalog_items","enquiry_url","description"],event:["event_name","organizer","date","time","venue","address","registration_url","ticket_info","contact_phone","contact_email","description"],product:["product_name","brand","sku","price","currency","buy_url","support_url","ar_model_url","ar_usdz_url","description","features"],property:["property_title","property_type","price","location","area","bedrooms","bathrooms","contact_phone","contact_email","map_url","tour_url","ar_model_url","ar_usdz_url","description","amenities"]};
+const AI_TYPE_FIELDS={visiting:["name","job_title","company","tagline","phone","email","whatsapp","website","address","bio"],menu:["restaurant_name","cuisine","tagline","phone","email","address","opening_hours","currency","menu_items","dietary_options","order_url","reservation_url","description"],wedding:["bride_name","groom_name","bride_family","groom_family","date","time","ceremony","venue","address","reception","rsvp_name","rsvp_phone","rsvp_url","map_url","dress_code","message"],identity:["name","organization","designation","id_type","id_number","department","issue_date","expiry_date","blood_group","phone","email","emergency_contact","bio"],catalog:["business_name","tagline","phone","email","website","catalog_items","enquiry_url","description"],event:["event_name","event_category","organizer","date","event_end_date","time","venue","address","registration_url","ticket_info","contact_phone","contact_email","entry_guidelines","description"],product:["product_name","brand","sku","price","currency","availability","material","dimensions","warranty","buy_url","support_url","ar_model_url","ar_usdz_url","description","features"],property:["property_title","property_type","listing_status","price","location","area","bedrooms","bathrooms","furnishing","possession","contact_phone","contact_email","map_url","tour_url","ar_model_url","ar_usdz_url","description","amenities"]};
 function aiSlug(v){return uname(v).replace(/[^a-z0-9-]/g,"-").replace(/-+/g,"-").replace(/^-|-$/g,"").slice(0,30)}
 function localPlanFromPrompt(prompt){const p=clean(prompt),q=p.toLowerCase();let card_type="visiting";if(/wedding|bride|groom|marriage|invitation/.test(q))card_type="wedding";else if(/menu|restaurant|cafe|food|dish|dinner|breakfast/.test(q))card_type="menu";else if(/property|villa|apartment|flat|real estate|house|plot|land/.test(q))card_type="property";else if(/product|chair|laptop|phone|machine|device|3d|\bar\b/.test(q))card_type="product";else if(/catalog|collection|products|shop|store/.test(q))card_type="catalog";else if(/identity|id card|employee|staff card/.test(q))card_type="identity";else if(/event|conference|expo|festival|ticket|pass/.test(q))card_type="event";const fields={},m=(p.match(/for\s+([A-Z][A-Za-z]*(?:\s+[A-Z][A-Za-z]*){0,2})/i)||[])[1]||"";if(card_type==="visiting"){fields.name=m||"Your Name";fields.job_title=/founder|ceo|developer|designer|manager|director/i.test(p)?((p.match(/(?:founder|ceo|developer|designer|manager|director)/i)||[])[0]||"Professional"):"Professional";fields.company=(p.match(/(?:agency|company|studio|firm|business|brand)\s+in\s+[A-Za-z ]+/i)||[])[0]?.replace(/\s+in\s+.*/i,"")||"Your Company";fields.bio=p}else if(card_type==="wedding"){fields.bride_name=(p.match(/bride\s+([A-Za-z ]+)/i)||[])[1]?.trim()||"Bride";fields.groom_name=(p.match(/groom\s+([A-Za-z ]+)/i)||[])[1]?.trim()||"Groom";fields.message=p}else if(card_type==="menu"){fields.restaurant_name=(p.match(/(?:restaurant|cafe|menu)\s+(?:for\s+)?([A-Za-z0-9 &'’-]{3,40})/i)||[])[1]?.trim()||"Your Restaurant";fields.currency="₹";fields.menu_items="Starter — ₹199\nMain Course — ₹299\nDessert — ₹179";fields.description=p}else if(card_type==="property"){fields.property_title=m||"Modern Property";fields.property_type=/villa/i.test(p)?"Villa":"Property";fields.location=(p.match(/in\s+([A-Za-z .'-]+)/i)||[])[1]?.trim()||"Your location";fields.description=p}else if(card_type==="product"){fields.product_name=m||"Your Product";fields.brand="Zeta";fields.currency="₹";fields.description=p;fields.features="Premium design\nQuality materials\nDesigned for everyday use"}else if(card_type==="catalog"){fields.business_name=m||"Your Brand";fields.catalog_items="Product One — ₹999\nProduct Two — ₹1,499\nProduct Three — ₹1,999";fields.description=p}else if(card_type==="event"){fields.event_name=m||"Your Event";fields.description=p}else{fields.name=m||"Your Name";fields.organization="Your Organization";fields.bio=p}return {card_type,theme:/luxury|elegant|premium/i.test(q)?"sunset":/natural|eco|green|calm/i.test(q)?"forest":/blue|ocean|modern|tech/i.test(q)?"ocean":"midnight",fields,smart_options:{three_d:card_type==="product"||card_type==="property",photo:["visiting","wedding","identity","product","property"].includes(card_type)}}}
 function normalizeAiPlan(plan){if(!plan||typeof plan!=="object")throw new Error("AI returned an invalid plan.");if(!TYPES[plan.card_type])plan.card_type="visiting";plan.theme=safeTheme(plan.theme);if(!plan.fields||typeof plan.fields!=="object")plan.fields={};const allowed=new Set(AI_TYPE_FIELDS[plan.card_type]||[]),fields={};Object.keys(plan.fields).forEach(k=>{if(allowed.has(k)&&plan.fields[k]!=null)fields[k]=String(plan.fields[k])});plan.fields=fields;plan.smart_options=(plan.smart_options&&typeof plan.smart_options==="object")?plan.smart_options:{};plan.smart_options.three_d=!!plan.smart_options.three_d;plan.smart_options.photo=!!plan.smart_options.photo;return plan}
@@ -2499,15 +2775,144 @@ function templateThumbMarkup(type,id,title){const d=designVariant(type,id),p=d.p
   return common+body+'</div>'}
 function renderTemplateStudio(prefill={}){const box=$('templateStudio');if(!box||!selectedType)return;designTemplate=sanitizeDesignTemplate(selectedType,prefill.design_template||designTemplate||defaultTemplate(selectedType));const list=TEMPLATE_LIBRARY[selectedType]||[];let page=0;box.innerHTML=`<div class="template-studio-head"><div><h3>🎨 Design Library</h3><p>Every generated design changes real layout, typography, ornament, frame, texture, spacing and image treatment — not just the colors.</p></div><span class="template-count-pill">${formatVariationCount(templateCount(selectedType))} combinations</span></div><div class="template-toolbar"><div class="template-filter"><button type="button" class="template-chip active" data-tpl-filter="curated">Curated</button><button type="button" class="template-chip" data-tpl-filter="generated">Generated</button></div><div class="template-actions"><button type="button" class="btn secondary" id="randomTemplateBtn">✨ Generate new</button><button type="button" class="btn ghost" id="moreTemplateBtn">＋ More designs</button></div></div><div id="templateGrid" class="template-grid"></div><div class="template-tip">The same engine powers the published card, so a generated thumbnail and the real card use the same design recipe. Generated pages are deterministic and can be revisited from the saved template ID.</div>`;const grid=$('templateGrid');let mode='curated';const render=()=>{let items;if(mode==='generated'){const base=page*12;items=Array.from({length:12},(_,i)=>{const id=chooseGeneratedTemplate(selectedType,base+i+1+(Math.abs(hashCode(selectedType))%9973));return [id,'Generated · '+templateLabel(selectedType,id),'Unique multi-axis design']});}else items=list.slice();if(designTemplate&&!items.some(x=>sanitizeDesignTemplate(selectedType,x[0])===designTemplate)){items.unshift([designTemplate,'Current design','Saved selection']);}grid.innerHTML=items.map(x=>`<button type="button" class="template-option ${sanitizeDesignTemplate(selectedType,x[0])===designTemplate?'selected':''}" data-tpl-id="${escapeHtml(x[0])}">${templateThumbMarkup(selectedType,x[0],x[1])}<div class="template-meta"><b>${escapeHtml(x[1])}</b><span>${escapeHtml(x[2])}</span></div><span class="template-checkmark">✓</span></button>`).join('');grid.querySelectorAll('.template-option').forEach(b=>b.onclick=()=>{designTemplate=sanitizeDesignTemplate(selectedType,b.dataset.tplId);$('designTemplate').value=designTemplate;grid.querySelectorAll('.template-option').forEach(x=>x.classList.toggle('selected',x===b));updatePreview()})};document.querySelectorAll('[data-tpl-filter]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tpl-filter]').forEach(x=>x.classList.toggle('active',x===b));mode=b.dataset.tplFilter;page=0;render()});$('randomTemplateBtn').onclick=()=>{designTemplate=chooseGeneratedTemplate(selectedType,Date.now()+Math.floor(Math.random()*999999));$('designTemplate').value=designTemplate;msg('formStatus','A genuinely different design was generated: new typography, layout, ornament, frame, texture and spacing.');mode='generated';page=0;document.querySelectorAll('[data-tpl-filter]').forEach(x=>x.classList.toggle('active',x.dataset.tplFilter==='generated'));render();updatePreview()};$('moreTemplateBtn').onclick=()=>{mode='generated';page++;document.querySelectorAll('[data-tpl-filter]').forEach(x=>x.classList.toggle('active',x.dataset.tplFilter==='generated'));render()};$('designTemplate').value=designTemplate;render()}
 
+const FORM_LAYOUTS={
+ visiting:[
+  {title:"Professional identity",description:"The details people expect on a traditional visiting card.",fields:["name","job_title","company","tagline"]},
+  {title:"Contact details",description:"Make it easy for a client to call, email or visit your business.",fields:["phone","whatsapp","email","website","address"]},
+  {title:"Introduction",description:"Keep this concise, like the reverse side of a business card.",fields:["bio"]}
+ ],
+ menu:[
+  {title:"Restaurant identity",description:"Create a restaurant menu cover, not a generic profile card.",fields:["restaurant_name","cuisine","tagline"]},
+  {title:"Opening hours and contact",description:"Help guests find the restaurant and know when it is open.",fields:["opening_hours","phone","email","address"]},
+  {title:"Menu and prices",description:"Enter one dish per line. Use Dish name — ₹Price; a category prefix is supported.",fields:["currency","menu_items","dietary_options"]},
+  {title:"Ordering and reservations",description:"Add only the links your restaurant actually uses.",fields:["order_url","reservation_url","description"]}
+ ],
+ wedding:[
+  {title:"The couple and families",description:"Traditional invitation details, displayed with formal typography and ornamental framing.",fields:["bride_name","groom_name","bride_family","groom_family"]},
+  {title:"Ceremony details",description:"Date, muhurta/time and full venue details appear on the invitation itself.",fields:["date","time","ceremony","venue","address","reception"]},
+  {title:"RSVP and invitation wording",description:"Give guests a way to respond and find the venue.",fields:["rsvp_name","rsvp_phone","rsvp_url","map_url","dress_code","message"]}
+ ],
+ identity:[
+  {title:"Identity and organization",description:"An official ID/badge layout with portrait, role and organization header.",fields:["organization","id_type","name","designation","department","id_number"]},
+  {title:"Validity and optional safety details",description:"Use only information appropriate for the purpose of this ID.",fields:["issue_date","expiry_date","blood_group"]},
+  {title:"Official contact",description:"Optional contact details printed on the identity card.",fields:["phone","email","emergency_contact","bio"]}
+ ],
+ catalog:[
+  {title:"Brand and collection",description:"Set up the catalogue cover and brand identity.",fields:["business_name","tagline","description"]},
+  {title:"Products and services",description:"Add individual items, pricing, categories, images and enquiry links in the catalogue editor below.",fields:["catalog_items"]},
+  {title:"Sales contact",description:"Give buyers a clear path to ask about an item.",fields:["phone","email","website","enquiry_url"]}
+ ],
+ event:[
+  {title:"Event identity",description:"The public card is formatted as an admission pass with a clear event headline.",fields:["event_name","event_category","organizer"]},
+  {title:"Schedule and venue",description:"Add the event date/time and practical arrival details.",fields:["date","event_end_date","time","venue","address"]},
+  {title:"Ticket and attendance",description:"Registration, entry instructions and organiser contact.",fields:["ticket_info","registration_url","entry_guidelines","contact_phone","contact_email","description"]}
+ ],
+ product:[
+  {title:"Product identity",description:"A retail product display with a prominent image, price and buy/enquiry action.",fields:["product_name","brand","sku","availability","price","currency"]},
+  {title:"Specifications",description:"These become scan-friendly product facts rather than profile biography fields.",fields:["material","dimensions","warranty","features","description"]},
+  {title:"Purchase and support",description:"Add real product URLs. 3D / AR settings are available in the studio below.",fields:["buy_url","support_url","ar_model_url","ar_usdz_url"]}
+ ],
+ property:[
+  {title:"Listing overview",description:"A property-brochure layout with image, price and key specifications.",fields:["property_title","property_type","listing_status","price","location"]},
+  {title:"Property specifications",description:"Enter practical details buyers or renters normally compare.",fields:["area","bedrooms","bathrooms","furnishing","possession","amenities","description"]},
+  {title:"Viewing and agent contact",description:"Provide map, virtual tour and a way to contact the owner or agent.",fields:["contact_phone","contact_email","map_url","tour_url","ar_model_url","ar_usdz_url"]}
+ ]
+};
+const FORM_FIELD_HELP={
+ menu_items:"Example: Starters: Paneer Tikka — ₹280 (one item per line). The published menu will format each name and price as a menu list.",
+ catalog_items:"The catalogue editor below lets you add each item with its own name, price, category, description, URL, image and optional model.",
+ message:"A short invitation in your own words. The design supplies the traditional invitation layout and decorative frame.",
+ features:"Put one feature per line. These will appear as compact specification points.",
+ amenities:"Put one amenity per line, for example Parking, Lift, Garden or Security.",
+ ar_model_url:"Optional. Paste a publicly reachable .glb/.gltf URL or choose/upload a model in the 3D / AR Studio below.",
+ ar_usdz_url:"Optional Apple AR model URL. Keep this blank if you do not have a USDZ file.",
+ id_number:"Avoid entering highly sensitive identifiers unless this digital ID genuinely needs them.",
+ blood_group:"Optional. Only display this if it is appropriate for the ID's purpose and you have verified it."
+};
+const FORM_FIELD_TYPES={
+ email:"email",phone:"tel",whatsapp:"tel",rsvp_phone:"tel",contact_phone:"tel",
+ date:"date",event_end_date:"date",issue_date:"date",expiry_date:"date",time:"time",
+ website:"url",order_url:"url",reservation_url:"url",rsvp_url:"url",map_url:"url",enquiry_url:"url",registration_url:"url",buy_url:"url",support_url:"url",tour_url:"url",ar_model_url:"url",ar_usdz_url:"url"
+};
+function zcNormalizeDateForInput(value){
+  const raw=clean(value);if(!raw)return "";
+  if(/^\d{4}-\d{2}-\d{2}$/.test(raw))return raw;
+  const d=new Date(raw);if(Number.isNaN(d.getTime()))return "";
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+function zcFieldControl(item,prefill={}){
+  const [key,label,placeholder,declaredType="text",required=false,full=false]=item;
+  const raw=clean(prefill[key]??"");let value=raw;
+  let type=FORM_FIELD_TYPES[key]||declaredType||"text";
+  if(type==="date"){
+    const dateValue=zcNormalizeDateForInput(raw);
+    // Older cards often stored human-readable dates; keep them editable instead of silently blanking them.
+    if(raw&&!dateValue)type="text";else value=dateValue;
+  }
+  const id=formFieldId(key),req=required?'<span class="req">Required</span>':'';
+  const attrs=`id="${id}" data-key="${key}" ${required?'required ':''} autocomplete="${key==='email'?'email':key==='phone'||key==='contact_phone'||key==='rsvp_phone'?'tel':'off'}"`;
+  let control;
+  if(type==="textarea"){
+    const rows=["message","bio","description","entry_guidelines"].includes(key)?4:5;
+    control=`<textarea ${attrs} placeholder="${escapeHtml(placeholder)}" rows="${rows}">${escapeHtml(value)}</textarea>`;
+  }else{
+    control=`<input ${attrs} type="${escapeHtml(type)}" value="${escapeHtml(value)}" placeholder="${escapeHtml(placeholder)}" ${type==="url"?'inputmode="url"':''} ${type==="tel"?'inputmode="tel"':''}>`;
+  }
+  const help=FORM_FIELD_HELP[key]?`<div class="help zc-field-help">${escapeHtml(FORM_FIELD_HELP[key])}</div>`:"";
+  return `<div class="field ${full||type==='textarea'?'full':''} zc-field-${key}"><div class="field-label"><label for="${id}">${escapeHtml(label)}</label>${req}</div>${control}${help}${key==="username"?'<div class="help">3–30 lowercase letters, numbers and hyphens.</div><div id="userStatus" class="status"></div>':''}</div>`;
+}
+function organizeBuilderExtras(){
+  const root=$("dynamicForm");if(!root)return;
+  const studioIds=["showcaseStudio","faqStudio","customFormStudio","socialStudio","testimonialStudio","bookingStudio","storefrontStudio"];
+  const relevant={
+    visiting:["showcaseStudio","faqStudio","customFormStudio","socialStudio","testimonialStudio","bookingStudio"],
+    menu:["faqStudio","customFormStudio","socialStudio","testimonialStudio","bookingStudio","storefrontStudio"],
+    wedding:["customFormStudio","socialStudio","bookingStudio"],
+    identity:["socialStudio"],
+    catalog:["showcaseStudio","faqStudio","customFormStudio","socialStudio","testimonialStudio","storefrontStudio"],
+    event:["faqStudio","customFormStudio","socialStudio","bookingStudio"],
+    product:["showcaseStudio","faqStudio","customFormStudio","socialStudio","testimonialStudio","storefrontStudio"],
+    property:["showcaseStudio","faqStudio","customFormStudio","socialStudio","testimonialStudio","bookingStudio"]
+  };
+  const selected=new Set(relevant[selectedType]||[]);
+  const found=studioIds.map(id=>({id,el:document.getElementById(id)})).filter(x=>x.el);
+  if(!found.length)return;
+  const drawer=document.createElement("details");drawer.className="zc-addon-drawer";drawer.id="zcAddonDrawer";
+  const summary=document.createElement("summary");summary.innerHTML='<span><strong>Optional features</strong><small>Keep the main card form focused; open this only for extras you need.</small></span><span class="zc-addon-count">Customize</span>';
+  drawer.appendChild(summary);
+  const inner=document.createElement("div");inner.className="zc-addon-content";
+  let visibleCount=0;
+  found.forEach(({id,el})=>{
+    const show=selected.has(id);
+    el.hidden=!show;el.style.display=show?"":"none";
+    el.setAttribute("aria-hidden",show?"false":"true");
+    if(show){visibleCount++;inner.appendChild(el)}else inner.appendChild(el);
+  });
+  if(!visibleCount)return;
+  drawer.appendChild(inner);root.appendChild(drawer);
+}
 function renderForm(prefill={}){
-  const t=TYPES[selectedType];const schema=SCHEMAS[selectedType];let html='<div class="field-grid">';
-  schema.forEach(([k,label,placeholder,type="text",required=false,full=false])=>{const id=formFieldId(k);const val=escapeHtml(prefill[k]??"");const req=required?'<span class="req">Required</span>':'';const attrs='id="'+id+'" data-key="'+k+'" '+(required?'required ':'');const control=type==="textarea"?'<textarea '+attrs+' placeholder="'+escapeHtml(placeholder)+'">'+val+'</textarea>':'<input '+attrs+' type="'+type+'" value="'+val+'" placeholder="'+escapeHtml(placeholder)+'">';html+='<div class="field '+(full?'full':'')+'"><div class="field-label"><label for="'+id+'">'+escapeHtml(label)+'</label>'+req+'</div>'+control;if(k==="username")html+='<div class="help">3–30 lowercase letters, numbers and hyphens.</div><div id="userStatus" class="status"></div>';if(k==="ar_model_url")html+='<div class="help">Optional. Adds interactive 3D/AR when a compatible model is available.</div>';if(k==="ar_usdz_url")html+='<div class="help">Optional iPhone/iPad AR model.</div>';html+='</div>'});html+='</div>';$('dynamicForm').innerHTML=html;
+  const t=TYPES[selectedType];const schema=SCHEMAS[selectedType]||[];
+  const byKey=new Map(schema.map(item=>[item[0],item]));
+  const layout=FORM_LAYOUTS[selectedType]||[{title:"Card details",description:t?.desc||"Enter the details for your card.",fields:schema.map(x=>x[0])}];
+  const used=new Set();let html=`<div class="zc-form-intro"><span class="zc-form-type-icon">${t?.icon||"✦"}</span><div><div class="zc-form-overline">CUSTOM FORM · ${escapeHtml(t?.label||"CARD")}</div><h3>${escapeHtml(t?.label||"Card details")}</h3><p>${escapeHtml(t?.desc||"Fill only the details relevant to this card.")}</p></div></div>`;
+  layout.forEach((section,index)=>{
+    const items=section.fields.map(key=>byKey.get(key)).filter(item=>item&&!used.has(item[0]));
+    if(!items.length)return;
+    items.forEach(item=>used.add(item[0]));
+    html+=`<section class="zc-form-section"><header><span class="zc-section-number">${String(index+1).padStart(2,"0")}</span><div><h4>${escapeHtml(section.title)}</h4><p>${escapeHtml(section.description)}</p></div></header><div class="field-grid">${items.map(item=>zcFieldControl(item,prefill)).join("")}</div></section>`;
+  });
+  const remaining=schema.filter(item=>!used.has(item[0]));
+  if(remaining.length)html+=`<section class="zc-form-section"><header><span class="zc-section-number">＋</span><div><h4>Additional details</h4><p>Optional information for this card.</p></div></header><div class="field-grid">${remaining.map(item=>zcFieldControl(item,prefill)).join("")}</div></section>`;
+  $('dynamicForm').innerHTML=html;
   document.querySelectorAll('#dynamicForm [data-key]').forEach(el=>el.addEventListener('input',()=>updatePreview()));
-  $("visualSection").classList.toggle("hidden",!t.photo);$("styleSection").classList.toggle("hidden",!t.theme);
-  if(t.photo){$("visualHint").textContent=selectedType==="product"?"Add the main product image.":selectedType==="property"?"Add the main property image.":selectedType==="wedding"?"Add a couple or invitation image.":selectedType==="identity"?"Add the ID photo.":"Add your profile photo or logo."}
-  buildThemeButtons();buildAppearanceControls(prefill);renderIdentityPreview();renderTemplateStudio(prefill);mountThreeDStudio(prefill);mountCatalogStudio(prefill);mountShowcaseStudio(prefill);
-  mountFaqStudio(prefill);mountCustomFormStudio(prefill);mountSocialStudio(prefill);mountTestimonialsStudio(prefill);mountBookingStudio(prefill);
-  mountStorefrontStudio(prefill);
+  $("visualSection").classList.toggle("hidden",!t.photo);
+  $("styleSection").classList.toggle("hidden",!t.theme);
+  if(t.photo){$("visualHint").textContent=selectedType==="product"?"Add the product's main image.":selectedType==="property"?"Add the main property photograph.":selectedType==="wedding"?"Add a couple photograph or invitation artwork.":selectedType==="identity"?"Add the portrait for the ID badge.":"Add your profile photo or company logo."}
+  buildThemeButtons();buildAppearanceControls(prefill);renderIdentityPreview();renderTemplateStudio(prefill);mountThreeDStudio(prefill);mountCatalogStudio(prefill);
+  mountShowcaseStudio(prefill);mountFaqStudio(prefill);mountCustomFormStudio(prefill);mountSocialStudio(prefill);mountTestimonialsStudio(prefill);mountBookingStudio(prefill);mountStorefrontStudio(prefill);
+  organizeBuilderExtras();
 }
 async function checkUser(v){const u=uname(v);if(!u){msg("userStatus","");return}if(!validUsername(u)){msg("userStatus","Use 3–30 lowercase letters, numbers or hyphens.",true);return}if(!initDb()){msg("userStatus","Database unavailable.",true);return}const r=await db.from("profiles").select("username").eq("username",u).maybeSingle();if(r.error){msg("userStatus","Could not check username.",true);return}msg("userStatus",r.data?"Username already taken":"✓ Username available",!!r.data)}
 function buildThemeButtons(){const el=$("styleGrid");el.innerHTML=[["midnight","Midnight","Bold & modern"],["ocean","Ocean","Fresh & clean"],["forest","Forest","Calm & natural"],["sunset","Sunset","Warm & creative"]].map(([k,n,s])=>'<button type="button" class="theme-btn '+(mainTheme===k?'selected':'')+'" data-theme="'+k+'"><div class="theme-swatch '+k+'"><b style="font-size:12px">'+n+'</b></div><div class="theme-name">'+n+'</div><div class="theme-sub">'+s+'</div><span class="theme-mark">✓</span></button>').join("");el.onclick=e=>{const b=e.target.closest(".theme-btn");if(!b)return;mainTheme=safeTheme(b.dataset.theme);document.querySelectorAll(".theme-btn").forEach(x=>x.classList.toggle("selected",x===b));updatePreview()}}
@@ -2528,21 +2933,145 @@ function isSafeImageSrc(url){
   const s=String(url||"").trim().toLowerCase();
   return /^https?:\/\//.test(s)||s.startsWith("blob:")||s.startsWith("data:image/");
 }
+function zcPrettyDate(value){
+  const raw=clean(value);if(!raw)return "";
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(raw))return raw;
+  const d=new Date(raw+"T12:00:00");return Number.isNaN(d.getTime())?raw:d.toLocaleDateString(undefined,{day:"numeric",month:"long",year:"numeric"});
+}
+function zcRenderMenuItems(raw,currency){
+  const lines=String(raw||"").split(/\n+/).map(x=>x.trim()).filter(Boolean).slice(0,16);
+  const source=lines.length?lines:["Starters: Paneer Tikka — "+(currency||"₹")+"280","Mains: Veg Biryani — "+(currency||"₹")+"260","Dessert: Gulab Jamun — "+(currency||"₹")+"120"];
+  let currentCategory="",html="";
+  source.forEach(line=>{
+    let text=line,category="";
+    const m=line.match(/^([^:]{2,25}):\s*(.+)$/);
+    if(m){category=m[1].trim();text=m[2].trim()}
+    const parts=text.split(/\s+—\s+|\s+-\s+/),name=parts[0].trim(),price=parts.slice(1).join(" — ").trim();
+    if(category&&category!==currentCategory){html+=`<div class="zc-menu-category">${escapeHtml(category)}</div>`;currentCategory=category}
+    html+=`<div class="zc-menu-item"><b>${escapeHtml(name)}</b><span>${escapeHtml(price||"")}</span></div>`;
+  });
+  return html;
+}
+function zcInitials(value){const parts=clean(value).split(/\s+/).filter(Boolean);return (parts.slice(0,2).map(x=>x[0]).join("")||"Z").toUpperCase()}
+function zcContactItem(label,key,c){
+  const value=clean(c[key]);if(!value)return "";let href="",target="";
+  if(key==="email"||key==="contact_email")href=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)?"mailto:"+value:"";
+  else if(["phone","whatsapp","rsvp_phone","contact_phone"].includes(key)){const tel=value.replace(/[^0-9+]/g,"");if(tel)href="tel:"+tel}
+  else if(["website","map_url","tour_url","enquiry_url","order_url","reservation_url","rsvp_url","registration_url","buy_url","support_url"].includes(key)){href=safeHttpUrl(value);target=href?' target="_blank" rel="noopener noreferrer"':''}
+  const content=`<span>${escapeHtml(label)}</span><b>${escapeHtml(value)}</b>`;
+  return `<div class="zc-contact-item">${href?`<a href="${escapeHtml(href)}"${target}>${content}</a>`:`<div>${content}</div>`}</div>`;
+}
+function zcAction(url,label,kind="primary"){
+  const safe=safeHttpUrl(url);return safe?`<a class="zc-card-action ${kind}" href="${escapeHtml(safe)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)} <span aria-hidden="true">↗</span></a>`:"";
+}
+function zcFacts(items){return items.filter(x=>x&&x[1]).map(([label,value])=>`<div class="zc-fact"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}
+function zcBulletList(raw,cls="zc-spec-list",max=5){const list=String(raw||"").split(/\n+/).map(x=>x.trim()).filter(Boolean).slice(0,max);return list.length?`<ul class="${cls}">${list.map(x=>`<li>${escapeHtml(x.replace(/^[-•*]\s*/,""))}</li>`).join("")}</ul>`:""}
 function renderCardMarkup(type,c,photoUrl){
   const safePhoto=isSafeImageSrc(photoUrl),p=safePhoto?photoUrl:"";
-  const img=safePhoto?'<div class="preview-logo"><img alt="Card image" src="'+escapeHtml(p)+'"></div>':'';
-  const line=(label,key,fallback="—")=>'<div class="preview-row"><b>'+escapeHtml(label)+'</b><span>'+escapeHtml(c[key]||fallback)+'</span></div>';
-  if(type==="visiting")return '<div class="preview-inner"><div class="preview-logo">'+(safePhoto?'<img alt="Card image" src="'+escapeHtml(p)+'">':escapeHtml((c.name||"Z").slice(0,2).toUpperCase()))+'</div><div class="preview-kicker" style="margin-top:22px">Digital visiting card</div><div class="preview-title">'+escapeHtml(c.name||"Your Name")+'</div><div class="preview-sub">'+escapeHtml(c.job_title||"Your role")+' · '+escapeHtml(c.company||"Your company")+'</div><p class="preview-sub">'+escapeHtml(c.bio||"Your short introduction")+'</p><div class="preview-meta">'+line("Phone","phone")+line("Email","email")+line("Website","website")+'</div><div class="preview-footer">'+escapeHtml(c.address||"Share your professional identity")+'</div></div>';
-  if(type==="menu")return '<div class="preview-inner"><div class="preview-kicker">'+escapeHtml(c.restaurant_name||"YOUR RESTAURANT")+'</div><div class="preview-title">'+escapeHtml(c.tagline||"Our Menu")+'</div><div class="preview-sub">'+escapeHtml(c.description||"Fresh dishes, made for sharing.")+'</div><div class="preview-meta">'+menuItems(c.menu_items,c.currency)+'</div><div class="preview-footer">'+escapeHtml(c.opening_hours||"Open daily")+' · '+escapeHtml(c.order_url||"Order online")+'</div></div>';
-  if(type==="wedding"){
-    const hero=safePhoto?'<div class="wedding-hero-image"><img alt="Wedding invitation image" src="'+escapeHtml(p)+'"></div>':'<div class="wedding-placeholder">💍</div>';
-    return '<div class="preview-inner wedding-preview-inner">'+hero+'<div class="wedding-template-copy"><span class="wedding-frame-mark">✿ ❦ ✿</span><div class="preview-kicker">Together with their families</div><div class="preview-title">'+escapeHtml(c.bride_name||"Bride")+' &amp; '+escapeHtml(c.groom_name||"Groom")+'</div><div class="preview-sub">'+escapeHtml(c.message||"We would love to celebrate this special day with you.")+'</div><div class="wedding-meta-grid"><div class="wedding-meta-chip"><b>Wedding date</b><span>'+escapeHtml(c.date||"Your wedding date")+'</span></div><div class="wedding-meta-chip"><b>Time</b><span>'+escapeHtml(c.time||"Your wedding time")+'</span></div><div class="wedding-meta-chip"><b>Venue</b><span>'+escapeHtml(c.venue||"Your venue")+'</span></div></div><div class="preview-footer">'+(c.dress_code?'Dress code · '+escapeHtml(c.dress_code)+' · ':'')+'RSVP · '+escapeHtml(c.rsvp_name||c.rsvp_phone||"Contact")+'</div></div></div>';
+  const image=(cls="zc-card-image",alt="Card image")=>safePhoto?`<div class="${cls}"><img alt="${escapeHtml(alt)}" src="${escapeHtml(p)}"></div>`:"";
+  const title=(key,fallback)=>escapeHtml(clean(c[key])||fallback);
+  const desc=(key,fallback)=>escapeHtml(clean(c[key])||fallback);
+  const weddingFamily=[c.bride_family,c.groom_family].filter(Boolean).map(escapeHtml).join(" &nbsp; • &nbsp; ");
+  if(type==="visiting"){
+    return `<div class="preview-inner zc-trad zc-trad-visiting">
+      <div class="zc-visit-top"><div class="zc-monogram">${image("zc-monogram-image","Company logo")||escapeHtml(zcInitials(c.company||c.name))}</div><div class="zc-visit-brand"><span class="preview-kicker">PROFESSIONAL PROFILE</span><strong>${title("company","Your business")}</strong><small>${title("tagline","A clear introduction to your work")}</small></div><span class="zc-visit-stamp">VC</span></div>
+      <div class="zc-visit-person"><h2>${title("name","Your Name")}</h2><div class="zc-visit-role">${title("job_title","Professional title")}</div><p>${desc("bio","Add a short description of your work or services.")}</p></div>
+      <div class="zc-visit-divider"><span></span><i>CONTACT</i><span></span></div>
+      <div class="zc-contact-list">${zcContactItem("PHONE","phone",c)}${zcContactItem("EMAIL","email",c)}${zcContactItem("WHATSAPP","whatsapp",c)}${zcContactItem("WEBSITE","website",c)}${zcContactItem("OFFICE / AREA","address",c)}</div>
+      <div class="zc-visit-footer"><span>LET'S CONNECT</span><b>${title("company","Your professional identity")}</b></div>
+    </div>`;
   }
-  if(type==="identity")return '<div class="preview-inner"><div class="id-header-strip">'+escapeHtml(c.organization||"ORGANIZATION")+' · IDENTITY CARD</div><div class="id-photo-wrap">'+(safePhoto?'<img alt="ID portrait" src="'+escapeHtml(p)+'">':'<div style="width:100%;height:100%;display:grid;place-items:center;color:var(--tpl-ink);font-weight:950;font-size:26px">'+escapeHtml((c.name||"Z").slice(0,1).toUpperCase())+'</div>')+'</div><div class="preview-kicker" style="margin-top:6px">'+escapeHtml(c.designation||"Designation")+'</div><div class="preview-title">'+escapeHtml(c.name||"Your Name")+'</div><div class="preview-sub">'+escapeHtml(c.department||"Department")+'</div><div class="preview-meta">'+line("ID number","id_number")+line("Valid until","expiry_date")+line("Phone","phone")+'</div><div class="id-security-row"><div class="id-barcode"></div><div class="id-chipbox"></div></div><div class="preview-footer">'+escapeHtml(c.email||"Authorized identity")+'</div></div>';
-  if(type==="catalog")return '<div class="preview-inner"><div class="preview-kicker">Premium collection</div><div class="preview-title">'+escapeHtml(c.business_name||"Your Brand")+'</div><div class="preview-sub">'+escapeHtml(c.tagline||c.description||"Browse the collection")+'</div>'+renderPremiumCatalog(type,c)+'<div class="preview-footer">'+escapeHtml(c.enquiry_url||"Enquire now")+'</div></div>';
-  if(type==="event")return '<div class="preview-inner"><div class="preview-kicker">Event pass</div><div class="preview-title">'+escapeHtml(c.event_name||"Your Event")+'</div><div class="preview-sub">'+escapeHtml(c.description||"Everything attendees need in one place.")+'</div><div class="preview-meta">'+line("Date","date")+line("Time","time")+line("Venue","venue")+'</div><div class="ticket-box"><b>Ticket</b><div style="margin-top:6px;font-size:12px;opacity:.8">'+escapeHtml(c.ticket_info||"Registration required")+'</div></div><div class="preview-footer">'+escapeHtml(c.registration_url||"Register")+'</div></div>';
-  if(type==="product")return '<div class="preview-inner">'+(img||'<div class="preview-logo">📦</div>')+'<div class="preview-kicker" style="margin-top:16px">'+escapeHtml(c.brand||"YOUR BRAND")+'</div><div class="preview-title">'+escapeHtml(c.product_name||"Your Product")+'</div><div class="preview-sub">'+escapeHtml(c.description||"Product description")+'</div><div class="product-hero"><div style="font-size:11px;color:#6d7a8e">SKU '+escapeHtml(c.sku||"PRODUCT-001")+'</div><div class="product-price">'+escapeHtml(c.currency||"₹")+' '+escapeHtml(c.price||"—")+'</div></div><div class="ar-badge">✨ '+(c.ar_model_url?"Interactive 3D / AR":"3D ready")+'</div><div class="preview-footer">'+escapeHtml(c.buy_url||"Buy / enquire")+'</div></div>';
-  return '<div class="preview-inner">'+(img||'<div class="preview-logo">🏠</div>')+'<div class="preview-kicker" style="margin-top:16px">Property showcase</div><div class="preview-title">'+escapeHtml(c.property_title||"Your Property")+'</div><div class="preview-sub">'+escapeHtml(c.location||"Your location")+'</div><div class="property-stats"><div class="stat"><b>Price</b><span>'+escapeHtml(c.price||"—")+'</span></div><div class="stat"><b>Area</b><span>'+escapeHtml(c.area||"—")+'</span></div><div class="stat"><b>Bedrooms</b><span>'+escapeHtml(c.bedrooms||"—")+'</span></div><div class="stat"><b>Bathrooms</b><span>'+escapeHtml(c.bathrooms||"—")+'</span></div></div><div class="property-cta">'+escapeHtml(c.tour_url||c.map_url||"View property details")+'</div><div class="preview-footer">'+(c.ar_model_url?"✨ 3D / AR ready":"Virtual tour / AR ready")+'</div></div>';
+  if(type==="menu"){
+    return `<div class="preview-inner zc-trad zc-trad-menu">
+      <div class="zc-menu-crest"><span>✦</span><small>EST. WITH CARE</small><span>✦</span></div>
+      <div class="zc-menu-brand">${title("restaurant_name","Your Restaurant")}</div>
+      <div class="zc-menu-cuisine">${title("cuisine","KITCHEN · CAFE · DINING")}</div>
+      <div class="zc-menu-rule"><span>❦</span></div>
+      <h2 class="zc-menu-heading">MENU</h2><p class="zc-menu-tagline">${desc("tagline","Freshly prepared. Thoughtfully served.")}</p>
+      <div class="zc-menu-description">${desc("description","Discover our signature dishes and seasonal favourites.")}</div>
+      <div class="zc-menu-items">${zcRenderMenuItems(c.menu_items,c.currency)}</div>
+      ${clean(c.dietary_options)?`<div class="zc-menu-dietary"><b>PLEASE NOTE</b><span>${escapeHtml(c.dietary_options)}</span></div>`:""}
+      <div class="zc-menu-footer"><span>${title("opening_hours","Open daily")}</span><span>${title("address","Visit us")}</span></div>
+      <div class="zc-action-row">${zcAction(c.order_url,"Order online")}${zcAction(c.reservation_url,"Reserve a table","outline")}</div>
+      <div class="zc-menu-contact">${zcContactItem("CALL","phone",c)}${zcContactItem("EMAIL","email",c)}</div>
+    </div>`;
+  }
+  if(type==="wedding"){
+    return `<div class="preview-inner zc-trad zc-trad-wedding">
+      <div class="zc-wedding-border"><span>❧</span><span>✿</span><span>❧</span></div>
+      <div class="zc-wedding-seal">शुभ विवाह</div><div class="zc-wedding-english">WEDDING INVITATION</div>
+      ${image("zc-wedding-photo","Wedding photograph")}
+      <div class="zc-wedding-blessing">Together with the blessings of our families</div>
+      ${weddingFamily?`<div class="zc-wedding-family">${weddingFamily}</div>`:""}
+      <div class="zc-wedding-couple"><span>${title("bride_name","Bride's name")}</span><i>&amp;</i><span>${title("groom_name","Groom's name")}</span></div>
+      <div class="zc-wedding-message">${desc("message","Together with our families, we invite you to celebrate our special day.")}</div>
+      <div class="zc-wedding-divider"><span>✥</span></div>
+      <div class="zc-wedding-event">${title("ceremony","Wedding ceremony")}</div>
+      <div class="zc-wedding-date-grid"><div><small>DATE</small><strong>${escapeHtml(zcPrettyDate(c.date)||"Wedding date")}</strong></div><div><small>MUHURTA / TIME</small><strong>${title("time","Ceremony time")}</strong></div></div>
+      <div class="zc-wedding-venue"><small>VENUE</small><strong>${title("venue","Wedding venue")}</strong><span>${title("address","Full venue address")}</span></div>
+      ${clean(c.reception)?`<div class="zc-wedding-reception">${escapeHtml(c.reception)}</div>`:""}
+      <div class="zc-wedding-bottom"><span>${c.dress_code?"ATTIRE · "+escapeHtml(c.dress_code):"YOUR PRESENCE IS OUR PRESENT"}</span><span>${c.rsvp_name?"RSVP · "+escapeHtml(c.rsvp_name):"WITH LOVE"}${c.rsvp_phone?" · "+escapeHtml(c.rsvp_phone):""}</span></div>
+      <div class="zc-action-row wedding-actions">${zcAction(c.rsvp_url,"RSVP")}${zcAction(c.map_url,"Open venue map","outline")}</div>
+      <div class="zc-wedding-ornament-bottom">❦ ✦ ❦</div>
+    </div>`;
+  }
+  if(type==="identity"){
+    return `<div class="preview-inner zc-trad zc-trad-identity">
+      <div class="zc-id-topbar"><span class="zc-id-emblem">✦</span><div><b>${title("organization","ORGANIZATION")}</b><small>${title("id_type","IDENTITY / ACCESS CARD")}</small></div><span class="zc-id-chip">ID</span></div>
+      <div class="zc-id-main">${safePhoto?image("zc-id-portrait","ID portrait"): `<div class="zc-id-portrait zc-id-initials">${escapeHtml(zcInitials(c.name))}</div>`}<div class="zc-id-details"><span class="zc-id-role">${title("designation","Designation / Role")}</span><h2>${title("name","Full name")}</h2><div class="zc-id-department">${title("department","Department")}</div><div class="zc-id-number"><span>ID NUMBER</span><b>${title("id_number","ZC-000000")}</b></div></div></div>
+      <div class="zc-id-validity">${zcFacts([["ISSUED",zcPrettyDate(c.issue_date)],["VALID UNTIL",zcPrettyDate(c.expiry_date)],["BLOOD GROUP",c.blood_group]])||`<div class="zc-fact"><span>STATUS</span><strong>Authorized identity</strong></div>`}</div>
+      <div class="zc-id-contact">${zcContactItem("OFFICIAL EMAIL","email",c)}${zcContactItem("CONTACT","phone",c)}${clean(c.emergency_contact)?`<div class="zc-emergency"><span>EMERGENCY CONTACT</span><b>${escapeHtml(c.emergency_contact)}</b></div>`:""}</div>
+      ${clean(c.bio)?`<p class="zc-id-note">${escapeHtml(c.bio)}</p>`:""}
+      <div class="zc-id-footer"><div class="zc-barcode" aria-hidden="true"></div><span>VALID FOR THE STATED PURPOSE ONLY</span></div>
+    </div>`;
+  }
+  if(type==="catalog"){
+    return `<div class="preview-inner zc-trad zc-trad-catalog">
+      <div class="zc-catalog-cover"><span class="zc-catalog-mark">${escapeHtml(zcInitials(c.business_name))}</span><div class="zc-catalog-overline">THE COLLECTION</div><h2>${title("business_name","Your Brand")}</h2><p>${desc("tagline","A considered collection of products and services")}</p><div class="zc-catalog-rule"><span>✦</span></div><small>${desc("description","Browse the catalogue and contact us for details.")}</small></div>
+      ${renderPremiumCatalog(type,c)}
+      <div class="zc-catalog-sales">${zcContactItem("SALES","phone",c)}${zcContactItem("EMAIL","email",c)}${zcAction(c.enquiry_url,"Enquire about the collection")}</div>
+      ${zcAction(c.website,"Visit brand website","outline")}
+    </div>`;
+  }
+  if(type==="event"){
+    return `<div class="preview-inner zc-trad zc-trad-event">
+      <div class="zc-ticket-top"><div class="zc-ticket-brand"><span>✦</span><b>${title("organizer","EVENTS & EXPERIENCES")}</b></div><span class="zc-ticket-class">${title("event_category","ADMIT ONE")}</span></div>
+      <div class="zc-ticket-main"><div class="zc-ticket-overline">YOU'RE INVITED</div><h2>${title("event_name","Your Event")}</h2><p>${desc("description","A gathering worth being part of.")}</p></div>
+      <div class="zc-ticket-facts">${zcFacts([["DATE",zcPrettyDate(c.date)],["END DATE",zcPrettyDate(c.event_end_date)],["TIME",c.time],["VENUE",c.venue]])||`<div class="zc-fact"><span>DETAILS</span><strong>See event schedule</strong></div>`}</div>
+      ${clean(c.address)?`<div class="zc-ticket-address">${escapeHtml(c.address)}</div>`:""}
+      <div class="zc-ticket-perforation"><span></span><span></span></div>
+      <div class="zc-ticket-bottom"><div><small>ENTRY</small><b>${title("ticket_info","Registration required")}</b><p>${desc("entry_guidelines","Please arrive on time and keep your ticket ready.")}</p></div><div class="zc-ticket-code" aria-label="Decorative ticket code"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      <div class="zc-action-row">${zcAction(c.registration_url,"Register / get ticket")}</div>
+      <div class="zc-ticket-contact">${zcContactItem("ORGANIZER","contact_phone",c)}${zcContactItem("EMAIL","contact_email",c)}</div>
+    </div>`;
+  }
+  if(type==="product"){
+    const features=zcBulletList(c.features,"zc-spec-list",5);
+    return `<div class="preview-inner zc-trad zc-trad-product">
+      <div class="zc-product-top"><span>${title("brand","THE BRAND")}</span><span class="zc-stock-badge">${title("availability","Available to enquire")}</span></div>
+      ${safePhoto?image("zc-product-hero-image","Product photograph"):`<div class="zc-product-placeholder"><span>PRODUCT</span><b>${escapeHtml(zcInitials(c.product_name))}</b></div>`}
+      <div class="zc-product-overline">${title("brand","PRODUCT SPOTLIGHT")}</div><h2>${title("product_name","Your Product")}</h2>
+      <p class="zc-product-description">${desc("description","A clear description helps customers understand the product and its intended use.")}</p>
+      <div class="zc-product-price-row"><div><small>PRICE</small><strong>${title("currency","₹")} ${title("price","Price on request")}</strong></div><span>${title("sku","Model / SKU")}</span></div>
+      <div class="zc-product-specs">${zcFacts([["MATERIAL",c.material],["DIMENSIONS",c.dimensions],["WARRANTY",c.warranty]])}</div>
+      ${features?`<div class="zc-product-features"><h3>KEY FEATURES</h3>${features}</div>`:""}
+      <div class="zc-action-row">${zcAction(c.buy_url,"Buy / enquire")}${zcAction(c.support_url,"Specifications","outline")}</div>
+      <div class="zc-product-footer">${c.ar_model_url?"3D / AR MODEL AVAILABLE":"Product information"} · ${escapeHtml(clean(c.brand)||"ZetaCard product page")}</div>
+    </div>`;
+  }
+  // Property cards use a property-listing brochure layout with price and practical specifications.
+  return `<div class="preview-inner zc-trad zc-trad-property">
+    <div class="zc-property-top"><span>PROPERTY SHOWCASE</span><b>${title("listing_status","LISTING")}</b></div>
+    ${safePhoto?image("zc-property-hero-image","Property photograph"):`<div class="zc-property-placeholder"><span>PROPERTY</span><b>⌂</b></div>`}
+    <div class="zc-property-overline">${title("property_type","REAL ESTATE")}</div><h2>${title("property_title","Your Property")}</h2>
+    <div class="zc-property-location">⌖ ${title("location","Neighbourhood · City")}</div>
+    <div class="zc-property-price"><small>ASKING PRICE / RENT</small><strong>${title("price","Price on request")}</strong></div>
+    <div class="zc-property-stats">${zcFacts([["AREA",c.area],["BEDROOMS",c.bedrooms],["BATHROOMS",c.bathrooms],["FURNISHING",c.furnishing],["POSSESSION",c.possession]])}</div>
+    ${clean(c.amenities)?`<div class="zc-property-amenities"><h3>AMENITIES</h3>${zcBulletList(c.amenities,"zc-spec-list",6)}</div>`:""}
+    <p class="zc-property-description">${desc("description","Property details, features and neighbourhood information.")}</p>
+    <div class="zc-action-row">${clean(c.contact_phone)?`<a class="zc-card-action primary" href="tel:${escapeHtml(clean(c.contact_phone).replace(/[^0-9+]/g,""))}">Call agent <span>↗</span></a>`:""}${zcAction(c.map_url,"Open map","outline")}${zcAction(c.tour_url,"Virtual tour","outline")}</div>
+    <div class="zc-property-footer">${zcContactItem("CONTACT","contact_phone",c)}${zcContactItem("EMAIL","contact_email",c)}${c.ar_model_url?"3D / AR TOUR AVAILABLE":"PROPERTY DETAILS"}</div>
+  </div>`;
 }
 function menuItems(raw,currency){const arr=String(raw||"").split(/\n+/).map(x=>x.trim()).filter(Boolean).slice(0,5);if(!arr.length)return ['Chef Special — '+(currency||"₹")+'320','Signature Dish — '+(currency||"₹")+'280','Fresh Dessert — '+(currency||"₹")+'180'].map(x=>{const p=x.split(' — ');return '<div class="preview-row"><b>'+escapeHtml(p[0])+'</b><span>'+escapeHtml(p[1])+'</span></div>'}).join("");return arr.map(x=>{const p=x.split(/\s+—\s+|\s+-\s+/);return '<div class="preview-row"><b>'+escapeHtml(p[0])+'</b><span>'+escapeHtml(p[1]||"")+'</span></div>'}).join("")}
 function catalogItems(raw){const arr=String(raw||"").split(/\n+/).map(x=>x.trim()).filter(Boolean).slice(0,6);if(!arr.length)return ["Product One — ₹999","Product Two — ₹1,499","Product Three — Enquire","Product Four — ₹2,499"].map(x=>{const p=x.split(' — ');return '<div class="catalog-item"><b>'+escapeHtml(p[0])+'</b><span>'+escapeHtml(p[1]||"")+'</span></div>'}).join("");return arr.map(x=>{const p=x.split(/\s+—\s+|\s+-\s+/);return '<div class="catalog-item"><b>'+escapeHtml(p[0])+'</b><span>'+escapeHtml(p[1]||"")+'</span></div>'}).join("")}
