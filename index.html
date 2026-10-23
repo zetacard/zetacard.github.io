@@ -1797,6 +1797,159 @@ html{scroll-behavior:smooth}body{background:#f7f8fb;color:var(--zc-v54-ink);-web
 }
 </style>
 
+<style id="zc-v56-premium-art-direction">
+/* ZetaCard v56: make actual published card canvases feel designed, not merely recoloured. */
+#shared .shared-wrap{width:min(1000px,calc(100% - 28px));margin-inline:auto}
+#shared .shared-layout{display:flex!important;flex-direction:column!important;align-items:center!important;gap:24px!important}
+#shared #sharedCard{width:100%;margin-inline:auto;overflow:hidden;contain:layout paint;box-sizing:border-box}
+#shared #sharedCard .zc-trad{width:100%;max-width:100%;box-sizing:border-box}
+#shared #sharedCard.card-visiting{max-width:790px}
+#shared #sharedCard.card-menu{max-width:548px}
+#shared #sharedCard.card-wedding{max-width:520px}
+#shared #sharedCard.card-identity{max-width:790px}
+#shared #sharedCard.card-catalog{max-width:650px}
+#shared #sharedCard.card-event{max-width:720px}
+#shared #sharedCard.card-product{max-width:610px}
+#shared #sharedCard.card-property{max-width:640px}
+#mainCard.card-menu,#mainCard.card-wedding{width:100%;max-width:548px;margin-inline:auto}
+#mainCard.card-catalog{width:100%;max-width:650px;margin-inline:auto}
+#mainCard.card-product,#mainCard.card-property{width:100%;max-width:610px;margin-inline:auto}
+.card-preview{isolation:isolate;overflow:hidden;position:relative;box-shadow:0 22px 64px rgba(20,28,44,.15)}
+.card-preview .zc-trad{box-sizing:border-box;width:100%;min-width:0;overflow:hidden;position:relative;isolation:isolate}
+.card-preview .zc-trad>*{max-width:100%;min-width:0}
+.card-preview .zc-trad h2,.card-preview .zc-trad h3{overflow-wrap:anywhere}
+
+/* MENUS — a proper portrait menu canvas with legible categories and prices. */
+.card-preview.card-menu{border-radius:5px!important;border:1px solid var(--tpl-accent,#9e793f)!important;box-shadow:0 0 0 5px var(--tpl-paper,#fffdf7),0 0 0 6px var(--tpl-accent,#9e793f),0 24px 65px rgba(48,35,19,.18)!important}
+.card-preview.card-menu .zc-trad-menu{min-height:700px;box-sizing:border-box;padding:42px 38px 34px;background-image:radial-gradient(ellipse at 0 0,color-mix(in srgb,var(--tpl-accent,#9e793f) 11%,transparent),transparent 42%),radial-gradient(ellipse at 100% 100%,color-mix(in srgb,var(--tpl-accent,#9e793f) 9%,transparent),transparent 40%)}
+.card-preview.card-menu .zc-trad-menu:before{content:"";position:absolute;inset:12px;border:1px solid color-mix(in srgb,var(--tpl-accent,#9e793f) 55%,transparent);pointer-events:none;z-index:0}
+.card-preview.card-menu .zc-trad-menu:after{content:"✦";position:absolute;right:25px;bottom:18px;font:22px Georgia,serif;color:var(--tpl-accent,#9e793f);opacity:.6;pointer-events:none;z-index:0}
+.card-preview.card-menu .zc-trad-menu>*{position:relative;z-index:1}
+.card-preview.card-menu .zc-menu-crest{margin:5px 0 9px;gap:17px;font-size:18px}
+.card-preview.card-menu .zc-menu-brand{font-size:clamp(28px,4vw,37px);line-height:1.1;margin-top:11px;letter-spacing:-.6px}
+.card-preview.card-menu .zc-menu-cuisine{font-size:9px;letter-spacing:2.5px;margin-top:10px}
+.card-preview.card-menu .zc-menu-rule{margin:24px 0 18px;height:1px}
+.card-preview.card-menu .zc-menu-heading{font-size:36px;letter-spacing:7px;line-height:1.1}
+.card-preview.card-menu .zc-menu-tagline{font-size:13px;margin-top:8px}
+.card-preview.card-menu .zc-menu-description{font-size:12px;line-height:1.65;max-width:420px;margin:14px auto 24px}
+.card-preview.card-menu .zc-menu-items{display:block;border-top:1px solid var(--tpl-accent,#9e793f);padding-top:5px;margin-top:4px}
+.card-preview.card-menu .zc-menu-category{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 1px 8px;margin-top:5px;color:var(--tpl-accent,#9e793f);border-bottom:1px solid color-mix(in srgb,var(--tpl-accent,#9e793f) 40%,transparent);font:900 9px/1.4 Inter,system-ui,sans-serif;letter-spacing:2px;text-transform:uppercase}
+.card-preview.card-menu .zc-menu-category i{font-size:12px;font-style:normal;opacity:.85}
+.card-preview.card-menu .zc-menu-item{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:14px!important;padding:13px 2px!important;border-bottom:1px dotted color-mix(in srgb,var(--tpl-accent,#9e793f) 32%,transparent)!important}
+.card-preview.card-menu .zc-menu-item-copy{min-width:0}
+.card-preview.card-menu .zc-menu-item b{display:block;font:600 15px/1.4 Georgia,"Times New Roman",serif!important;overflow-wrap:anywhere}
+.card-preview.card-menu .zc-menu-price{display:inline-flex;align-items:center;justify-content:center;min-width:52px;padding:6px 9px;border:1px solid color-mix(in srgb,var(--tpl-accent,#9e793f) 48%,transparent);border-radius:3px;background:color-mix(in srgb,var(--tpl-accent,#9e793f) 8%,transparent);color:var(--tpl-accent,#9e793f);font:850 12px/1.2 Inter,system-ui,sans-serif;white-space:nowrap}
+.card-preview.card-menu .zc-menu-footer{margin-top:23px;padding-top:14px;border-top:1px solid var(--tpl-accent,#9e793f);font-size:10px}
+.card-preview.card-menu .zc-trad-menu .zc-action-row{justify-content:center;margin-top:19px}
+.card-preview.card-menu .zc-menu-contact{margin-top:12px}
+/* menu template families: each family changes the surface, border and ornament language. */
+.card-preview.card-menu[data-zc-template*="dark-luxe"],.card-preview.card-menu[data-zc-template*="menu-noir"],.card-preview.card-menu[data-zc-template*="menu-midnight"],.card-preview.card-menu[data-zc-template*="menu-charcoal"]{--tpl-bg:#14171d!important;--tpl-bg2:#242932!important;--tpl-ink:#f8f0df!important;--tpl-paper:#1c2027!important;--tpl-accent:#d9b76c!important;background:linear-gradient(145deg,#14171d,#242932)!important;border-color:#d9b76c!important;box-shadow:0 0 0 5px #242932,0 0 0 6px #d9b76c,0 24px 65px #10131940!important}
+.card-preview.card-menu[data-zc-template*="menu-botanical"],.card-preview.card-menu[data-zc-template*="menu-emerald"],.card-preview.card-menu[data-zc-template*="menu-sage"],.card-preview.card-menu[data-zc-template*="menu-jade"],.card-preview.card-menu[data-zc-template*="menu-lotus"]{--tpl-bg:#edf3e9!important;--tpl-bg2:#dce9d8!important;--tpl-ink:#243b30!important;--tpl-paper:#f8fbf5!important;--tpl-accent:#527354!important;background:linear-gradient(145deg,#f8fbf5,#e7f0e4)!important;border-color:#527354!important;box-shadow:0 0 0 5px #f8fbf5,0 0 0 6px #527354,0 24px 60px #1d38251f!important}
+.card-preview.card-menu[data-zc-template*="menu-spice"],.card-preview.card-menu[data-zc-template*="menu-saffron"],.card-preview.card-menu[data-zc-template*="menu-maroon"],.card-preview.card-menu[data-zc-template*="menu-copper"],.card-preview.card-menu[data-zc-template*="menu-festive"]{--tpl-bg:#fbf0e2!important;--tpl-bg2:#f1d6bc!important;--tpl-ink:#51281f!important;--tpl-paper:#fff8ef!important;--tpl-accent:#a64c32!important;background:linear-gradient(145deg,#fff9ef,#f6e1cb)!important;border-color:#a64c32!important;box-shadow:0 0 0 5px #fff8ef,0 0 0 6px #a64c32,0 24px 60px #61331e20!important}
+.card-preview.card-menu[data-zc-template*="menu-minimal"],.card-preview.card-menu[data-zc-template*="menu-cafe"],.card-preview.card-menu[data-zc-template*="menu-italian-editorial"],.card-preview.card-menu[data-zc-template*="menu-cream-ink"]{--tpl-bg:#fffdf8!important;--tpl-bg2:#f4efe6!important;--tpl-ink:#292c31!important;--tpl-paper:#fffdf8!important;--tpl-accent:#454c56!important;background:#fffdf8!important;border-color:#b9b2a4!important;box-shadow:0 0 0 4px #fffdf8,0 0 0 5px #b9b2a4,0 22px 60px #30303017!important}
+.card-preview.card-menu[data-zc-template*="menu-minimal"] .zc-trad-menu:before,.card-preview.card-menu[data-zc-template*="menu-italian-editorial"] .zc-trad-menu:before{inset:0;border:0;border-top:4px solid var(--tpl-accent);border-bottom:4px solid var(--tpl-accent)}
+
+/* WEDDING — ceremonial hierarchy, true invitation proportions, layered ornamental frame. */
+.card-preview.card-wedding{border-radius:3px!important;border:1px solid var(--tpl-accent,#b18a51)!important;box-shadow:0 0 0 5px var(--tpl-paper,#fffaf2),0 0 0 6px var(--tpl-accent,#b18a51),0 26px 72px rgba(58,23,37,.19)!important}
+.card-preview.card-wedding .zc-trad-wedding{min-height:820px;box-sizing:border-box;padding:44px 36px 35px;background-image:radial-gradient(ellipse at 50% 0,color-mix(in srgb,var(--tpl-accent,#b18a51) 12%,transparent),transparent 52%),linear-gradient(90deg,transparent 0 4.5%,color-mix(in srgb,var(--tpl-accent,#b18a51) 9%,transparent) 4.6% 4.8%,transparent 4.9% 95.1%,color-mix(in srgb,var(--tpl-accent,#b18a51) 9%,transparent) 95.2% 95.4%,transparent 95.5%)}
+.card-preview.card-wedding .zc-trad-wedding:before{inset:10px;border:1px solid var(--tpl-accent,#b18a51);box-shadow:inset 0 0 0 5px color-mix(in srgb,var(--tpl-accent,#b18a51) 8%,transparent),inset 0 0 0 6px color-mix(in srgb,var(--tpl-accent,#b18a51) 48%,transparent)}
+.card-preview.card-wedding .zc-trad-wedding:after{content:"❦";right:19px;top:17px;font-size:32px;color:var(--tpl-accent,#b18a51);opacity:.78}
+.card-preview.card-wedding .zc-wedding-border{font-size:28px;gap:22px;margin:6px 0 18px}
+.card-preview.card-wedding .zc-wedding-seal{font-size:30px;letter-spacing:4px;margin-bottom:11px}
+.card-preview.card-wedding .zc-wedding-english{font-size:9px;letter-spacing:3.4px}
+.card-preview.card-wedding .zc-wedding-photo{height:180px;max-width:330px;margin:18px auto 13px;border:4px double var(--tpl-accent,#b18a51);padding:4px;background:var(--tpl-paper,#fffaf2)}
+.card-preview.card-wedding .zc-wedding-couple{gap:7px;margin-top:18px}
+.card-preview.card-wedding .zc-wedding-couple span{font-size:clamp(30px,4.7vw,40px);line-height:1.06;font-weight:500}
+.card-preview.card-wedding .zc-wedding-couple i{font-size:23px}
+.card-preview.card-wedding .zc-wedding-message{font-size:13px;line-height:1.7;max-width:360px;margin-top:16px}
+.card-preview.card-wedding .zc-wedding-divider{margin:22px 0 13px}
+.card-preview.card-wedding .zc-wedding-date-grid>div{padding:13px 9px;border-top:1px solid color-mix(in srgb,var(--tpl-accent,#b18a51) 35%,transparent);border-bottom:1px solid color-mix(in srgb,var(--tpl-accent,#b18a51) 35%,transparent)}
+.card-preview.card-wedding .zc-wedding-date-grid strong{font-size:13px}
+.card-preview.card-wedding .zc-wedding-venue{padding:15px 12px;border:1px solid color-mix(in srgb,var(--tpl-accent,#b18a51) 36%,transparent);margin-top:13px;background:color-mix(in srgb,var(--tpl-paper,#fffaf2) 65%,transparent)}
+.card-preview.card-wedding .zc-wedding-venue strong{font-size:17px}
+.card-preview.card-wedding .zc-wedding-bottom{font-size:9px;letter-spacing:1.3px;padding-top:16px}
+.card-preview.card-wedding .zc-wedding-ornament-bottom{font-size:22px;margin-top:18px}
+.card-preview.card-wedding[data-zc-template*="royal-maroon"],.card-preview.card-wedding[data-zc-template*="temple-red"],.card-preview.card-wedding[data-zc-template*="crimson-royal"],.card-preview.card-wedding[data-zc-template*="saffron-mandala"]{--tpl-bg:#f8eee0!important;--tpl-bg2:#ebd1b2!important;--tpl-ink:#591b28!important;--tpl-paper:#fff6e8!important;--tpl-accent:#b98236!important;background:linear-gradient(145deg,#fff6e8,#f1ddc3)!important;border-color:#b98236!important;box-shadow:0 0 0 5px #fff6e8,0 0 0 6px #b98236,0 26px 72px #591b2830!important}
+.card-preview.card-wedding[data-zc-template*="midnight-gold"],.card-preview.card-wedding[data-zc-template*="noir-gold"]{--tpl-bg:#171522!important;--tpl-bg2:#30213a!important;--tpl-ink:#fff0d1!important;--tpl-paper:#211a2d!important;--tpl-accent:#d8b46b!important;background:linear-gradient(145deg,#171522,#30213a)!important;border-color:#d8b46b!important;box-shadow:0 0 0 5px #211a2d,0 0 0 6px #d8b46b,0 26px 72px #0b091080!important}
+.card-preview.card-wedding[data-zc-template*="peacock-teal"],.card-preview.card-wedding[data-zc-template*="indigo-silk"]{--tpl-bg:#0f3f47!important;--tpl-bg2:#1b5b60!important;--tpl-ink:#fff6df!important;--tpl-paper:#164c54!important;--tpl-accent:#d9b86d!important;background:linear-gradient(145deg,#0f3f47,#1b5b60)!important;border-color:#d9b86d!important;box-shadow:0 0 0 5px #164c54,0 0 0 6px #d9b86d,0 26px 72px #0c353b40!important}
+.card-preview.card-wedding[data-zc-template*="sage-botanical"],.card-preview.card-wedding[data-zc-template*="ivory-mehndi"],.card-preview.card-wedding[data-zc-template*="green-gold"]{--tpl-bg:#edf2e7!important;--tpl-bg2:#dfe7d5!important;--tpl-ink:#2c4131!important;--tpl-paper:#f7f8ef!important;--tpl-accent:#6e8a5c!important;background:linear-gradient(145deg,#faf8ef,#e5eddc)!important;border-color:#6e8a5c!important;box-shadow:0 0 0 5px #f7f8ef,0 0 0 6px #6e8a5c,0 26px 72px #263b281f!important}
+.card-preview.card-wedding[data-zc-template*="rose-garden"],.card-preview.card-wedding[data-zc-template*="pastel-blush"],.card-preview.card-wedding[data-zc-template*="peony-dust"],.card-preview.card-wedding[data-zc-template*="lilac-bloom"],.card-preview.card-wedding[data-zc-template*="sky-floral"]{--tpl-bg:#fff4f6!important;--tpl-bg2:#f6e2e9!important;--tpl-ink:#563346!important;--tpl-paper:#fff9f9!important;--tpl-accent:#b66c88!important;background:linear-gradient(145deg,#fffafa,#f4dfe7)!important;border-color:#b66c88!important;box-shadow:0 0 0 5px #fff9f9,0 0 0 6px #b66c88,0 26px 72px #56334624!important}
+.card-preview.card-wedding[data-zc-template*="arch-ornate"] .zc-wedding-photo{border-radius:170px 170px 6px 6px;height:190px}
+.card-preview.card-wedding[data-zc-template*="minimal-cream"] .zc-trad-wedding:before{inset:18px;border-width:1px;box-shadow:none}
+
+/* VISITING — looks like an executive business identity, not a generic web card. */
+.card-preview.card-visiting .zc-trad-visiting{min-height:500px;padding:36px 38px;background-image:radial-gradient(ellipse at 100% 0,color-mix(in srgb,var(--tpl-accent,#c9b98d) 19%,transparent),transparent 47%),linear-gradient(135deg,color-mix(in srgb,var(--tpl-bg,#182338) 95%,#fff),var(--tpl-bg2,#283853))}
+.card-preview.card-visiting .zc-visit-top{padding-bottom:21px;border-bottom:1px solid color-mix(in srgb,currentColor 25%,transparent)}
+.card-preview.card-visiting .zc-visit-person{padding:31px 0 23px}
+.card-preview.card-visiting .zc-visit-person h2{font-size:clamp(32px,4.2vw,42px);letter-spacing:-1px;line-height:1.04}
+.card-preview.card-visiting .zc-visit-role{font-size:12px;letter-spacing:.4px}
+.card-preview.card-visiting .zc-contact-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:25px}
+.card-preview.card-visiting .zc-contact-item{padding:10px 0}
+.card-preview.card-visiting .zc-visit-footer{padding-top:24px}
+.card-preview.card-visiting[data-zc-template*="royal-cream"],.card-preview.card-visiting[data-zc-template*="ivory-frame"],.card-preview.card-visiting[data-zc-template*="sand-ink"],.card-preview.card-visiting[data-zc-template*="cream-olive"]{--tpl-bg:#fff8e9!important;--tpl-bg2:#eee2cb!important;--tpl-ink:#2e2d35!important;--tpl-paper:#fffaf0!important;--tpl-accent:#9b773e!important;background:linear-gradient(135deg,#fffaf0,#eee2cb)!important;box-shadow:0 0 0 1px #b49765,0 25px 65px #4a3d271e!important}
+.card-preview.card-visiting[data-zc-template*="forest-line"],.card-preview.card-visiting[data-zc-template*="jade"],.card-preview.card-visiting[data-zc-template*="emerald-crest"]{--tpl-bg:#122d25!important;--tpl-bg2:#245344!important;--tpl-ink:#f1f6e9!important;--tpl-paper:#18382e!important;--tpl-accent:#c8d7a2!important;background:linear-gradient(145deg,#122d25,#245344)!important}
+.card-preview.card-visiting[data-zc-template*="burgundy"],.card-preview.card-visiting[data-zc-template*="plum"]{--tpl-bg:#321725!important;--tpl-bg2:#54243c!important;--tpl-ink:#fff1e9!important;--tpl-paper:#3b1d2c!important;--tpl-accent:#dfbb87!important;background:linear-gradient(145deg,#321725,#54243c)!important}
+.card-preview.card-visiting[data-zc-template*="graphite"],.card-preview.card-visiting[data-zc-template*="midnight"],.card-preview.card-visiting[data-zc-template*="noir-silver"]{--tpl-bg:#111824!important;--tpl-bg2:#293344!important;--tpl-ink:#f5f7fb!important;--tpl-paper:#182231!important;--tpl-accent:#c3c9d3!important;background:linear-gradient(145deg,#111824,#293344)!important}
+
+/* IDENTITY — official badge hierarchy and controlled, high contrast. */
+.card-preview.card-identity .zc-trad-identity{min-height:500px;padding:26px 30px;background-image:linear-gradient(145deg,color-mix(in srgb,var(--tpl-accent,#d6b56b) 10%,transparent),transparent 55%)}
+.card-preview.card-identity .zc-id-topbar{padding:0 0 18px;border-bottom:3px solid var(--tpl-accent,#d6b56b)}
+.card-preview.card-identity .zc-id-main{margin-top:22px;grid-template-columns:120px minmax(0,1fr);gap:20px}
+.card-preview.card-identity .zc-id-portrait{width:120px;height:145px;border:3px solid var(--tpl-accent,#d6b56b);border-radius:5px}
+.card-preview.card-identity .zc-id-details h2{font-size:clamp(24px,3vw,30px);line-height:1.1}
+.card-preview.card-identity .zc-id-validity{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:20px}
+.card-preview.card-identity .zc-id-footer{margin-top:auto;padding-top:20px}
+.card-preview.card-identity[data-zc-template*="navy-gold"],.card-preview.card-identity[data-zc-template*="royal-security"],.card-preview.card-identity[data-zc-template*="midnight-access"],.card-preview.card-identity[data-zc-template*="black-gold-id"]{--tpl-bg:#102449!important;--tpl-bg2:#203b65!important;--tpl-ink:#fff!important;--tpl-paper:#183158!important;--tpl-accent:#e3c273!important;background:linear-gradient(145deg,#102449,#203b65)!important}
+.card-preview.card-identity[data-zc-template*="eco"],.card-preview.card-identity[data-zc-template*="green-foundation"],.card-preview.card-identity[data-zc-template*="white-emerald"]{--tpl-bg:#eef4eb!important;--tpl-bg2:#dce9d8!important;--tpl-ink:#223c2d!important;--tpl-paper:#f9fcf7!important;--tpl-accent:#46734b!important;background:linear-gradient(145deg,#f9fcf7,#dce9d8)!important}
+
+/* CATALOGUE / EVENT / PRODUCT / PROPERTY — editorial commerce layouts. */
+.card-preview.card-catalog{border-radius:6px!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--tpl-accent,#9a805e) 32%,transparent),0 25px 70px #1720331f!important}
+.card-preview.card-catalog .zc-trad-catalog{min-height:700px;padding:30px;background-image:radial-gradient(circle at 100% 0,color-mix(in srgb,var(--tpl-accent,#9a805e) 10%,transparent),transparent 40%)}
+.card-preview.card-catalog .zc-catalog-cover{padding:30px 26px 34px;border:1px solid color-mix(in srgb,var(--tpl-accent,#9a805e) 30%,transparent)}
+.card-preview.card-catalog .zc-catalog-cover h2{font-size:clamp(32px,4vw,42px);letter-spacing:-1.1px;line-height:1.02}
+.card-preview.card-catalog[data-zc-template*="indian-craft"],.card-preview.card-catalog[data-zc-template*="earth"],.card-preview.card-catalog[data-zc-template*="botanical"]{--tpl-bg:#f1eee2!important;--tpl-bg2:#d9e1d0!important;--tpl-ink:#26392c!important;--tpl-paper:#faf7ed!important;--tpl-accent:#718054!important;background:linear-gradient(145deg,#faf7ed,#e7e8d8)!important}
+.card-preview.card-event{border-radius:8px!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--tpl-accent,#d9b76c) 40%,transparent),0 24px 65px #17203330!important}
+.card-preview.card-event .zc-trad-event{min-height:590px;padding:35px;background-image:radial-gradient(circle at 100% 0,color-mix(in srgb,var(--tpl-accent,#d9b76c) 24%,transparent),transparent 37%)}
+.card-preview.card-event .zc-ticket-main{padding:34px 0 26px}
+.card-preview.card-event .zc-ticket-main h2{font-size:clamp(36px,5vw,50px);line-height:.99;letter-spacing:-1.6px}
+.card-preview.card-event .zc-ticket-perforation{border-top:2px dashed color-mix(in srgb,var(--tpl-accent,#d9b76c) 65%,transparent)}
+.card-preview.card-product,.card-preview.card-property{border-radius:8px!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--tpl-accent,#8f9b8d) 35%,transparent),0 25px 70px #17203325!important}
+.card-preview.card-product .zc-trad-product,.card-preview.card-property .zc-trad-property{min-height:700px;padding:30px}
+.card-preview.card-product .zc-product-hero-image,.card-preview.card-property .zc-property-hero-image{height:270px;border-radius:5px;overflow:hidden;background:linear-gradient(145deg,#f2f4f2,#e5e9e5);border:1px solid color-mix(in srgb,var(--tpl-accent,#697a68) 25%,transparent)}
+.card-preview.card-product .zc-product-price-row,.card-preview.card-property .zc-property-price{border:1px solid color-mix(in srgb,var(--tpl-accent,#697a68) 40%,transparent);border-radius:5px}
+.card-preview.card-property[data-zc-template*="luxe"],.card-preview.card-property[data-zc-template*="estate"],.card-preview.card-property[data-zc-template*="villa"]{--tpl-bg:#e9eee6!important;--tpl-bg2:#cfd8ca!important;--tpl-ink:#26392c!important;--tpl-paper:#f8f8f1!important;--tpl-accent:#6c815f!important;background:linear-gradient(145deg,#f8f8f1,#dce4d5)!important}
+.card-preview.card-product[data-zc-template*="midnight"],.card-preview.card-product[data-zc-template*="luxury"],.card-preview.card-product[data-zc-template*="dark-retail"]{--tpl-bg:#151b24!important;--tpl-bg2:#293440!important;--tpl-ink:#f8f4eb!important;--tpl-paper:#202832!important;--tpl-accent:#d2b47d!important;background:linear-gradient(145deg,#151b24,#293440)!important}
+
+/* Keep the public card and its QR separated, readable and in the same flow. */
+#shared .shared-layout #sharedCard{order:1}
+#shared .shared-layout .qr-box{order:2;position:relative!important;float:none!important;transform:none!important;margin:0 auto!important;z-index:1!important}
+#shared #qr{min-width:156px;min-height:156px;padding:7px;background:#fff;border:1px solid #dfe4eb;border-radius:12px;display:grid;place-items:center}
+#shared #qr canvas,#shared #qr img{display:block!important;width:140px!important;height:140px!important;max-width:140px!important;max-height:140px!important}
+@media(max-width:620px){
+ #shared .shared-wrap{width:calc(100% - 18px)}
+ #shared #sharedCard.card-visiting,#shared #sharedCard.card-identity{max-width:100%}
+ #shared #sharedCard.card-menu,#shared #sharedCard.card-wedding,#shared #sharedCard.card-catalog,#shared #sharedCard.card-product,#shared #sharedCard.card-property{max-width:min(100%,520px)}
+ #shared .shared-layout .qr-box{width:min(100%,360px);grid-template-columns:minmax(0,1fr) 140px;gap:10px;padding:12px}
+ #shared #qr{min-width:124px;min-height:124px;padding:5px}
+ #shared #qr canvas,#shared #qr img{width:112px!important;height:112px!important;max-width:112px!important;max-height:112px!important}
+ .card-preview.card-menu .zc-trad-menu{min-height:0;padding:30px 22px 27px}
+ .card-preview.card-wedding .zc-trad-wedding{min-height:0;padding:34px 25px 28px}
+ .card-preview.card-visiting .zc-trad-visiting{padding:27px 22px;min-height:0}
+ .card-preview.card-visiting .zc-contact-list{grid-template-columns:1fr}
+ .card-preview.card-identity .zc-trad-identity{padding:23px 18px;min-height:0}
+ .card-preview.card-identity .zc-id-main{grid-template-columns:86px minmax(0,1fr);gap:12px}
+ .card-preview.card-identity .zc-id-portrait{width:86px;height:108px}
+ .card-preview.card-identity .zc-id-validity{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .card-preview.card-catalog .zc-trad-catalog,.card-preview.card-event .zc-trad-event,.card-preview.card-product .zc-trad-product,.card-preview.card-property .zc-trad-property{min-height:0;padding:22px 18px}
+ .card-preview.card-product .zc-product-hero-image,.card-preview.card-property .zc-property-hero-image{height:205px}
+ .card-preview.card-menu .zc-menu-brand{font-size:28px}
+ .card-preview.card-menu .zc-menu-heading{font-size:30px;letter-spacing:5px}
+ .card-preview.card-menu .zc-menu-item{gap:8px!important;padding:11px 1px!important}
+ .card-preview.card-menu .zc-menu-item b{font-size:14px!important}
+ .card-preview.card-menu .zc-menu-price{font-size:11px;padding:5px 7px}
+}
+</style>
+
 </head>
 <body>
 
