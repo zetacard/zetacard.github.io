@@ -2212,6 +2212,41 @@ html{scroll-behavior:smooth}body{background:#f7f8fb;color:var(--zc-v54-ink);-web
 
 </style>
 
+
+<style id="zc-v60-manual-template-studio">
+.zc-manual-path-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:18px 0 10px}
+.zc-manual-path-card{display:flex;flex-direction:column;align-items:flex-start;gap:10px;min-height:245px;padding:21px;border:1px solid #d9e0eb;border-radius:20px;background:linear-gradient(155deg,#fff 0%,#f7f8fd 100%);color:#182239;text-align:left;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.zc-manual-path-card:hover,.zc-manual-path-card:focus-visible{transform:translateY(-3px);border-color:#7d8bf5;box-shadow:0 18px 38px rgba(25,39,75,.12);outline:none}
+.zc-manual-path-card:first-child{background:radial-gradient(circle at 100% 0%,rgba(197,164,96,.15),transparent 48%),linear-gradient(150deg,#fffdf7,#f6f0e4)}
+.zc-manual-path-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:#202f57;color:#fff;font-size:24px;box-shadow:0 6px 15px #202f5725}
+.zc-self-card .zc-manual-path-icon{background:#e9edff;color:#3446a5;box-shadow:none}
+.zc-manual-path-label{font-size:10px;font-weight:900;letter-spacing:1.6px;color:#65718a}
+.zc-manual-path-card strong{font:750 clamp(18px,2vw,23px)/1.18 Inter,system-ui,sans-serif;letter-spacing:-.035em}
+.zc-manual-path-card p{margin:0;color:#67728a;font-size:13px;line-height:1.65;max-width:40ch}
+.zc-manual-path-cta{margin-top:auto;padding-top:8px;font-size:12px;font-weight:900;color:#4054dc}
+.zc-template-source-note{font-size:11px;color:#7a8496;line-height:1.6;margin:12px 2px 2px}
+.zc-template-picker-toolbar{display:grid;grid-template-columns:minmax(0,1fr) 155px;gap:10px;margin:10px 0 15px}
+.zc-template-search-wrap{display:flex;align-items:center;gap:8px;min-width:0;padding:0 12px;border:1px solid #d8e0eb;border-radius:12px;background:#fff;color:#6d7890}
+.zc-template-search-wrap span{font-size:22px;line-height:1}
+.zc-template-search-wrap input{width:100%;min-width:0;border:0!important;outline:none!important;box-shadow:none!important;background:transparent!important;padding:12px 0!important;color:#1b2540;font-size:12px}
+.zc-template-picker-toolbar select{width:100%;min-width:0;padding:11px;border:1px solid #d8e0eb;border-radius:12px;background:#fff;color:#24304b;font-size:12px;font-weight:750}
+.zc-template-picker-studio .template-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:11px!important;min-height:0!important}
+.zc-template-picker-studio .template-option{min-width:0!important;padding:7px!important;border-radius:14px!important}
+.zc-template-picker-studio .template-thumb.v47-template{height:180px!important;min-height:180px!important}
+.zc-template-picker-studio .template-meta{display:grid;gap:4px;padding:8px 3px 3px;min-width:0}
+.zc-template-picker-studio .template-meta b{font-size:11px;line-height:1.35;overflow-wrap:anywhere}
+.zc-template-picker-studio .template-meta span{font-size:10px;line-height:1.45;color:#748097}
+.zc-template-pagination{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:13px;border-top:1px solid #e7ebf2}
+.zc-template-pagination span{font-size:11px;font-weight:850;color:#68748d;text-align:center}
+.zc-template-pagination button:disabled{opacity:.4;cursor:not-allowed}
+.zc-template-picker-grid .template-option.selected{border-color:#536dfe!important;box-shadow:0 0 0 3px rgba(83,109,254,.12)!important}
+.zc-template-picker-studio .template-thumb.v47-template .th-center b{max-width:100%;overflow-wrap:anywhere}
+.zc-manual-build-hint{padding:13px 14px;margin:12px 0;border:1px dashed #c4cce0;border-radius:14px;background:#f8f9ff;color:#263557}
+.zc-manual-build-hint strong{font-size:13px}.zc-manual-build-hint p{margin:5px 0 0;font-size:11px;line-height:1.6;color:#69758d}
+@media(max-width:760px){.zc-manual-path-grid{grid-template-columns:1fr}.zc-manual-path-card{min-height:210px}.zc-template-picker-toolbar{grid-template-columns:1fr}.zc-template-picker-studio .template-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.zc-template-picker-studio .template-thumb.v47-template{height:165px!important;min-height:165px!important}.zc-template-pagination{flex-wrap:wrap}.zc-template-pagination span{flex:1;min-width:90px}}
+@media(max-width:420px){.zc-template-picker-studio .template-thumb.v47-template{height:145px!important;min-height:145px!important}.zc-template-picker-studio .template-grid{gap:8px!important}}
+</style>
+
 </head>
 <body>
 
@@ -2408,6 +2443,15 @@ html{scroll-behavior:smooth}body{background:#f7f8fb;color:var(--zc-v54-ink);-web
         </div>
       </div>
 
+      <div id="manualPathStep" class="step-pane">
+        <div class="step-title"><div><h2>Manual Mode · Choose your starting point</h2><p>Start with a professionally composed template, or build your own look from a clean base.</p></div><span class="pill">Your choice</span></div>
+        <div class="zc-manual-path-grid">
+          <button id="manualFromTemplateBtn" class="zc-manual-path-card" type="button"><span class="zc-manual-path-icon">▦</span><span class="zc-manual-path-label">FROM TEMPLATE</span><strong>Choose a ready-made design</strong><p>Browse 100 original style combinations for every card type, preview them, then fill in your details.</p><span class="zc-manual-path-cta">Browse templates →</span></button>
+          <button id="manualBuildYourselfBtn" class="zc-manual-path-card zc-self-card" type="button"><span class="zc-manual-path-icon">✳</span><span class="zc-manual-path-label">BUILD YOURSELF</span><strong>Start with a clean canvas</strong><p>Use the card-specific form, then customize its color, typography, spacing and finish yourself.</p><span class="zc-manual-path-cta">Start from scratch →</span></button>
+        </div>
+        <div class="zc-template-source-note">Every template is rendered natively by ZetaCard and remains editable. The visual directions are original combinations informed by public design-category references, not copied third-party artwork.</div>
+      </div>
+
       <div id="typeStep" class="step-pane active">
         <div class="step-title"><div><h2>1. Choose card type</h2><p>Your selection controls the form and the design.</p></div><span id="typePill" class="pill">Choose a type</span></div>
         <div id="typeGrid" class="type-grid"></div>
@@ -2415,11 +2459,25 @@ html{scroll-behavior:smooth}body{background:#f7f8fb;color:var(--zc-v54-ink);-web
         <div id="typeStatus" class="status"></div>
       </div>
 
+      <div id="templatePickerStep" class="step-pane">
+        <div class="step-title"><div><h2>Choose your template</h2><p id="templatePickerSubtitle">100 original templates, designed for this card type. Select any thumbnail to preview it on the right.</p></div><span id="templatePickerCount" class="pill">100 templates</span></div>
+        <div id="templatePickerStudio" class="template-studio zc-template-picker-studio">
+          <div class="zc-template-picker-toolbar">
+            <label class="zc-template-search-wrap"><span>⌕</span><input id="templatePickerSearch" type="search" placeholder="Search styles, e.g. royal, minimal, floral" autocomplete="off"></label>
+            <select id="templatePickerCategory" aria-label="Filter template categories"><option value="All">All styles</option><option value="Traditional">Traditional</option><option value="Luxury">Luxury</option><option value="Minimal">Minimal</option><option value="Modern">Modern</option><option value="Creative">Creative</option></select>
+          </div>
+          <div id="templatePickerGrid" class="template-grid zc-template-picker-grid"></div>
+          <div class="zc-template-pagination"><button id="templatePickerPrev" class="btn ghost" type="button">← Previous</button><span id="templatePickerPageInfo" aria-live="polite">Page 1 of 9</span><button id="templatePickerNext" class="btn secondary" type="button">Next 12 →</button></div>
+        </div>
+        <div id="templatePickerStatus" class="status" aria-live="polite">Select a design to see it in the live preview.</div>
+        <div class="actions"><button id="templatePickerChangeType" class="btn ghost" type="button">← Change card type</button><button id="useSelectedTemplateBtn" class="btn primary" type="button">Use this design →</button></div>
+      </div>
+
       <div id="formStep" class="step-pane">
         <div class="form-head"><div><strong id="formTypeTitle">Build your card</strong><div id="formTypeHint" class="help">Only relevant fields are shown.</div></div><button id="backToTypes" class="nav-btn" type="button">← Card types</button></div>
         <div id="dynamicForm"></div>
         <div id="visualSection" class="optional-section hidden"><h3>Visual identity</h3><p id="visualHint">Add the image that belongs to this card.</p><div class="identity-box"><div id="identityPreview" class="identity-preview">Z</div><div><div style="font-weight:900;font-size:13px">Photo / image</div><div class="help" style="margin-top:3px">JPG, PNG or WebP · max 5 MB</div><div class="identity-actions"><label class="upload-btn" for="cardPhoto">Choose image</label><button id="removePhoto" class="remove-btn" type="button">Remove</button><input id="cardPhoto" class="file-input" type="file" accept="image/jpeg,image/png,image/webp"></div><div id="fileName" class="file-name">No image selected</div></div></div></div>
-        <div id="styleSection" class="optional-section hidden"><h3>Card style</h3><p>Choose a theme and personalize the visual identity of this card.</p><div id="styleGrid" class="style-grid"></div><input id="theme" type="hidden" value="midnight"><input id="designTemplate" type="hidden" value=""><div id="templateStudio" class="template-studio"></div><div id="customStylePanel" class="custom-style-panel"><div style="font-weight:900;font-size:12px">Brand customization</div><div class="custom-style-grid"><div class="custom-style-field"><label for="customAccent">Accent color</label><input id="customAccent" type="color" value="#536dfe" aria-label="Accent color"></div><div class="custom-style-field"><label for="customFont">Typography</label><select id="customFont"><option value="system">System / Inter</option><option value="serif">Elegant Serif</option><option value="rounded">Rounded Modern</option><option value="mono">Technical Mono</option></select></div><div class="custom-style-field"><label for="customDensity">Content spacing</label><select id="customDensity"><option value="normal">Balanced</option><option value="compact">Compact</option><option value="spacious">Spacious</option></select></div><div class="custom-style-field"><label for="customRadius">Card corners</label><select id="customRadius"><option value="default">Theme default</option><option value="soft">Soft</option><option value="sharp">Sharp</option></select></div></div><div class="custom-style-actions"><button id="resetCustomStyle" type="button" class="btn ghost">Reset customization</button></div><div class="custom-style-help">These settings are saved inside the card, so the published viewer sees the same design.</div></div></div>
+        <div id="styleSection" class="optional-section hidden"><h3>Card style</h3><p>Choose a theme and personalize the visual identity of this card.</p><div id="styleGrid" class="style-grid"></div><input id="theme" type="hidden" value="midnight"><input id="designTemplate" type="hidden" value=""><div id="templateStudio" class="template-studio"></div><div id="manualBuildHint" class="zc-manual-build-hint hidden"><strong>✳ Your custom canvas</strong><p>You're building this design yourself. Choose a palette above, then tune accent color, typography, spacing and corners below. Your card-specific fields stay exactly as entered.</p></div><div id="customStylePanel" class="custom-style-panel"><div style="font-weight:900;font-size:12px">Brand customization</div><div class="custom-style-grid"><div class="custom-style-field"><label for="customAccent">Accent color</label><input id="customAccent" type="color" value="#536dfe" aria-label="Accent color"></div><div class="custom-style-field"><label for="customFont">Typography</label><select id="customFont"><option value="system">System / Inter</option><option value="serif">Elegant Serif</option><option value="rounded">Rounded Modern</option><option value="mono">Technical Mono</option></select></div><div class="custom-style-field"><label for="customDensity">Content spacing</label><select id="customDensity"><option value="normal">Balanced</option><option value="compact">Compact</option><option value="spacious">Spacious</option></select></div><div class="custom-style-field"><label for="customRadius">Card corners</label><select id="customRadius"><option value="default">Theme default</option><option value="soft">Soft</option><option value="sharp">Sharp</option></select></div></div><div class="custom-style-actions"><button id="resetCustomStyle" type="button" class="btn ghost">Reset customization</button></div><div class="custom-style-help">These settings are saved inside the card, so the published viewer sees the same design.</div></div></div>
         <div class="actions"><button id="createBtn" class="btn primary" type="button">Create share link</button><button id="clearBtn" class="btn ghost" type="button">Clear form</button></div><div id="formStatus" class="status"></div>
       </div>
     </section>
@@ -2957,15 +3015,86 @@ function renderAiPlan(plan,source){const grid=$("aiPlanGrid");if(!grid)return;co
 async function applyAiPlan(plan){plan=normalizeAiPlan(plan);selectedType=plan.card_type;mainTheme=safeTheme(plan.theme);designTemplate=defaultTemplate(selectedType);$("aiWorkspace").style.display="none";$("modeStep").classList.remove("active");$("typeStep").classList.remove("active");$("formStep").classList.add("active");$("previewBox").style.display="block";$("stepIndicator").textContent="Step 3 of 3";$("builderTitle").textContent="Build your "+TYPES[selectedType].label;$("builderSubtitle").textContent="AI prepared a first draft. Review and edit it before creating your share link.";$("builderBack").textContent="← Card types";renderForm(plan.fields);await new Promise(r=>setTimeout(r,0));$("theme").value=mainTheme;if(typeof buildThemeButtons==="function")buildThemeButtons();updatePreview();updateBackButton();window.scrollTo(0,0)}
 async function generateCardFromPrompt(){const prompt=clean($("aiPrompt").value),status=$("aiStatus"),btn=$("generateCardAiBtn");if(!prompt){status.className="ai-status error";status.textContent="Describe the card you want first.";return}btn.disabled=true;status.className="ai-status";status.textContent="Preparing your ZetaCard…";try{let plan=null,source="local";if(initDb()){try{const r=await db.functions.invoke("generate-card-from-prompt",{body:{prompt}});if(!r.error&&r.data){plan=normalizeAiPlan(r.data.plan||r.data);source="edge"}}catch(e){console.warn("AI Edge Function unavailable; using local draft",e)}}if(!plan)plan=localPlanFromPrompt(prompt);renderAiPlan(plan,source);status.className="ai-status "+(source==="edge"?"ok":"");status.textContent=source==="edge"?"AI card plan ready.":"Draft prepared. Review the fields before publishing.";await new Promise(r=>setTimeout(r,250));await applyAiPlan(plan)}catch(e){console.error(e);status.className="ai-status error";status.textContent=e.message||"Could not prepare the card."}finally{btn.disabled=false}}
 
+
+/* ZetaCard v60: 100 distinct, editable original compositions for each of the eight card types. */
+window.zcManualCreationMode = window.zcManualCreationMode || 'template';
+window.zcTemplatePickerPage = 0;
+window.zcTemplateCatalogCache = window.zcTemplateCatalogCache || {};
+window.zcTemplatePickerSelected = '';
+window.zcTemplatePickerSearchText = '';
+window.zcTemplatePickerCategoryName = 'All';
+
+const ZC_V60_TEMPLATE_FAMILIES = {
+  visiting:['Heritage Crest','Monogram Executive','Classic Double Rule','Signature Script','Midnight Foil','Executive Noir','Champagne Linework','Architectural Luxe','Swiss Minimal','Ivory Editorial','Grid Precision','Soft Neutral','Split-Panel Modern','Bold Founder','Neo Geometric','Vertical Studio','Botanical Craft','Earthbound Artisan','Creative Portfolio','Color-Block Studio'],
+  wedding:['Shubh Vivah Mandala','Royal Palace Invitation','Temple Arch Ceremony','Kundan Heritage Border','Mughal Garden Luxe','Champagne Monogram','Peacock Royalty','Velvet Scroll Invitation','Ivory Minimal Vows','Botanical Vows','Editorial Save-the-Date','Modern Monogram','Contemporary Split Panel','Pastel Floral Story','Midnight Celebration','Illustrated Baraat','Mehndi Garden','Lotus Watercolour','Haldi Marigold Bloom','Sangeet Jewel Mosaic'],
+  menu:['Heritage Thali House','Royal Dining Room','Classic Bistro Menu','Copper Tandoor','Black-Tie Fine Dining','Chef’s Table Editorial','Olive & Linen Kitchen','Champagne Supper Club','Modern Café Menu','Minimal Price List','Ivory Bistro','Clean Two-Column Menu','Bold Street Food','Midnight Cocktail Bar','Urban Food Hall','Colour-Block Specials','Botanical Kitchen','Farm-to-Table Menu','Rustic Chalkboard','Artisan Bakery'],
+  identity:['Institutional Classic','Campus Identity','Employee Credential','Heritage Club Member','Executive Navy Badge','Premium Access Pass','Corporate Security ID','Luxe Member Card','Minimal Staff ID','Clean Student Badge','Neutral Member Profile','Quiet Luxury Credential','Modern Access Strip','Bold Crew Badge','Geometric Staff Card','Vertical Team ID','Eco Campus Identity','Community Member Card','Creative Studio Badge','Future Tech Credential'],
+  catalog:['Heritage Collection Book','Classic Product Index','Artisan Catalogue','Craft Market Folio','Luxury Lookbook','Designer Editorial','Gallery Collection','Premium Retail Edit','Minimal Product Grid','Clean Service Directory','Ivory Portfolio','Whitespace Lookbook','Bold Product Wall','Contemporary Tiles','Urban Collection','Colour-Block Range','Botanical Goods','Earth & Craft Collection','Maker’s Journal','Creative Market Edit'],
+  event:['Heritage Gala Pass','Royal Celebration Ticket','Classic Theatre Entry','Cultural Festival Pass','Black-Tie Gala','Champagne VIP Access','Concert Spotlight','Premium Conference Pass','Minimal Event Badge','Clean Summit Ticket','Editorial Speaker Pass','Quiet Luxury Invitation','Modern Expo Access','Bold Festival Pass','Neon Stage Ticket','Contemporary Agenda','Botanical Gathering','Earth & Arts Festival','Creative Workshop Pass','Future Forum Badge'],
+  product:['Heritage Craft Showcase','Classic Product Specimen','Artisan Product Story','Made-to-Order Detail','Luxury Object Portrait','Editorial Product Feature','Studio Design Piece','Premium Retail Hero','Minimal Product Sheet','Clean Specification Card','Ivory Product Profile','Whitespace Product Page','Bold Product Launch','Geometric Tech Product','Urban Essentials','Color-Block Product','Botanical Living','Earth Material Story','Maker’s Edition','Creative Collection Piece'],
+  property:['Heritage Residence','Classic Estate Listing','Garden Villa Showcase','Crafted Courtyard Home','Luxury Signature Villa','Architectural Editorial','Estate Collection','Premium Penthouse','Minimal Property Sheet','Clean Realty Listing','Ivory Residence Profile','Quiet Luxury Home','Modern City Apartment','Bold Skyline Listing','Geometric Urban Home','Contemporary Villa','Botanical Retreat','Earth-Tone Sanctuary','Creative Living Space','Future-Ready Residence']
+};
+const ZC_V60_FINISHES = {
+  visiting:[['midnight','Midnight & Champagne'],['cream','Ivory & Charcoal'],['forest','Emerald & Cream'],['cobalt','Cobalt & Silver'],['graphite','Graphite & Pearl']],
+  wedding:[['ivory','Ivory & Antique Gold'],['maroon','Maroon & Gold'],['sage','Sage & Pearl'],['peacock','Peacock & Antique Gold'],['blush','Rose & Champagne']],
+  menu:[['cream','Cream & Brass'],['maroon','Maroon & Gold'],['sage','Sage & Linen'],['charcoal','Charcoal & Copper'],['earth','Earth & Natural Paper']],
+  identity:[['navy','Navy & Silver'],['emerald','Emerald & Cream'],['blue','Cobalt & White'],['cream','Ivory & Ink'],['charcoal','Charcoal & Gold']],
+  catalog:[['cream','Ivory & Ink'],['earth','Kraft & Cocoa'],['mono','Monochrome'],['sage','Sage & Stone'],['midnight','Midnight & Silver']],
+  event:[['midnight','Midnight & Gold'],['royal','Royal Blue & Silver'],['coral','Coral & Plum'],['maroon','Burgundy & Champagne'],['blackgold','Noir & Gold']],
+  product:[['ivory','Ivory & Brass'],['midnight','Midnight & Silver'],['forest','Forest & Stone'],['cobalt','Cobalt & Ice'],['mono','Monochrome Studio']],
+  property:[['sage','Sage & Sand'],['midnight','Midnight & Champagne'],['cream','Ivory & Slate'],['earth','Sandstone & Cocoa'],['forest','Forest & Linen']]
+};
+function zcV60CategoryForFamily(index){return index<4?'Traditional':index<8?'Luxury':index<12?'Minimal':index<16?'Modern':'Creative'}
+function zcV60BuildTemplateCatalog(type){
+  if(window.zcTemplateCatalogCache[type])return window.zcTemplateCatalogCache[type];
+  const families=ZC_V60_TEMPLATE_FAMILIES[type]||ZC_V60_TEMPLATE_FAMILIES.visiting;
+  const finishes=ZC_V60_FINISHES[type]||ZC_V60_FINISHES.visiting;
+  const axes=variationAxes(type);const paletteNames=V46_PALETTE_HINTS[type]||V46_PALETTE_HINTS.visiting;const seen=new Set();const out=[];
+  for(let finishIndex=0;finishIndex<5;finishIndex++){
+    const finish=finishes[finishIndex];let paletteIndex=paletteNames.indexOf(finish[0]);if(paletteIndex<0)paletteIndex=finishIndex%paletteNames.length;
+    for(let familyIndex=0;familyIndex<20;familyIndex++){
+      const vals=[paletteIndex,
+        familyIndex%axes.layout,
+        positiveMod(familyIndex*3+finishIndex*5+1,axes.ornament),
+        positiveMod(familyIndex*5+finishIndex*3,axes.frame),
+        positiveMod(familyIndex+finishIndex*3,axes.font),
+        positiveMod(familyIndex*2+finishIndex*3,axes.surface),
+        positiveMod(familyIndex+finishIndex*2,axes.align),
+        positiveMod(familyIndex*3+finishIndex,axes.density),
+        positiveMod(familyIndex*5+finishIndex*2,axes.title),
+        positiveMod(familyIndex*2+finishIndex,axes.image)];
+      let id=`gen2:${type}:${vals.join('-')}`;
+      /* The family/layout digit guarantees uniqueness within a finish; the palette digit differentiates finishes. */
+      if(seen.has(id)){let seed=10000+finishIndex*1000+familyIndex;do{id=chooseGeneratedTemplate(type,seed++)}while(seen.has(id));}
+      seen.add(id);
+      out.push({id,name:`${families[familyIndex]} · ${finish[1]}`,family:families[familyIndex],finish:finish[1],category:zcV60CategoryForFamily(familyIndex),index:out.length,note:`${type==='wedding'?'Invitation design':type==='visiting'?'Business identity':type==='menu'?'Restaurant menu':type==='identity'?'ID layout':type==='catalog'?'Collection layout':type==='event'?'Event pass':type==='product'?'Product showcase':'Property listing'} · ${zcV60CategoryForFamily(familyIndex).toLowerCase()}`});
+    }
+  }
+  /* The picker order is style-family first, then finish. */
+  const byFamily=[];for(let familyIndex=0;familyIndex<20;familyIndex++){for(let finishIndex=0;finishIndex<5;finishIndex++){byFamily.push(out[finishIndex*20+familyIndex])}}
+  byFamily.forEach((item,index)=>{item.index=index});
+  window.zcTemplateCatalogCache[type]=byFamily;
+  return byFamily;
+}
+function zcV60Pane(activeId){['modeStep','manualPathStep','typeStep','templatePickerStep','formStep'].forEach(id=>$(id)?.classList.toggle('active',id===activeId))}
+function showManualPathStep(){zcV60Pane('manualPathStep');$('previewBox').style.display='none';$('aiWorkspace').style.display='none';$('stepIndicator').textContent='Manual Mode · choose path';$('builderTitle').textContent='How do you want to design it?';$('builderSubtitle').textContent='Pick one of two workflows. Both keep your card information editable.';$('builderBack').textContent='← Modes';updateBackButton();window.scrollTo(0,0)}
+function zcV60StartManualPath(path){window.zcManualCreationMode=path;selectedType=null;designTemplate='';window.zcTemplatePickerPage=0;window.zcTemplatePickerSearchText='';window.zcTemplatePickerCategoryName='All';document.querySelectorAll('.type-option').forEach(b=>{b.classList.remove('selected');b.setAttribute('aria-pressed','false')});$('continueBtn').disabled=true;$('typePill').textContent='Choose a type';$('dynamicForm').innerHTML='';if($('designTemplate'))$('designTemplate').value='';showTypeStep()}
+function zcV60TemplateIdForBlank(type){const axes=variationAxes(type),layouts=V46_LAYOUTS[type]||V46_LAYOUTS.visiting,palettes=V46_PALETTE_HINTS[type]||V46_PALETTE_HINTS.visiting;const layoutIndex=Math.max(0,layouts.findIndex(x=>/minimal|clean|classic|editorial/i.test(x)));const preferred=type==='wedding'?'ivory':type==='visiting'?'cream':type==='menu'?'cream':type==='identity'?'cream':type==='catalog'?'cream':type==='event'?'cream':type==='product'?'ivory':'cream';const pi=Math.max(0,palettes.indexOf(preferred));return `gen2:${type}:${[pi,layoutIndex,0,0,0,0,0,2,0,0].map((v,i)=>positiveMod(v,[axes.palette,axes.layout,axes.ornament,axes.frame,axes.font,axes.surface,axes.align,axes.density,axes.title,axes.image][i])).join('-')}`}
+function zcV60ApplyTemplate(id){if(!selectedType)return;designTemplate=sanitizeDesignTemplate(selectedType,id);if($('designTemplate'))$('designTemplate').value=designTemplate;const d=designVariant(selectedType,designTemplate);zcAccentUserTouched=false;applyAppearanceControls({accent:d.pal[3]||'#a58a5a',font:'system',density:'normal',radius:'default'});updatePreview()}
+function zcV60RenderTemplatePicker(){const host=$('templatePickerGrid');if(!host||!selectedType)return;const catalog=zcV60BuildTemplateCatalog(selectedType);const query=String(window.zcTemplatePickerSearchText||'').trim().toLowerCase();const category=window.zcTemplatePickerCategoryName||'All';const filtered=catalog.filter(t=>(category==='All'||t.category===category)&&(!query||`${t.name} ${t.family} ${t.finish} ${t.category} ${t.note}`.toLowerCase().includes(query)));const perPage=12;const totalPages=Math.max(1,Math.ceil(filtered.length/perPage));window.zcTemplatePickerPage=Math.max(0,Math.min(Number(window.zcTemplatePickerPage)||0,totalPages-1));const start=window.zcTemplatePickerPage*perPage;const items=filtered.slice(start,start+perPage);host.innerHTML=items.map(t=>`<button type="button" class="template-option ${designTemplate===t.id?'selected':''}" data-zc-v60-template="${escapeHtml(t.id)}" aria-pressed="${designTemplate===t.id?'true':'false'}">${templateThumbMarkup(selectedType,t.id,t.name)}<div class="template-meta"><b>${escapeHtml(t.name)}</b><span>${escapeHtml(t.note)}</span></div><span class="template-checkmark">✓</span></button>`).join('');host.querySelectorAll('[data-zc-v60-template]').forEach(button=>button.addEventListener('click',()=>{const t=catalog.find(x=>x.id===button.dataset.zcV60Template);if(!t)return;zcV60ApplyTemplate(t.id);host.querySelectorAll('.template-option').forEach(x=>{const on=x===button;x.classList.toggle('selected',on);x.setAttribute('aria-pressed',on?'true':'false')});const status=$('templatePickerStatus');if(status)status.textContent=`Selected ${t.name}. Your card's text and details stay unchanged.`}));$('templatePickerCount').textContent=`100 templates · ${TYPES[selectedType].label}`;$('templatePickerPageInfo').textContent=filtered.length?`${start+1}–${Math.min(start+perPage,filtered.length)} of ${filtered.length} · page ${window.zcTemplatePickerPage+1}/${totalPages}`:'No matching templates';$('templatePickerPrev').disabled=window.zcTemplatePickerPage===0;$('templatePickerNext').disabled=window.zcTemplatePickerPage>=totalPages-1;}
+function zcV60ShowTemplateStep(){if(!selectedType){msg('typeStatus','Choose a card type first.',true);showTypeStep();return}window.zcManualCreationMode='template';zcV60Pane('templatePickerStep');$('previewBox').style.display='block';$('stepIndicator').textContent='Template library · 100 designs';$('builderTitle').textContent=`Choose a ${TYPES[selectedType].label.toLowerCase()} design`;$('builderSubtitle').textContent='Browse 100 original templates. Click any thumbnail to see the full live preview, then continue to personalize the details.';$('builderBack').textContent='← Card types';$('templatePickerSubtitle').textContent=`100 original layouts and finishes for ${TYPES[selectedType].label.toLowerCase()}. These are editable design compositions, not flat preview images.`;const catalog=zcV60BuildTemplateCatalog(selectedType);if(!catalog.some(t=>t.id===designTemplate))zcV60ApplyTemplate(catalog[0].id);else zcV60ApplyTemplate(designTemplate);zcV60RenderTemplatePicker();updateBackButton();window.scrollTo(0,0)}
+function zcV60ContinueFromType(){if(!selectedType){msg('typeStatus','Please select a card type first.',true);return}if(window.zcManualCreationMode==='template'){zcV60ShowTemplateStep();return}designTemplate=zcV60TemplateIdForBlank(selectedType);if($('designTemplate'))$('designTemplate').value=designTemplate;showFormStep()}
+function zcV60BackAction(){if($('templatePickerStep').classList.contains('active')){showTypeStep();return}if($('formStep').classList.contains('active')){if(window.zcManualCreationMode==='template'){zcV60ShowTemplateStep();return}if(window.zcManualCreationMode==='ai'){showModeStep();return}showTypeStep();return}if($('typeStep').classList.contains('active')){showManualPathStep();return}if($('manualPathStep').classList.contains('active')){showModeStep();return}if($('modeStep').classList.contains('active')){showLanding();return}showLanding()}
+
 function setupTypeGrid(){
   $("typeGrid").innerHTML=typeCards();
   $("typeGrid").addEventListener("click",e=>{const b=e.target.closest(".type-option");if(b)setSelectedType(b.dataset.type)});
 }
-function showModeStep(){$("modeStep").classList.add("active");$("typeStep").classList.remove("active");$("formStep").classList.remove("active");$("previewBox").style.display="none";$("aiWorkspace").style.display="none";$("stepIndicator").textContent="Step 1 of 3";$("builderTitle").textContent="How do you want to create?";$("builderSubtitle").textContent="Choose Manual Mode or let the AI Card Assistant prepare a first draft.";$("builderBack").textContent="← Home";updateBackButton();window.scrollTo(0,0)}
-function showTypeStep(){$("modeStep").classList.remove("active");$("typeStep").classList.add("active");$("formStep").classList.remove("active");$("previewBox").style.display="none";$("aiWorkspace").style.display="none";$("stepIndicator").textContent="Step 2 of 3";$("builderTitle").textContent="Choose your card";$("builderSubtitle").textContent="Start with the card type. ZetaCard will build the rest for you.";$('builderBack').textContent="← Modes";updateBackButton();window.scrollTo(0,0)}
-function showFormStep(){if(!selectedType){msg("typeStatus","Please select a card type first.",true);return false}$("modeStep").classList.remove("active");$("typeStep").classList.remove("active");$("formStep").classList.add("active");$("previewBox").style.display="block";$("stepIndicator").textContent="Step 3 of 3";$("builderTitle").textContent="Build your "+TYPES[selectedType].label;$("builderSubtitle").textContent=TYPES[selectedType].desc;$("builderBack").textContent="← Card types";renderForm();updateBackButton();updatePreview();window.scrollTo(0,0);return false}
-function backAction(){if($("formStep").classList.contains("active")){showTypeStep();return}if($("typeStep").classList.contains("active")){showModeStep();return}if($("modeStep").classList.contains("active")){showLanding();return}showLanding()}
-function updateBackButton(){if($("formStep").classList.contains("active"))$("builderBack").textContent="← Card types";else if($("typeStep").classList.contains("active"))$("builderBack").textContent="← Modes";else $("builderBack").textContent="← Home"}
+function showModeStep(){zcV60Pane("modeStep");$("previewBox").style.display="none";$("aiWorkspace").style.display="none";$("stepIndicator").textContent="Step 1 · Creation mode";$("builderTitle").textContent="How do you want to create?";$("builderSubtitle").textContent="Choose Manual Mode or let the AI Card Assistant prepare a first draft.";$("builderBack").textContent="← Home";updateBackButton();window.scrollTo(0,0)}
+function showTypeStep(){zcV60Pane("typeStep");$("previewBox").style.display="none";$("aiWorkspace").style.display="none";$("stepIndicator").textContent="Manual Mode · Card type";$("builderTitle").textContent="Choose your card type";$("builderSubtitle").textContent="The type determines both the information form and which templates are offered.";$('builderBack').textContent="← Creation method";updateBackButton();window.scrollTo(0,0)}
+function showFormStep(){if(!selectedType){msg("typeStatus","Please select a card type first.",true);return false}zcV60Pane("formStep");$("previewBox").style.display="block";$("stepIndicator").textContent="Card studio · Edit details";$("builderTitle").textContent="Build your "+TYPES[selectedType].label;$("builderSubtitle").textContent=window.zcManualCreationMode==='self'?"Start from a clean design base, then adjust the information and appearance yourself.":TYPES[selectedType].desc;$("builderBack").textContent=window.zcManualCreationMode==='template'?"← Templates":window.zcManualCreationMode==='ai'?"← AI mode":"← Card types";renderForm();const hint=$("manualBuildHint"),lib=$("templateStudio");if(hint)hint.classList.toggle("hidden",window.zcManualCreationMode!=='self');if(lib)lib.style.display=window.zcManualCreationMode==='self'?"none":"";if($('backToTypes'))$('backToTypes').textContent=window.zcManualCreationMode==='template'?"← Templates":"← Card types";updateBackButton();updatePreview();window.scrollTo(0,0);return false}
+function backAction(){zcV60BackAction()}
+function updateBackButton(){if($("templatePickerStep")?.classList.contains("active"))$("builderBack").textContent="← Card types";else if($("formStep").classList.contains("active"))$("builderBack").textContent=window.zcManualCreationMode==='template'?"← Templates":window.zcManualCreationMode==='ai'?"← AI mode":"← Card types";else if($("typeStep").classList.contains("active"))$("builderBack").textContent="← Creation method";else if($("manualPathStep")?.classList.contains("active"))$("builderBack").textContent="← Modes";else $("builderBack").textContent="← Home"}
 function clearDynamicValues(){document.querySelectorAll("#dynamicForm [data-key]").forEach(e=>{e.value=""})}
 function formFieldId(k){return "f_"+k}
 
@@ -3540,6 +3669,9 @@ function renderForm(prefill={}){
   buildThemeButtons();buildAppearanceControls(prefill);renderIdentityPreview();renderTemplateStudio(prefill);mountThreeDStudio(prefill);mountCatalogStudio(prefill);
   mountShowcaseStudio(prefill);mountFaqStudio(prefill);mountCustomFormStudio(prefill);mountSocialStudio(prefill);mountTestimonialsStudio(prefill);mountBookingStudio(prefill);mountStorefrontStudio(prefill);
   organizeBuilderExtras();
+  const zcLibrary=$('templateStudio'),zcSelfHint=$('manualBuildHint');
+  if(zcLibrary)zcLibrary.style.display=window.zcManualCreationMode==='self'?'none':'';
+  if(zcSelfHint)zcSelfHint.classList.toggle('hidden',window.zcManualCreationMode!=='self');
 }
 async function checkUser(v){const u=uname(v);if(!u){msg("userStatus","");return}if(!validUsername(u)){msg("userStatus","Use 3–30 lowercase letters, numbers or hyphens.",true);return}if(!initDb()){msg("userStatus","Database unavailable.",true);return}const r=await db.from("profiles").select("username").eq("username",u).maybeSingle();if(r.error){msg("userStatus","Could not check username.",true);return}msg("userStatus",r.data?"Username already taken":"✓ Username available",!!r.data)}
 function buildThemeButtons(){const el=$("styleGrid");el.innerHTML=[["midnight","Midnight","Bold & modern"],["ocean","Ocean","Fresh & clean"],["forest","Forest","Calm & natural"],["sunset","Sunset","Warm & creative"]].map(([k,n,s])=>'<button type="button" class="theme-btn '+(mainTheme===k?'selected':'')+'" data-theme="'+k+'"><div class="theme-swatch '+k+'"><b style="font-size:12px">'+n+'</b></div><div class="theme-name">'+n+'</div><div class="theme-sub">'+s+'</div><span class="theme-mark">✓</span></button>').join("");el.onclick=e=>{const b=e.target.closest(".theme-btn");if(!b)return;mainTheme=safeTheme(b.dataset.theme);document.querySelectorAll(".theme-btn").forEach(x=>x.classList.toggle("selected",x===b));updatePreview()}}
@@ -4834,47 +4966,7 @@ function renderCardMarkupLegacyV49(type,c,photoUrl){
   if(type==='identity')return v49Identity(type,c,photoUrl,d);
   return v49Generic(type,c,photoUrl,d);
 }
-function templateThumbMarkup(type,id,title){
-  const d=designVariant(type,id),p=d.pal,code=type==='wedding'?'wv':type==='identity'?'iv':type==='visiting'?'vg':type==='menu'?'mg':type==='catalog'?'cg':type==='event'?'eg':type==='product'?'pg':'hg',max=type==='wedding'?24:type==='identity'?16:12,n=v49Variant(type,d,max),skin=type==='wedding'?'wedding':type;
-  let body='';
-  if(type==='wedding'){
-    const names=[
-      '<i class="tv-floral tl"></i><i class="tv-floral br"></i><b>BRIDE<br>&amp;<br>GROOM</b>',
-      '<i class="tv-arch"></i><b>BRIDE<br>AND<br>GROOM</b>',
-      '<i class="tv-split"></i><b>BRIDE<br>&amp;<br>GROOM</b>',
-      '<i class="tv-hero"></i><b>SAVE<br>THE DATE</b>',
-      '<i class="tv-royal"></i><b>SHUBH<br>VIVAH</b>',
-      '<i class="tv-ribbon"></i><b>INVITATION</b>',
-      '<i class="tv-oval"></i><b>BRIDE<br>&amp;<br>GROOM</b>',
-      '<i class="tv-ticket"></i><b>YOU<br>ARE<br>INVITED</b>',
-      '<i class="tv-overlap"></i><b>MODERN<br>CELEBRATION</b>',
-      '<i class="tv-temple"></i><b>SHUBH<br>VIVAH</b>',
-      '<i class="tv-botanical"></i><b>ROGER<br>&amp;<br>MARIA</b>',
-      '<i class="tv-scroll"></i><b>WEDDING<br>INVITATION</b>',
-      '<i class="tv-square"></i><b>TWO HEARTS</b>',
-      '<i class="tv-ruby"></i><b>ROYAL<br>WEDDING</b>',
-      '<i class="tv-circlephoto"></i><b>JOIN US</b>',
-      '<i class="tv-book"></i><b>CHAPTER<br>ONE</b>',
-      '<i class="tv-topbot"></i><b>SAVE<br>OUR DATE</b>',
-      '<i class="tv-bottomphoto"></i><b>THE<br>CELEBRATION</b>',
-      '<i class="tv-diagonal"></i><b>WITH LOVE</b>',
-      '<i class="tv-monogram">BG</i><b>A UNION</b>',
-      '<i class="tv-gates"></i><b>THE<br>CELEBRATION</b>',
-      '<i class="tv-parchment"></i><b>AN<br>INVITATION</b>',
-      '<i class="tv-indigo"></i><b>AN EVENING<br>OF LOVE</b>',
-      '<i class="tv-minimal"></i><b>MARK<br>THE MOMENT</b>'
-    ];body=names[n];
-  }else if(type==='identity'){body='<i class="tv-id-photo"></i><b>YOUR NAME</b><small>Designation</small><span>ID · 2026</span><i class="tv-id-code"></i>'}
-  else if(type==='visiting'){const arr=['<i class="tv-v-diag"></i><b>YOUR NAME</b>','<i class="tv-v-split"></i><b>YOUR NAME</b>','<i class="tv-v-circle"></i><b>YOUR NAME</b>','<i class="tv-v-frame"></i><b>YOUR NAME</b>','<i class="tv-v-dark"></i><b>YOUR NAME</b>','<i class="tv-v-side"></i><b>YOUR NAME</b>','<i class="tv-v-heritage"></i><b>YOUR NAME</b>','<i class="tv-v-edge"></i><b>YOUR NAME</b>','<i class="tv-v-monogram">AB</i><b>YOUR NAME</b>','<i class="tv-v-grid"></i><b>YOUR NAME</b>','<i class="tv-v-paper"></i><b>YOUR NAME</b>','<i class="tv-v-ring"></i><b>YOUR NAME</b>'];body=arr[n]}
-  else if(type==='menu')body='<i class="tv-menu-title"></i><i class="tv-menu-lines"></i><i class="tv-menu-lines l2"></i><i class="tv-menu-lines l3"></i>';
-  else if(type==='catalog')body='<i class="tv-cat-block"></i><i class="tv-cat-grid"></i><b>COLLECTION</b>';
-  else if(type==='event')body='<i class="tv-event-shape"></i><b>YOUR EVENT</b><small>20 MAR · CITY</small>';
-  else if(type==='product')body='<i class="tv-product-shape"></i><b>YOUR PRODUCT</b><small>Premium</small>';
-  else body='<i class="tv-property-shape"></i><b>YOUR PROPERTY</b><small>3 BHK · CITY</small>';
-  const style='--tb-bg:'+p[0]+';--tb-ink:'+p[2]+';--tb-accent:'+p[3]+';--tb-paper:'+p[4]+';--tb-accent2:'+p[1]+';--tb-primary:'+p[0]+';--tb-font:'+d.fontPrimary+';--tb-title:'+p[2];
-  return '<div class="template-thumb true-v49 '+skin+' '+code+n+'" style="'+style+'"><div class="tv-surface"></div><div class="tv-body">'+body+'</div><div class="tv-frame"></div></div>';
-}
-
+function templateThumbMarkup(type,id,title){return v47ThumbMarkup(type,id,title)}
 
 
 window.addEventListener("DOMContentLoaded",async()=>{
@@ -4890,8 +4982,8 @@ window.addEventListener("DOMContentLoaded",async()=>{
     // Re-evaluate the public card whenever the browser signs in or out.
     if(currentProfile&&$("shared")?.style.display!=="none"){await syncLeadVisibility();await syncCustomFormVisibility();await syncBookingVisibility();await syncStorefrontVisibility();}
   });
-  $("manualModeBtn").onclick=()=>{ $("aiWorkspace").style.display="none"; showTypeStep(); };
-  $("aiModeBtn").onclick=()=>{ $("aiWorkspace").style.display="block"; $("aiStatus").textContent=""; $("aiPrompt").focus(); };
+  $("manualModeBtn").onclick=()=>{ $("aiWorkspace").style.display="none"; showManualPathStep(); };
+  $("aiModeBtn").onclick=()=>{ window.zcManualCreationMode="ai"; $("aiWorkspace").style.display="block"; $("aiStatus").textContent=""; $("aiPrompt").focus(); };
   $("cancelAiModeBtn").onclick=()=>{ $("aiWorkspace").style.display="none"; showModeStep(); };
   document.querySelectorAll(".ai-example").forEach(b=>b.onclick=()=>{ $("aiPrompt").value=b.dataset.prompt||""; $("aiPrompt").focus(); });
   $("generateCardAiBtn").onclick=generateCardFromPrompt;
@@ -4940,7 +5032,7 @@ window.addEventListener("DOMContentLoaded",async()=>{
   $("leadForm").addEventListener("submit",submitLead);
   $("clearLeadBtn").onclick=()=>$("leadForm").reset();
   $("landingCreate").onclick=openBuilder;$("landingCreateTop").onclick=openBuilder;$("createOwnBtn").onclick=openBuilder;$("sharedHome").onclick=()=>{if(openedFromDashboard){openedFromDashboard=false;showDashboard()}else showLanding()};
-  $("builderBack").onclick=backAction;$("backToTypes").onclick=showTypeStep;$("continueBtn").onclick=()=>showFormStep();$("createBtn").onclick=editOrCreate;$("clearBtn").onclick=clearForm;
+  $("builderBack").onclick=backAction;$("backToTypes").onclick=()=>{if(window.zcManualCreationMode==='template')zcV60ShowTemplateStep();else showTypeStep()};$("continueBtn").onclick=()=>zcV60ContinueFromType();$("manualFromTemplateBtn").onclick=()=>zcV60StartManualPath('template');$("manualBuildYourselfBtn").onclick=()=>zcV60StartManualPath('self');$("templatePickerChangeType").onclick=()=>showTypeStep();$("useSelectedTemplateBtn").onclick=()=>{if(!designTemplate){msg('templatePickerStatus','Choose a template first.',true);return}if($('designTemplate'))$('designTemplate').value=designTemplate;window.zcManualCreationMode='template';showFormStep()};$("templatePickerSearch").addEventListener('input',e=>{window.zcTemplatePickerSearchText=e.target.value||'';window.zcTemplatePickerPage=0;zcV60RenderTemplatePicker()});$("templatePickerCategory").addEventListener('change',e=>{window.zcTemplatePickerCategoryName=e.target.value||'All';window.zcTemplatePickerPage=0;zcV60RenderTemplatePicker()});$("templatePickerPrev").onclick=()=>{window.zcTemplatePickerPage=Math.max(0,(Number(window.zcTemplatePickerPage)||0)-1);zcV60RenderTemplatePicker()};$("templatePickerNext").onclick=()=>{window.zcTemplatePickerPage=(Number(window.zcTemplatePickerPage)||0)+1;zcV60RenderTemplatePicker()};$("createBtn").onclick=editOrCreate;$("clearBtn").onclick=clearForm;
   $("copyLinkBtn").onclick=copyLink;$("shareBtn").onclick=()=>toggleShareMenu();$("saveContactBtn").onclick=saveContact;$("closeShareMenu").onclick=()=>toggleShareMenu(false);$("nativeShareBtn").onclick=shareNative;$("whatsappShareBtn").onclick=()=>openChannelShare("whatsapp");$("telegramShareBtn").onclick=()=>openChannelShare("telegram");$("emailShareBtn").onclick=()=>openChannelShare("email");$("downloadQrBtn").onclick=downloadQr;$("copyQrBtn").onclick=copyQr;$("refreshAnalytics").onclick=loadAnalytics;
   $("editBtn").onclick=async()=>{
     if(!currentProfile)return;
@@ -5027,39 +5119,23 @@ function zcApplyRecipe(recipeKey){
 function renderTemplateStudio(prefill={}){
   const box=$('templateStudio');if(!box||!selectedType)return;
   designTemplate=sanitizeDesignTemplate(selectedType,prefill.design_template||designTemplate||defaultTemplate(selectedType));
-  const list=TEMPLATE_LIBRARY[selectedType]||[];let page=0,mode='curated';
-  const recipeButtons=ZC_ONE_TAP_RECIPES.map(r=>{
-    const id=zcOneTapDesignId(selectedType,r),selected=designTemplate===id;
-    const sample=templateThumbMarkup(selectedType,id,r.name);
-    return `<button type="button" class="zc-recipe-card ${selected?'selected':''}" data-zc-recipe="${r.key}" aria-pressed="${selected?'true':'false'}"><div class="zc-recipe-swatch zc-recipe-swatch-preview" aria-hidden="true" style="--recipe-swatch:${r.swatch};--recipe-ink:${r.ink}">${sample}</div><span class="zc-recipe-info"><strong>${escapeHtml(r.name)}</strong><small>${escapeHtml(r.note)}</small></span><span class="zc-recipe-tick" aria-hidden="true">✓</span></button>`;
-  }).join('');
-  box.innerHTML=`<section class="zc-one-tap"><div class="zc-one-tap-head"><div><h4>One-tap design recipes</h4><p>Choose a complete art direction in one tap. It changes the palette, typography, frame, ornament language and spacing while keeping the details you entered.</p></div><span class="zc-one-tap-count">12 styles</span></div><div class="zc-recipe-grid">${recipeButtons}</div><div class="zc-one-tap-tip">Tip: try Royal Heritage for ceremony and hospitality, Executive Corporate for professional cards, or Editorial Studio for product and property showcases.</div></section><div class="template-studio-head"><div><h3>Design Library</h3><p>Go deeper with type-specific curated templates or generate new combinations of layout, typography, ornament, frame, texture, spacing and image treatment.</p></div><span class="template-count-pill">${formatVariationCount(templateCount(selectedType))} combinations</span></div><div class="template-toolbar"><div class="template-filter"><button type="button" class="template-chip active" data-tpl-filter="curated">Curated</button><button type="button" class="template-chip" data-tpl-filter="generated">Generated</button></div><div class="template-actions"><button type="button" class="btn secondary" id="randomTemplateBtn">✨ Generate new</button><button type="button" class="btn ghost" id="moreTemplateBtn">＋ More designs</button></div></div><div id="templateGrid" class="template-grid"></div><div class="template-tip">The same template ID drives the live preview and the published card. Selecting a generated design never changes the card text or contact information.</div>`;
+  const recipeButtons=ZC_ONE_TAP_RECIPES.map(r=>{const id=zcOneTapDesignId(selectedType,r),selected=designTemplate===id;const sample=templateThumbMarkup(selectedType,id,r.name);return `<button type="button" class="zc-recipe-card ${selected?'selected':''}" data-zc-recipe="${r.key}" aria-pressed="${selected?'true':'false'}"><div class="zc-recipe-swatch zc-recipe-swatch-preview" aria-hidden="true" style="--recipe-swatch:${r.swatch};--recipe-ink:${r.ink}">${sample}</div><span class="zc-recipe-info"><strong>${escapeHtml(r.name)}</strong><small>${escapeHtml(r.note)}</small></span><span class="zc-recipe-tick" aria-hidden="true">✓</span></button>`}).join('');
+  box.innerHTML=`<section class="zc-one-tap"><div class="zc-one-tap-head"><div><h4>One-tap design recipes</h4><p>Instantly apply a complete art direction: palette, layout, typography, frame, ornament and spacing. Your text stays unchanged.</p></div><span class="zc-one-tap-count">12 styles</span></div><div class="zc-recipe-grid">${recipeButtons}</div><div class="zc-one-tap-tip">Start with a preset, then tune the design. Choosing a new style never clears your card details.</div></section><div class="template-studio-head"><div><h3>Design Library</h3><p>100 curated original templates for ${escapeHtml(TYPES[selectedType].label)}. Each combines a card-specific layout family with a finish, typography and ornament system.</p></div><span class="template-count-pill">100 templates</span></div><div class="zc-template-picker-toolbar"><label class="zc-template-search-wrap"><span>⌕</span><input id="zcLibrarySearch" type="search" placeholder="Search templates…" autocomplete="off"></label><select id="zcLibraryCategory" aria-label="Filter template category"><option value="All">All styles</option><option value="Traditional">Traditional</option><option value="Luxury">Luxury</option><option value="Minimal">Minimal</option><option value="Modern">Modern</option><option value="Creative">Creative</option></select><button type="button" class="btn secondary" id="zcLibraryRandom">✨ New variation</button></div><div id="templateGrid" class="template-grid"></div><div class="zc-template-pagination"><button id="zcLibraryPrev" class="btn ghost" type="button">← Previous</button><span id="zcLibraryPageInfo" aria-live="polite">Page 1 of 9</span><button id="zcLibraryNext" class="btn secondary" type="button">Next 12 →</button></div><div class="template-tip">Choose a template to apply it to the actual preview and saved design ID. These are editable ZetaCard compositions, not flattened images.</div>`;
   box.querySelectorAll('[data-zc-recipe]').forEach(b=>b.addEventListener('click',()=>zcApplyRecipe(b.dataset.zcRecipe)));
-  const grid=$('templateGrid');
-  const render=()=>{
-    let items;
-    if(mode==='generated'){
-      const base=page*12;
-      items=Array.from({length:12},(_,i)=>{const id=chooseGeneratedTemplate(selectedType,base+i+1+(Math.abs(hashCode(selectedType))%9973));return [id,'Generated · '+templateLabel(selectedType,id),'Unique multi-axis design']});
-    }else items=list.slice();
-    if(designTemplate&&!items.some(x=>sanitizeDesignTemplate(selectedType,x[0])===designTemplate))items.unshift([designTemplate,'Current design','Selected recipe / saved design']);
-    grid.innerHTML=items.map(x=>`<button type="button" class="template-option ${sanitizeDesignTemplate(selectedType,x[0])===designTemplate?'selected':''}" data-tpl-id="${escapeHtml(x[0])}">${templateThumbMarkup(selectedType,x[0],x[1])}<div class="template-meta"><b>${escapeHtml(x[1])}</b><span>${escapeHtml(x[2])}</span></div><span class="template-checkmark">✓</span></button>`).join('');
-    grid.querySelectorAll('.template-option').forEach(b=>b.addEventListener('click',()=>{
-      const keepCustomAccent=zcAccentUserTouched;
-      designTemplate=sanitizeDesignTemplate(selectedType,b.dataset.tplId);if($('designTemplate'))$('designTemplate').value=designTemplate;
-      if(!keepCustomAccent){const a=readAppearance();a.accent=designVariant(selectedType,designTemplate).pal[3];applyAppearanceControls(a);zcAccentUserTouched=false;}
-      grid.querySelectorAll('.template-option').forEach(x=>x.classList.toggle('selected',x===b));
-      box.querySelectorAll('.zc-recipe-card').forEach(x=>{const recipe=ZC_ONE_TAP_RECIPES.find(r=>r.key===x.dataset.zcRecipe);const active=!!recipe&&zcOneTapDesignId(selectedType,recipe)===designTemplate;x.classList.toggle('selected',active);x.setAttribute('aria-pressed',active?'true':'false')});
-      updatePreview();
-      const status=$('formStatus');if(status){status.textContent=templateLabel(selectedType,designTemplate)+' applied. Your card details were kept.';status.classList.remove('error')}
-    }));
+  const grid=$('templateGrid'),catalog=zcV60BuildTemplateCatalog(selectedType);let page=0,query='',category='All';
+  const draw=()=>{
+    let list=catalog.filter(t=>(category==='All'||t.category===category)&&(!query||`${t.name} ${t.category} ${t.note}`.toLowerCase().includes(query)));
+    if(!catalog.some(t=>t.id===designTemplate)&&!query&&category==='All')list=[{id:designTemplate,name:'Current style',category:'Creative',note:'Currently selected design'},...list];
+    const pages=Math.max(1,Math.ceil(list.length/12));page=Math.max(0,Math.min(page,pages-1));const shown=list.slice(page*12,page*12+12);
+    grid.innerHTML=shown.map(t=>`<button type="button" class="template-option ${sanitizeDesignTemplate(selectedType,t.id)===designTemplate?'selected':''}" data-tpl-id="${escapeHtml(t.id)}" aria-pressed="${sanitizeDesignTemplate(selectedType,t.id)===designTemplate?'true':'false'}">${templateThumbMarkup(selectedType,t.id,t.name)}<div class="template-meta"><b>${escapeHtml(t.name)}</b><span>${escapeHtml(t.note)}</span></div><span class="template-checkmark">✓</span></button>`).join('');
+    grid.querySelectorAll('.template-option').forEach(b=>b.addEventListener('click',()=>{zcV60ApplyTemplate(b.dataset.tplId);grid.querySelectorAll('.template-option').forEach(x=>{const on=x===b;x.classList.toggle('selected',on);x.setAttribute('aria-pressed',on?'true':'false')});box.querySelectorAll('.zc-recipe-card').forEach(x=>{const recipe=ZC_ONE_TAP_RECIPES.find(r=>r.key===x.dataset.zcRecipe),active=!!recipe&&zcOneTapDesignId(selectedType,recipe)===designTemplate;x.classList.toggle('selected',active);x.setAttribute('aria-pressed',active?'true':'false')});const status=$('formStatus');if(status){status.textContent=(b.querySelector('.template-meta b')?.textContent||'Template')+' applied. Your details were kept.';status.classList.remove('error')}}));
+    $('zcLibraryPageInfo').textContent=list.length?`${page*12+1}–${Math.min((page+1)*12,list.length)} of ${list.length}`:'No matching templates';$('zcLibraryPrev').disabled=page===0;$('zcLibraryNext').disabled=page>=pages-1;
   };
-  box.querySelectorAll('[data-tpl-filter]').forEach(b=>b.addEventListener('click',()=>{box.querySelectorAll('[data-tpl-filter]').forEach(x=>x.classList.toggle('active',x===b));mode=b.dataset.tplFilter;page=0;render()}));
-  $('randomTemplateBtn')?.addEventListener('click',()=>{designTemplate=chooseGeneratedTemplate(selectedType,Date.now()+Math.floor(Math.random()*999999));if($('designTemplate'))$('designTemplate').value=designTemplate;mode='generated';page=0;box.querySelectorAll('[data-tpl-filter]').forEach(x=>x.classList.toggle('active',x.dataset.tplFilter==='generated'));box.querySelectorAll('.zc-recipe-card').forEach(x=>{x.classList.remove('selected');x.setAttribute('aria-pressed','false')});render();updatePreview();const status=$('formStatus');if(status){status.textContent='A new design was generated. Your card content is unchanged.';status.classList.remove('error')}});
-  $('moreTemplateBtn')?.addEventListener('click',()=>{mode='generated';page++;box.querySelectorAll('[data-tpl-filter]').forEach(x=>x.classList.toggle('active',x.dataset.tplFilter==='generated'));render()});
-  if($('designTemplate'))$('designTemplate').value=designTemplate;
-  render();
+  $('zcLibrarySearch').addEventListener('input',e=>{query=e.target.value.trim().toLowerCase();page=0;draw()});$('zcLibraryCategory').addEventListener('change',e=>{category=e.target.value;page=0;draw()});$('zcLibraryPrev').addEventListener('click',()=>{page=Math.max(0,page-1);draw()});$('zcLibraryNext').addEventListener('click',()=>{page++;draw()});
+  $('zcLibraryRandom').addEventListener('click',()=>{let id=chooseGeneratedTemplate(selectedType,Date.now()+Math.floor(Math.random()*999999));if(id===designTemplate)id=chooseGeneratedTemplate(selectedType,Date.now()+3333333);zcV60ApplyTemplate(id);draw();const status=$('formStatus');if(status){status.textContent='A fresh multi-axis design variation was applied.';status.classList.remove('error')}});
+  if($('designTemplate'))$('designTemplate').value=designTemplate;draw();
 }
+
 function applyTemplateStyle(el,type,id){
   if(!el||!type)return;
   const templateId=sanitizeDesignTemplate(type,id||defaultTemplate(type));
