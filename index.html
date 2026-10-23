@@ -16,6 +16,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <meta name="description" content="Create beautifully designed digital visiting cards, Indian wedding invitations, restaurant menus, ID cards, event passes, catalogues, product cards and property showcases.">
 <title>ZetaCard — Digital Card & Invitation Studio</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -24,7 +27,19 @@
 <style>
 *{box-sizing:border-box}
 :root{--ink:#14213d;--muted:#6c7890;--line:#dce4ef;--soft:#f5f7fb;--brand:#536dfe;--brand2:#7c4dff;--ok:#1f8f5b;--danger:#b33d4a}
-body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,#f8faff,#eef2f8);color:var(--ink)}
+body{margin:0;font-family:"DM Sans",Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,#f8faff,#eef2f8);color:var(--ink);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+h1,h2,h3,h4,h5,.store-public-title,.public-catalog-title{font-family:Manrope,"DM Sans",system-ui,sans-serif;letter-spacing:-.025em}
+input,textarea,select,button{font-family:inherit}
+.catalog-product-editor{box-shadow:0 5px 18px rgba(20,33,61,.045);transition:border-color .16s ease,box-shadow .16s ease}
+.catalog-product-editor:focus-within{border-color:#aab8ff;box-shadow:0 0 0 3px rgba(83,109,254,.09)}
+.catalog-product-editor .topline{align-items:center;flex-wrap:wrap}
+.catalog-product-editor .reorder-actions{display:inline-flex;gap:5px;align-items:center;margin-left:auto}
+.catalog-product-editor .reorder-product{min-width:34px;padding:6px 9px;line-height:1}
+.catalog-product-editor .reorder-product:disabled{opacity:.3;cursor:not-allowed}
+.catalog-product-editor-grid input{min-width:0;line-height:1.45}
+.catalog-live-card h4{font-family:Manrope,"DM Sans",sans-serif;letter-spacing:-.02em;line-height:1.35}
+.store-product-name{font-family:Manrope,"DM Sans",sans-serif;line-height:1.35;letter-spacing:-.015em}
+.public-catalog-item-name{font-family:Manrope,"DM Sans",sans-serif}
 button,input,textarea,select{font:inherit}button{cursor:pointer}
 button:disabled{cursor:not-allowed;opacity:.55}
 .container{width:min(1160px,94%);margin:auto;padding:20px 0 50px}
@@ -2206,7 +2221,23 @@ html{scroll-behavior:smooth}body{background:#f7f8fb;color:var(--zc-v54-ink);-web
  #shared .shared-wrap{width:100%!important;max-width:none!important;margin:0!important}
  #shared .shared-layout{display:grid!important;grid-template-columns:minmax(0,1fr) 170px!important;gap:10mm!important;align-items:start!important}
  #shared .shared-layout #sharedCard{grid-column:1!important;grid-row:1!important;width:100%!important;box-shadow:none!important;break-inside:avoid!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
- #shared .shared-layout .qr-box{grid-column:2!important;grid-row:1!important;width:170px!important;max-width:170px!important;box-shadow:none!important;break-inside:avoid!important}
+ #shared .shared-layout .qr-box{display:none!important}
+ /* Physical prototype mode: print only the actual card, not the web sharing UI. */
+ @page{size:A4 portrait;margin:18mm}
+ html,body{width:100%!important;min-height:0!important;margin:0!important;padding:0!important;background:#fff!important}
+ #shared .shared-layout{display:block!important;width:100%!important;margin:0!important;padding:0!important}
+ #shared .shared-layout #sharedCard{position:relative!important;box-sizing:border-box!important;width:90mm!important;min-width:90mm!important;max-width:90mm!important;height:55mm!important;min-height:55mm!important;max-height:55mm!important;margin:35mm auto 0!important;padding:0!important;overflow:hidden!important;border-radius:2mm!important;box-shadow:none!important;break-inside:avoid!important;page-break-inside:avoid!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
+ #shared .shared-layout #sharedCard .preview-inner{box-sizing:border-box!important;min-height:55mm!important;height:55mm!important;padding:5mm!important}
+ #shared .shared-layout #sharedCard .preview-title{font-size:20pt!important;line-height:1.05!important;overflow-wrap:anywhere!important}
+ #shared .shared-layout #sharedCard .preview-sub{font-size:8pt!important;line-height:1.3!important}
+ #shared .shared-layout #sharedCard .preview-meta{gap:1.5mm!important;margin-top:3mm!important}
+ #shared .shared-layout #sharedCard .preview-row{padding:1.2mm 0!important;gap:2mm!important}
+ #shared .shared-layout #sharedCard .preview-row b,#shared .shared-layout #sharedCard .preview-row span{font-size:7pt!important}
+ #shared .shared-layout #sharedCard .preview-footer{font-size:6.5pt!important;padding-top:2mm!important}
+ #shared .shared-layout #sharedCard .zc-trad-identity,#shared .shared-layout #sharedCard .zc-trad-event,#shared .shared-layout #sharedCard .zc-trad-product,#shared .shared-layout #sharedCard .zc-trad-property{box-sizing:border-box!important;min-height:0!important;max-height:55mm!important;overflow:hidden!important}
+ #shared .shared-layout #sharedCard img{max-width:100%!important}
+ /* Fine cut guide around the 90 × 55 mm card. */
+ #shared .shared-layout #sharedCard:after{content:"";position:absolute;inset:0;border:.2mm dashed rgba(80,80,80,.55);pointer-events:none}
 }
 
 </style>
@@ -2582,7 +2613,7 @@ html{scroll-behavior:smooth}body{background:#f7f8fb;color:var(--zc-v54-ink);-web
     <div class="shared-top"><button id="sharedHome" class="nav-btn" type="button">← Home</button><div class="shared-brand">ZETACARD</div></div>
     <div id="sharedError" class="status error"></div>
     <div class="shared-layout"><div id="sharedCard" class="card-preview card-visiting theme-midnight"></div><div class="qr-box"><strong>Scan to open</strong><div id="qr" class="qr"></div></div></div>
-    <div class="shared-actions"><button id="copyLinkBtn" class="btn primary" type="button">Copy link</button><button id="shareBtn" class="btn ghost" type="button">Share</button><button id="saveContactBtn" class="btn secondary" type="button">Save contact</button><button id="downloadCardBtn" class="btn ghost" type="button">Download card PNG</button><button id="printCardBtn" class="btn ghost" type="button">Print / Save PDF</button><button id="createOwnBtn" class="btn ghost" type="button">Create your own card</button></div>
+    <div class="shared-actions"><button id="copyLinkBtn" class="btn primary" type="button">Copy link</button><button id="shareBtn" class="btn ghost" type="button">Share</button><button id="saveContactBtn" class="btn secondary" type="button">Save contact</button><button id="downloadCardBtn" class="btn ghost" type="button">Download card PNG</button><button id="printCardBtn" class="btn ghost" type="button">Print physical prototype / Save PDF</button><button id="createOwnBtn" class="btn ghost" type="button">Create your own card</button></div>
     <div class="public-report-wrap"><button id="reportCardBtn" class="btn ghost" type="button" style="font-size:11px;padding:8px 11px">Report this card</button></div>
     <form id="publicReportForm" class="public-report-box">
       <strong>Report a card</strong><div class="help" style="margin-top:4px">Report only genuine concerns such as impersonation, scams, spam, or prohibited content. Do not include sensitive personal information.</div>
@@ -4234,7 +4265,7 @@ function renderCatalogEditor(){
   const list=$("catalogProductsEditor");if(!list)return;
   $("catalogBuilderCount").textContent=`${catalogProducts.length} product${catalogProducts.length===1?"":"s"}`;
   list.innerHTML=catalogProducts.map((p,i)=>`<div class="catalog-product-editor" data-ci="${i}">
-    <div class="topline"><strong>Product ${i+1}</strong><button type="button" class="btn ghost remove-cat" data-ci="${i}">Remove</button></div>
+    <div class="topline"><strong>${escapeHtml(p.name||`Product ${i+1}`)}</strong><span class="reorder-actions"><button type="button" class="btn ghost reorder-product" data-ci="${i}" data-dir="-1" aria-label="Move product up" title="Move up" ${i===0?'disabled':''}>↑</button><button type="button" class="btn ghost reorder-product" data-ci="${i}" data-dir="1" aria-label="Move product down" title="Move down" ${i===catalogProducts.length-1?'disabled':''}>↓</button><button type="button" class="btn ghost remove-cat" data-ci="${i}">Remove</button></span></div>
     <div class="catalog-product-editor-grid">
       <input data-cat-key="name" value="${escapeHtml(p.name)}" placeholder="Product name">
       <input data-cat-key="price" value="${escapeHtml(p.price)}" placeholder="Display price">
@@ -4248,7 +4279,15 @@ function renderCatalogEditor(){
     </div>
   </div>`).join("");
   list.querySelectorAll("[data-cat-key]").forEach(inp=>inp.addEventListener("input",e=>{
-    const card=e.target.closest(".catalog-product-editor");const i=Number(card.dataset.ci);catalogProducts[i][e.target.dataset.catKey]=e.target.type==='checkbox'?e.target.checked:e.target.value;syncCatalogField();renderCatalogLivePreview();updatePreview();
+    const card=e.target.closest(".catalog-product-editor");const i=Number(card.dataset.ci);catalogProducts[i][e.target.dataset.catKey]=e.target.type==='checkbox'?e.target.checked:e.target.value;syncCatalogField();
+    if(e.target.dataset.catKey==='name'){const label=card.querySelector('.topline strong');if(label)label.textContent=catalogProducts[i].name||`Product ${i+1}`;}
+    renderCatalogLivePreview();updatePreview();
+  }));
+  list.querySelectorAll(".reorder-product").forEach(b=>b.addEventListener("click",()=>{
+    const from=Number(b.dataset.ci),to=from+Number(b.dataset.dir);
+    if(!Number.isInteger(from)||!Number.isInteger(to)||to<0||to>=catalogProducts.length)return;
+    const [moved]=catalogProducts.splice(from,1);catalogProducts.splice(to,0,moved);
+    syncCatalogField();renderCatalogEditor();renderCatalogLivePreview();updatePreview();
   }));
   list.querySelectorAll(".remove-cat").forEach(b=>b.addEventListener("click",()=>{
     catalogProducts.splice(Number(b.dataset.ci),1);syncCatalogField();renderCatalogEditor();renderCatalogLivePreview();updatePreview();
