@@ -1,5 +1,4 @@
-
-<!-- ZetaCard v57: One-tap premium recipes; persistent live/published customization styling. -->
+<!-- ZetaCard v60.1 candidate: public card/QR layout hotfix and menu spacing improvements. -->
 <!-- ZetaCard v52: Professional UI refinement on top of v51; application logic intentionally preserved. -->
 <!-- Base application: ZetaCard v49, with prior feature markers retained below. -->
 <!-- ZetaCard v44: Smart Forms + Enquiry Inbox -->
@@ -2247,6 +2246,74 @@ html{scroll-behavior:smooth}body{background:#f7f8fb;color:var(--zc-v54-ink);-web
 @media(max-width:420px){.zc-template-picker-studio .template-thumb.v47-template{height:145px!important;min-height:145px!important}.zc-template-picker-studio .template-grid{gap:8px!important}}
 </style>
 
+
+<!-- ZetaCard v60.1 hotfix: isolate public-card and QR layout; improve menu readability. -->
+<style id="zc-v601-public-layout-hotfix">
+/* Public card and QR must occupy separate grid rows. Older v58-v60 rules
+   alternated between flex and two-column grid, allowing the QR panel to sit
+   underneath a card whose contents overflowed its grid track. */
+#shared .shared-layout{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  align-items:start!important;
+  justify-items:center!important;
+  gap:18px!important;
+  width:100%!important;
+  min-width:0!important;
+}
+#shared .shared-layout #sharedCard{
+  grid-column:1!important;grid-row:1!important;
+  position:relative!important;inset:auto!important;float:none!important;transform:none!important;
+  width:100%!important;min-width:0!important;margin:0 auto!important;
+  box-sizing:border-box!important;overflow:hidden!important;z-index:0!important;
+  contain:layout paint!important;justify-self:center!important;
+}
+#shared #sharedCard.card-visiting{max-width:790px!important}
+#shared #sharedCard.card-menu{max-width:600px!important}
+#shared #sharedCard.card-wedding{max-width:560px!important}
+#shared #sharedCard.card-identity{max-width:790px!important}
+#shared #sharedCard.card-catalog{max-width:690px!important}
+#shared #sharedCard.card-event{max-width:780px!important}
+#shared #sharedCard.card-product{max-width:690px!important}
+#shared #sharedCard.card-property{max-width:720px!important}
+#shared .shared-layout .qr-box{
+  grid-column:1!important;grid-row:2!important;
+  position:relative!important;inset:auto!important;float:none!important;transform:none!important;
+  width:min(100%,360px)!important;max-width:360px!important;min-width:0!important;
+  min-height:0!important;margin:0 auto!important;padding:16px!important;
+  display:flex!important;flex-direction:column!important;align-items:center!important;
+  justify-content:center!important;gap:10px!important;box-sizing:border-box!important;
+  z-index:0!important;overflow:visible!important;
+}
+#shared #qr{width:156px!important;height:156px!important;min-width:156px!important;min-height:156px!important;
+  padding:7px!important;margin:0!important;display:grid!important;place-items:center!important;
+  box-sizing:border-box!important;background:#fff!important;border:1px solid #e1e5ed!important;
+  border-radius:12px!important;overflow:hidden!important}
+#shared #qr canvas,#shared #qr img{display:block!important;width:140px!important;height:140px!important;
+  max-width:100%!important;max-height:100%!important;object-fit:contain!important;image-rendering:pixelated}
+/* Keep menu prices visually distinct from dish names, including narrow screens. */
+#shared #sharedCard.card-menu .zc-menu-item{
+  display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;column-gap:18px!important;row-gap:5px!important;
+  padding:14px 3px!important;min-width:0!important}
+#shared #sharedCard.card-menu .zc-menu-item-copy{min-width:0!important}
+#shared #sharedCard.card-menu .zc-menu-item b{line-height:1.45!important;overflow-wrap:anywhere!important}
+#shared #sharedCard.card-menu .zc-menu-price{justify-self:end!important;white-space:nowrap!important;
+  padding:6px 9px!important;border:1px solid color-mix(in srgb,var(--tpl-accent,#9e793f) 48%,transparent)!important;
+  border-radius:4px!important}
+@media(max-width:620px){
+  #shared{padding:16px 9px 36px!important}
+  #shared .shared-wrap{width:100%!important;max-width:100%!important}
+  #shared .shared-layout{gap:14px!important}
+  #shared .shared-layout #sharedCard{max-width:100%!important}
+  #shared .shared-layout .qr-box{width:min(100%,360px)!important;max-width:100%!important}
+  #shared #qr{width:132px!important;height:132px!important;min-width:132px!important;min-height:132px!important}
+  #shared #qr canvas,#shared #qr img{width:116px!important;height:116px!important}
+  #shared #sharedCard.card-menu .zc-menu-item{column-gap:10px!important;padding:12px 1px!important}
+  #shared #sharedCard.card-menu .zc-menu-item b{font-size:14px!important}
+  #shared #sharedCard.card-menu .zc-menu-price{font-size:11px!important;padding:5px 7px!important}
+}
+</style>
 </head>
 <body>
 
