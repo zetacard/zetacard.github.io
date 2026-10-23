@@ -1,4 +1,5 @@
-<!-- ZetaCard v54: activate type-specific renderer; premium card gallery and form refinement. -->
+
+<!-- ZetaCard v57: One-tap premium recipes; persistent live/published customization styling. -->
 <!-- ZetaCard v52: Professional UI refinement on top of v51; application logic intentionally preserved. -->
 <!-- Base application: ZetaCard v49, with prior feature markers retained below. -->
 <!-- ZetaCard v44: Smart Forms + Enquiry Inbox -->
@@ -1950,6 +1951,81 @@ html{scroll-behavior:smooth}body{background:#f7f8fb;color:var(--zc-v54-ink);-web
 }
 </style>
 
+
+<style id="zc-v57-one-tap-studio">
+/* ZetaCard v57 — one-tap design recipes + make user-selected customization survive template application. */
+.zc-one-tap{margin:14px 0 18px;padding:15px;border:1px solid #dce3ee;border-radius:18px;background:linear-gradient(180deg,#fff,#f7f8fc)}
+.zc-one-tap-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.zc-one-tap-head h4{margin:0;font-size:15px;letter-spacing:-.25px;color:#18233b}
+.zc-one-tap-head p{margin:5px 0 0;color:#69758c;font-size:11px;line-height:1.5;max-width:52ch}
+.zc-one-tap-count{flex-shrink:0;border:1px solid #dbe2ee;background:#fff;border-radius:999px;padding:6px 8px;font-size:9px;font-weight:900;color:#53617a;white-space:nowrap}
+.zc-recipe-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.zc-recipe-card{position:relative;display:flex;flex-direction:column;gap:0;min-width:0;text-align:left;padding:0;overflow:hidden;border:1px solid #d9e0ec;border-radius:13px;background:#fff;color:#17223b;cursor:pointer;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
+.zc-recipe-card:hover{transform:translateY(-2px);border-color:#9ba9c2;box-shadow:0 9px 22px #17223b10}
+.zc-recipe-card.selected{border:2px solid #4f5fe3;box-shadow:0 0 0 3px #536dfe1a}
+.zc-recipe-swatch{position:relative;height:52px;display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--recipe-ink,#fff);background:var(--recipe-swatch,linear-gradient(120deg,#24304b,#c1a05a))}
+.zc-recipe-swatch:before{content:"";position:absolute;inset:6px;border:1px solid currentColor;opacity:.5;border-radius:3px}
+.zc-recipe-swatch:after{content:attr(data-ornament);font-family:Georgia,serif;font-size:19px;letter-spacing:2px;text-shadow:0 1px 8px #0002;position:relative}
+.zc-recipe-card[data-zc-recipe="minimal"] .zc-recipe-swatch:before{inset:auto 10px 8px;width:26px;border:0;border-bottom:2px solid currentColor;border-radius:0;opacity:.85}
+.zc-recipe-card[data-zc-recipe="corporate"] .zc-recipe-swatch:before{inset:0 auto 0 0;width:6px;background:#fff3;border:0;border-radius:0;opacity:1}
+.zc-recipe-info{display:flex;flex-direction:column;gap:3px;padding:9px 9px 10px;min-height:54px}
+.zc-recipe-info strong{font-size:11px;line-height:1.3;overflow-wrap:anywhere}
+.zc-recipe-info small{font-size:9px;line-height:1.35;color:#707b8f}
+.zc-recipe-tick{position:absolute;top:6px;right:6px;width:19px;height:19px;display:grid;place-items:center;border-radius:50%;background:#fff;color:#4f5fe3;font-size:11px;font-weight:900;opacity:0;box-shadow:0 2px 6px #0002}
+.zc-recipe-card.selected .zc-recipe-tick{opacity:1}
+.zc-one-tap-tip{font-size:10px;line-height:1.5;color:#66728a;margin:11px 1px 0}
+/* Apply chosen fonts/spacing/radius to the actual live card as well as the surrounding modules. */
+.card-preview.zc-customized.zc-accent-custom{--tpl-accent:var(--zc-accent)!important;--v46-accent:var(--zc-accent)!important;--v47-accent:var(--zc-accent)!important;--v47-accent2:var(--zc-accent)!important}
+.card-preview.zc-customized:before{height:0!important}
+.card-preview.zc-customized:after{opacity:.018!important}
+.card-preview.zc-customized.zc-font-serif .zc-trad,.card-preview.zc-customized.zc-font-serif .zc-trad h2,.card-preview.zc-customized.zc-font-serif .zc-trad h3,.card-preview.zc-customized.zc-font-serif .zc-trad .zc-menu-brand,.card-preview.zc-customized.zc-font-serif .zc-trad .zc-catalog-cover h2{font-family:Georgia,"Times New Roman",serif!important}
+.card-preview.zc-customized.zc-font-rounded .zc-trad,.card-preview.zc-customized.zc-font-rounded .zc-trad h2,.card-preview.zc-customized.zc-font-rounded .zc-trad h3{font-family:"Trebuchet MS",Arial,sans-serif!important}
+.card-preview.zc-customized.zc-font-system .zc-trad,.card-preview.zc-customized.zc-font-system .zc-trad h2,.card-preview.zc-customized.zc-font-system .zc-trad h3{font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif!important}
+.card-preview.zc-customized.zc-font-mono .zc-trad,.card-preview.zc-customized.zc-font-mono .zc-trad h2,.card-preview.zc-customized.zc-font-mono .zc-trad h3{font-family:"Courier New",Consolas,monospace!important}
+.card-preview.zc-customized.zc-density-compact .zc-trad{padding:18px 19px!important;min-height:440px!important}
+.card-preview.zc-customized.zc-density-compact .zc-trad .zc-contact-item{padding:5px 0!important}
+.card-preview.zc-customized.zc-density-compact .zc-trad .zc-menu-description{margin:8px 0 11px!important}
+.card-preview.zc-customized.zc-density-spacious .zc-trad{padding:32px 30px!important;min-height:570px!important}
+.card-preview.zc-customized.zc-density-spacious .zc-trad .zc-contact-item{padding:11px 0!important}
+.card-preview.zc-customized.zc-density-spacious .zc-trad .zc-menu-description{margin:18px 0 23px!important}
+.card-preview.zc-customized.zc-radius-soft{border-radius:28px!important}
+.card-preview.zc-customized.zc-radius-soft .zc-trad{border-radius:24px!important}
+.card-preview.zc-customized.zc-radius-sharp{border-radius:5px!important}
+.card-preview.zc-customized.zc-radius-sharp .zc-trad{border-radius:3px!important}
+/* Surface texture must layer over the palette gradient; older shorthand background declarations hid it. */
+.card-preview.card-visiting.zc-v47{background-image:var(--v48-pattern,none),linear-gradient(145deg,var(--tpl-bg,#18213b),var(--tpl-bg2,#344a76))!important}
+.card-preview.card-menu.zc-v47{background-image:var(--v48-pattern,none),linear-gradient(180deg,var(--tpl-bg,#fff8e9),var(--tpl-paper,#fffdf7))!important}
+.card-preview.card-wedding.zc-v47{background-image:var(--v48-pattern,none),linear-gradient(180deg,var(--tpl-bg,#fff9ef),var(--tpl-paper,#fffdf8))!important}
+.card-preview.card-identity.zc-v47{background-image:var(--v48-pattern,none),linear-gradient(145deg,var(--tpl-bg,#eaf0f9),var(--tpl-paper,#fff))!important}
+.card-preview.card-catalog.zc-v47{background-image:var(--v48-pattern,none),linear-gradient(180deg,var(--tpl-bg,#f7f1e8),var(--tpl-paper,#fff))!important}
+.card-preview.card-event.zc-v47{background-image:var(--v48-pattern,none),linear-gradient(145deg,var(--tpl-bg,#17233b),var(--tpl-bg2,#293d5f))!important}
+.card-preview.card-product.zc-v47{background-image:var(--v48-pattern,none),linear-gradient(160deg,var(--tpl-bg,#f4f6f7),var(--tpl-paper,#fff))!important}
+.card-preview.card-property.zc-v47{background-image:var(--v48-pattern,none),linear-gradient(155deg,var(--tpl-bg,#e9f0e8),var(--tpl-paper,#fff))!important}
+/* Recipe families influence actual type-specific card styling, not only the gallery thumbnail. */
+.card-preview.zc-recipe-royal .zc-trad-wedding:before,.card-preview.zc-recipe-heritage .zc-trad-wedding:before{inset:8px!important;border:3px double var(--zc-accent,#b89150)!important;box-shadow:inset 0 0 0 4px color-mix(in srgb,var(--tpl-paper,#fff8ed) 70%,transparent)}
+.card-preview.zc-recipe-royal .zc-wedding-seal,.card-preview.zc-recipe-heritage .zc-wedding-seal{font-size:26px!important;letter-spacing:2.5px!important;text-shadow:0 1px 0 color-mix(in srgb,var(--zc-accent) 18%,transparent)}
+.card-preview.zc-recipe-botanical .zc-trad-wedding:after{content:"❧"!important;right:18px!important;top:18px!important;transform:rotate(12deg);font-size:34px!important}
+.card-preview.zc-recipe-botanical .zc-trad-menu .zc-menu-crest,.card-preview.zc-recipe-earthy .zc-trad-menu .zc-menu-crest{letter-spacing:2px}
+.card-preview.zc-recipe-minimal .zc-trad-wedding:before{inset:17px!important;border:1px solid var(--zc-accent,#8993a4)!important;box-shadow:none!important}
+.card-preview.zc-recipe-minimal .zc-trad-wedding:after{display:none!important}
+.card-preview.zc-recipe-minimal .zc-menu-crest,.card-preview.zc-recipe-minimal .zc-wedding-border{opacity:.55}
+.card-preview.zc-recipe-editorial .zc-trad-visiting .zc-visit-person{text-align:left}
+.card-preview.zc-recipe-editorial .zc-trad-menu .zc-menu-brand,.card-preview.zc-recipe-editorial .zc-trad-menu .zc-menu-heading{text-align:left;letter-spacing:1.5px}
+.card-preview.zc-recipe-editorial .zc-trad-menu .zc-menu-cuisine,.card-preview.zc-recipe-editorial .zc-trad-menu .zc-menu-tagline,.card-preview.zc-recipe-editorial .zc-trad-menu .zc-menu-description{text-align:left}
+.card-preview.zc-recipe-noir .zc-trad-wedding:before,.card-preview.zc-recipe-artdeco .zc-trad-wedding:before{inset:8px!important;border:2px solid var(--zc-accent,#c5a15c)!important;box-shadow:inset 0 0 0 4px transparent,inset 0 0 0 5px color-mix(in srgb,var(--zc-accent) 45%,transparent)!important}
+.card-preview.zc-recipe-noir .zc-trad-wedding:after{content:"✦"!important;color:var(--zc-accent)!important}
+.card-preview.zc-recipe-artdeco .zc-trad-wedding:after{content:"◆"!important;color:var(--zc-accent)!important}
+.card-preview.zc-recipe-festive .zc-trad-wedding:after{content:"✺"!important;color:var(--zc-accent)!important}
+.card-preview.zc-recipe-festive .zc-trad-wedding .zc-wedding-border{letter-spacing:3px}
+.card-preview.zc-recipe-corporate .zc-trad-visiting .zc-visit-top{padding-bottom:16px;border-bottom:1px solid color-mix(in srgb,var(--zc-accent) 65%,transparent)}
+.card-preview.zc-recipe-corporate .zc-trad-identity .zc-id-topbar{border-bottom:4px solid var(--zc-accent)}
+.card-preview.zc-recipe-bold .zc-trad-visiting .zc-visit-person h2,.card-preview.zc-recipe-bold .zc-trad-event .zc-ticket-main h2{letter-spacing:-1.1px;font-weight:950}
+.card-preview.zc-recipe-pastel .zc-trad-wedding:before{border:2px solid color-mix(in srgb,var(--zc-accent) 68%,white)!important;border-radius:18px}
+.card-preview.zc-recipe-earthy .zc-trad-wedding:before{border:4px double var(--zc-accent)!important}
+@media(max-width:760px){.zc-recipe-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.zc-one-tap{padding:12px}.zc-recipe-swatch{height:46px}.zc-one-tap-head{align-items:flex-start}}
+@media(prefers-reduced-motion:reduce){.zc-recipe-card{transition:none}}
+</style>
+
 </head>
 <body>
 
@@ -3859,7 +3935,7 @@ function setupPublicCatalog(c){
   renderPublicCatalogItems(c);
 }
 
-function updatePreview(){if(!selectedType)return;const c=values();let photo=imageObjectUrl||"";const el=$("mainCard");el.className="card-preview card-"+selectedType+" theme-"+themeClass()+(TYPES[selectedType].theme?" recolorable":"");applyCardAppearance(el,c);applyTemplateStyle(el,selectedType,c.design_template||designTemplate||defaultTemplate(selectedType));el.innerHTML=renderCardMarkup(selectedType,c,photo);renderSocialLinks($("mainSocialLinks"),c.social_links||[],c._appearance||readAppearance(),false);renderShowcaseSections($("mainShowcaseSections"),c.showcase_sections||[],c._appearance||readAppearance(),true);renderTestimonials($("mainTestimonials"),c.testimonials||[],c._appearance||readAppearance(),true);renderFaqs($("mainFaq"),c.faq_items||[],c._appearance||readAppearance(),true);renderCustomForm($(mainCustomForm),c.custom_form_settings||{},c._appearance||readAppearance(),true);renderStorefront($("mainStorefront"),c,selectedType,true);renderBookingWidget($("mainBooking"),c.booking_settings||{},true);const previewModelUrl=safeMediaPreviewUrl(c.ar_model_url);if((selectedType==="product"||selectedType==="property")&&previewModelUrl){el.innerHTML+='<div class="public-ar"><model-viewer class="ar-viewer" src="'+escapeHtml(previewModelUrl)+'" ar ar-modes="webxr scene-viewer quick-look" camera-controls auto-rotate alt="Interactive 3D experience"><button slot="ar-button" class="ar-action">View in your space</button></model-viewer></div>'}if(selectedType==="catalog"){const wrap=$("mainCard").querySelector("#publicCatalog");if(wrap){const run=()=>{const c2=values();renderPublicCatalogItems(c2)};$("mainCard").querySelector("#publicCatalogSearchBtn")?.addEventListener("click",run);$("mainCard").querySelector("#publicCatalogSearch")?.addEventListener("keydown",e=>{if(e.key==="Enter")run()});}}}
+function updatePreview(){if(!selectedType)return;const c=values();let photo=imageObjectUrl||"";const el=$("mainCard");el.className="card-preview card-"+selectedType+" theme-"+themeClass()+(TYPES[selectedType].theme?" recolorable":"");applyTemplateStyle(el,selectedType,c.design_template||designTemplate||defaultTemplate(selectedType));applyCardAppearance(el,c);el.innerHTML=renderCardMarkup(selectedType,c,photo);renderSocialLinks($("mainSocialLinks"),c.social_links||[],c._appearance||readAppearance(),false);renderShowcaseSections($("mainShowcaseSections"),c.showcase_sections||[],c._appearance||readAppearance(),true);renderTestimonials($("mainTestimonials"),c.testimonials||[],c._appearance||readAppearance(),true);renderFaqs($("mainFaq"),c.faq_items||[],c._appearance||readAppearance(),true);renderCustomForm($(mainCustomForm),c.custom_form_settings||{},c._appearance||readAppearance(),true);renderStorefront($("mainStorefront"),c,selectedType,true);renderBookingWidget($("mainBooking"),c.booking_settings||{},true);const previewModelUrl=safeMediaPreviewUrl(c.ar_model_url);if((selectedType==="product"||selectedType==="property")&&previewModelUrl){el.innerHTML+='<div class="public-ar"><model-viewer class="ar-viewer" src="'+escapeHtml(previewModelUrl)+'" ar ar-modes="webxr scene-viewer quick-look" camera-controls auto-rotate alt="Interactive 3D experience"><button slot="ar-button" class="ar-action">View in your space</button></model-viewer></div>'}if(selectedType==="catalog"){const wrap=$("mainCard").querySelector("#publicCatalog");if(wrap){const run=()=>{const c2=values();renderPublicCatalogItems(c2)};$("mainCard").querySelector("#publicCatalogSearchBtn")?.addEventListener("click",run);$("mainCard").querySelector("#publicCatalogSearch")?.addEventListener("keydown",e=>{if(e.key==="Enter")run()});}}}
 function experienceData(profile){const content=profile.card_data||{};return {...content}}
 function normalizedProfile(p){const q={...p};q.card_type=TYPES[p.card_type]?p.card_type:"visiting";q.card_data=q.card_data||{};q.theme=safeTheme(p.theme);q.avatar_url=p.avatar_url||"";q.ar_model_url=p.ar_model_url||q.card_data.ar_model_url||"";q.ar_usdz_url=p.ar_usdz_url||q.card_data.ar_usdz_url||"";q.model_name=p.model_name||q.card_data.model_name||"";q.model_scale=Number(p.model_scale||q.card_data.model_scale||100);q.hotspots=p.hotspots||q.card_data.hotspots||[];return q}
 async function findAvailableUsername(base){
@@ -3975,8 +4051,8 @@ function ssafeStoreEnabled(c,type){return storefrontSupported(type)&&sanitizeSto
 function renderPublicCard(p){
   const el=$("sharedCard");const c=experienceData(p);const photo=(p.avatar_url&&p.avatar_url.startsWith("http"))?p.avatar_url:"";
   el.className="card-preview card-"+p.card_type+" theme-"+safeTheme(p.theme)+(TYPES[p.card_type].theme?" recolorable":"");
-  applyCardAppearance(el,c);
   applyTemplateStyle(el,p.card_type,c.design_template||defaultTemplate(p.card_type));
+  applyCardAppearance(el,c);
   el.innerHTML=renderCardMarkup(p.card_type,c,photo);renderSocialLinks($("publicSocialLinks"),c.social_links||[],c._appearance||{},true);renderShowcaseSections($("publicShowcaseSections"),c.showcase_sections||[],c._appearance||{},false);renderTestimonials($("publicTestimonials"),c.testimonials||[],c._appearance||{},false);renderFaqs($("publicFaq"),c.faq_items||[],c._appearance||{},false);{const fb=$("publicCustomForm");if(fb){fb.innerHTML="";fb.style.display="none";fb.hidden=true;fb.setAttribute("aria-hidden","true")}}renderStorefront($("publicStorefront"),c,p.card_type,false);renderOrderTracking(c,p.card_type);if(ssafeStoreEnabled(c,p.card_type))recordEvent(p.username,'store_open');if(p.card_type==="catalog")setupPublicCatalog(c);
   const publicModelUrl=safeHttpUrl(p.ar_model_url||c.ar_model_url),publicUsdzUrl=safeHttpUrl(p.ar_usdz_url||c.ar_usdz_url);
   if((p.card_type==="product"||p.card_type==="property")&&publicModelUrl){
@@ -4712,6 +4788,136 @@ function typeCards(){
     property:'<div class="type-sample sample-property"><div class="ts-property-image"></div><strong class="ts-wordmark">Your Property</strong><small class="ts-micro">3 BHK · CITY · PRICE</small></div>'
   };
   return Object.entries(TYPES).map(([key,t])=>`<button type="button" class="type-option type-option-${key}" data-type="${key}" aria-pressed="false">${art[key]||''}<div class="type-choice-head"><span class="type-icon" aria-hidden="true">${escapeHtml(t.icon)}</span><div class="type-choice-copy"><strong>${escapeHtml(t.label)}</strong><span class="type-description">${escapeHtml(t.desc)}</span></div></div><span class="type-check" aria-hidden="true">✓</span></button>`).join("");
+}
+
+
+
+/* ===== ZetaCard v57: one-tap premium design recipes ===== */
+let zcAccentUserTouched=false;
+const ZC_ONE_TAP_RECIPES = [
+  {key:'royal',name:'Royal Heritage',note:'Fine borders · regal type',orn:'✥ ❦ ✥',swatch:'linear-gradient(120deg,#17213b 0%,#3d2944 52%,#bf9854 100%)',ink:'#fff7e5',palette:['royal','wine','blackgold','maroon','midnight','ivory'],layout:['royal','ornate','heritage','ceremonial','luxe','classic','estate'],ornaments:['crown','mandala','indian','paisley','laurel'],font:['didot','baskerville','garamond','serif','copperplate'],frame:3,surface:7,align:1,density:3,title:4,image:3,theme:'midnight',accent:'#bc9856',fontUi:'serif',densityUi:'spacious',radius:'default'},
+  {key:'heritage',name:'Indian Classic',note:'Ceremonial · traditional',orn:'ॐ ✦ ॐ',swatch:'linear-gradient(120deg,#7d1e35 0%,#a73d36 48%,#e0b968 100%)',ink:'#fff6df',palette:['maroon','saffron','lotus','mehndi','terracotta','royal','wine'],layout:['temple','ceremonial','heritage','royal','cultural','spice','classic','festival'],ornaments:['indian','lotus','temple','paisley','mandala'],font:['garamond','serif','classic','baskerville','softscript'],frame:4,surface:1,align:1,density:3,title:2,image:4,theme:'sunset',accent:'#c89448',fontUi:'serif',densityUi:'spacious',radius:'default'},
+  {key:'botanical',name:'Botanical Luxe',note:'Organic · graceful',orn:'❧ ✿ ❧',swatch:'linear-gradient(120deg,#173e35 0%,#718d70 57%,#e0d2ad 100%)',ink:'#fffdf3',palette:['sage','forest','olive','jade','mehndi','emerald','cream'],layout:['botanical','garden','villa','estate','craft','lookbook','heritage'],ornaments:['leaf','floral','jasmine','vine','peacock'],font:['editorial','garamond','baskerville','serif','softscript'],frame:4,surface:1,align:0,density:2,title:7,image:3,theme:'forest',accent:'#7f9c77',fontUi:'serif',densityUi:'normal',radius:'soft'},
+  {key:'minimal',name:'Modern Minimal',note:'Space · clarity · restraint',orn:'—  ·  —',swatch:'linear-gradient(120deg,#eff2f5 0%,#ffffff 58%,#dce3eb 100%)',ink:'#243147',palette:['mono','cream','ivory','navy','graphite','sky','pearl'],layout:['minimal','clean','modern','center','editorial','split','listing'],ornaments:['dots','diamond','pearl','geometric','wave'],font:['humanist','geometric','futura','modernserif','editorial'],frame:0,surface:0,align:0,density:1,title:5,image:2,theme:'midnight',accent:'#66758b',fontUi:'system',densityUi:'normal',radius:'sharp'},
+  {key:'editorial',name:'Editorial Studio',note:'Magazine · considered detail',orn:'✦  ·  ✦',swatch:'linear-gradient(120deg,#e7dfcf 0%,#fbf7ef 52%,#5e665c 100%)',ink:'#30352f',palette:['ivory','cream','earth','sage','mono','charcoal','pearl'],layout:['editorial','magazine','lookbook','brochure','luxury','catalog','hero'],ornaments:['diamond','laurel','dots','pearl','spark'],font:['editorial','didot','baskerville','garamond','modernserif'],frame:2,surface:4,align:0,density:3,title:2,image:3,theme:'forest',accent:'#9f8355',fontUi:'serif',densityUi:'spacious',radius:'default'},
+  {key:'noir',name:'Noir & Gold',note:'Dark luxury · high contrast',orn:'◆ ✦ ◆',swatch:'linear-gradient(120deg,#10131b 0%,#262b38 58%,#ad8748 100%)',ink:'#f9f3e4',palette:['blackgold','midnight','charcoal','graphite','wine','royal','mono'],layout:['dark','luxe','cinematic','spotlight','luxury','security','gala'],ornaments:['diamond','crown','geometric','spark','laurel'],font:['didot','copperplate','baskerville','display','classic'],frame:5,surface:5,align:0,density:2,title:5,image:2,theme:'midnight',accent:'#c6a15c',fontUi:'serif',densityUi:'normal',radius:'sharp'},
+  {key:'pastel',name:'Soft Pastel',note:'Romantic · light · airy',orn:'✿ ❀ ✿',swatch:'linear-gradient(120deg,#f3dce0 0%,#fff5e9 54%,#d9e7dd 100%)',ink:'#543c48',palette:['blush','pastel','coral','sky','sage','lilac','pearl','lotus'],layout:['floral','pastel','botanical','invitation','clean','gallery','hero'],ornaments:['floral','petal','jasmine','lotus','leaf'],font:['garamond','softscript','editorial','baskerville','serif'],frame:2,surface:1,align:1,density:3,title:2,image:4,theme:'sunset',accent:'#c18492',fontUi:'serif',densityUi:'spacious',radius:'soft'},
+  {key:'bold',name:'Bold Contemporary',note:'Strong type · confident contrast',orn:'╱ ✦ ╲',swatch:'linear-gradient(120deg,#142d55 0%,#365cdc 60%,#ec805d 100%)',ink:'#ffffff',palette:['cobalt','indigo','coral','teal','midnight','sky','royal'],layout:['diagonal','spotlight','poster','tech','split','modern','neon','hero'],ornaments:['geometric','diamond','spark','sun','wave'],font:['display','futura','geometric','condensed','humanist'],frame:6,surface:8,align:0,density:1,title:6,image:2,theme:'ocean',accent:'#6387ff',fontUi:'rounded',densityUi:'normal',radius:'sharp'},
+  {key:'corporate',name:'Executive Corporate',note:'Trust · structured information',orn:'▰  ·  ▰',swatch:'linear-gradient(120deg,#102641 0%,#245479 58%,#9db7c7 100%)',ink:'#ffffff',palette:['navy','cobalt','blue','graphite','midnight','emerald','indigo'],layout:['corporate','horizontal','conference','clean','modern','security','split','access'],ornaments:['geometric','laurel','dots','diamond','wave'],font:['humanist','geometric','condensed','futura','modernserif'],frame:2,surface:5,align:0,density:1,title:5,image:2,theme:'ocean',accent:'#5d94ba',fontUi:'system',densityUi:'compact',radius:'sharp'},
+  {key:'artdeco',name:'Art Deco',note:'Geometry · symmetry · drama',orn:'◇ ◆ ◇',swatch:'linear-gradient(120deg,#14171d 0%,#37404b 54%,#c39b50 100%)',ink:'#fff9e9',palette:['blackgold','charcoal','midnight','royal','mono','wine'],layout:['editorial','luxury','gala','classic','poster','frame','magazine','spotlight'],ornaments:['geometric','diamond','pearl','crown','spark'],font:['copperplate','didot','futura','display','baskerville'],frame:8,surface:8,align:1,density:2,title:5,image:2,theme:'midnight',accent:'#c7a15c',fontUi:'serif',densityUi:'normal',radius:'sharp'},
+  {key:'festive',name:'Festive Jewel',note:'Jewel tones · celebratory',orn:'✺ ✦ ✺',swatch:'linear-gradient(120deg,#123b42 0%,#087a76 48%,#c58b48 100%)',ink:'#fffaf0',palette:['peacock','emerald','jade','lotus','saffron','indigo','royal','coral'],layout:['festival','cultural','royal','gala','ceremonial','heritage','spice','poster'],ornaments:['peacock','lotus','mandala','sun','jasmine'],font:['garamond','serif','softscript','baskerville','editorial'],frame:4,surface:6,align:1,density:3,title:4,image:3,theme:'forest',accent:'#d4a255',fontUi:'serif',densityUi:'spacious',radius:'default'},
+  {key:'earthy',name:'Earth & Craft',note:'Handmade · warm · grounded',orn:'❧ · ❧',swatch:'linear-gradient(120deg,#49352b 0%,#9f6548 48%,#d9c7a2 100%)',ink:'#fff8ea',palette:['earth','terracotta','olive','cream','saffron','maroon','sage'],layout:['craft','heritage','botanical','estate','editorial','indian','classic','brochure'],ornaments:['leaf','paisley','vine','laurel','temple'],font:['garamond','editorial','classic','softscript','baskerville'],frame:3,surface:3,align:0,density:3,title:2,image:4,theme:'sunset',accent:'#b67c54',fontUi:'serif',densityUi:'spacious',radius:'soft'}
+];
+function zcMatchAxis(list,wants,fallback=0){
+  const arr=Array.isArray(list)?list:[];const names=arr.map(x=>Array.isArray(x)?String(x[0]).toLowerCase():String(x).toLowerCase());
+  for(const wanted of (wants||[])){const n=String(wanted).toLowerCase();let i=names.findIndex(x=>x===n);if(i>=0)return i; i=names.findIndex(x=>x.includes(n));if(i>=0)return i;}
+  return Math.max(0,Math.min(arr.length-1,Number(fallback)||0));
+}
+function zcOneTapDesignId(type,recipe){
+  const paletteList=V46_PALETTE_HINTS[type]||V46_PALETTE_HINTS.visiting;
+  const layouts=V46_LAYOUTS[type]||V46_LAYOUTS.visiting;
+  const axes=variationAxes(type);
+  const palette=zcMatchAxis(paletteList,recipe.palette,0);
+  const layout=zcMatchAxis(layouts,recipe.layout,0);
+  const ornament=zcMatchAxis(V46_ORNAMENTS,recipe.ornaments,0);
+  const font=zcMatchAxis(V46_FONTS,recipe.font,0);
+  const frame=positiveMod(recipe.frame,axes.frame),surface=positiveMod(recipe.surface,axes.surface),align=positiveMod(recipe.align,axes.align),density=positiveMod(recipe.density,axes.density),title=positiveMod(recipe.title,axes.title),image=positiveMod(recipe.image,axes.image);
+  return `gen2:${type}:${[palette,layout,ornament,frame,font,surface,align,density,title,image].join('-')}`;
+}
+function zcApplyRecipe(recipeKey){
+  if(!selectedType)return;
+  const recipe=ZC_ONE_TAP_RECIPES.find(x=>x.key===recipeKey);if(!recipe)return;
+  designTemplate=zcOneTapDesignId(selectedType,recipe);
+  const hidden=$('designTemplate');if(hidden)hidden.value=designTemplate;
+  mainTheme=safeTheme(recipe.theme);if($('theme'))$('theme').value=mainTheme;
+  applyAppearanceControls({accent:recipe.accent,font:recipe.fontUi,density:recipe.densityUi,radius:recipe.radius});
+  zcAccentUserTouched=true;
+  document.querySelectorAll('.theme-btn').forEach(b=>b.classList.toggle('selected',b.dataset.theme===mainTheme));
+  document.querySelectorAll('.zc-recipe-card').forEach(b=>{const chosen=b.dataset.zcRecipe===recipe.key;b.classList.toggle('selected',chosen);b.setAttribute('aria-pressed',chosen?'true':'false')});
+  /* Rebuild the library so the selected one-tap recipe is also shown as the current design. */
+  if(typeof renderTemplateStudio==='function')renderTemplateStudio({design_template:designTemplate});
+  updatePreview();
+  const status=$('formStatus');if(status){status.textContent=recipe.name+' applied. Your content stays unchanged — palette, layout family, typography, frame and spacing updated.';status.classList.remove('error')}
+}
+function renderTemplateStudio(prefill={}){
+  const box=$('templateStudio');if(!box||!selectedType)return;
+  designTemplate=sanitizeDesignTemplate(selectedType,prefill.design_template||designTemplate||defaultTemplate(selectedType));
+  const list=TEMPLATE_LIBRARY[selectedType]||[];let page=0,mode='curated';
+  const recipeButtons=ZC_ONE_TAP_RECIPES.map(r=>{
+    const id=zcOneTapDesignId(selectedType,r),selected=designTemplate===id;
+    return `<button type="button" class="zc-recipe-card ${selected?'selected':''}" data-zc-recipe="${r.key}" aria-pressed="${selected?'true':'false'}"><span class="zc-recipe-swatch" data-ornament="${escapeHtml(r.orn)}" style="--recipe-swatch:${r.swatch};--recipe-ink:${r.ink}"></span><span class="zc-recipe-info"><strong>${escapeHtml(r.name)}</strong><small>${escapeHtml(r.note)}</small></span><span class="zc-recipe-tick" aria-hidden="true">✓</span></button>`;
+  }).join('');
+  box.innerHTML=`<section class="zc-one-tap"><div class="zc-one-tap-head"><div><h4>One-tap design recipes</h4><p>Choose a complete art direction in one tap. It changes the palette, typography, frame, ornament language and spacing while keeping the details you entered.</p></div><span class="zc-one-tap-count">12 styles</span></div><div class="zc-recipe-grid">${recipeButtons}</div><div class="zc-one-tap-tip">Tip: try Royal Heritage for ceremony and hospitality, Executive Corporate for professional cards, or Editorial Studio for product and property showcases.</div></section><div class="template-studio-head"><div><h3>Design Library</h3><p>Go deeper with type-specific curated templates or generate new combinations of layout, typography, ornament, frame, texture, spacing and image treatment.</p></div><span class="template-count-pill">${formatVariationCount(templateCount(selectedType))} combinations</span></div><div class="template-toolbar"><div class="template-filter"><button type="button" class="template-chip active" data-tpl-filter="curated">Curated</button><button type="button" class="template-chip" data-tpl-filter="generated">Generated</button></div><div class="template-actions"><button type="button" class="btn secondary" id="randomTemplateBtn">✨ Generate new</button><button type="button" class="btn ghost" id="moreTemplateBtn">＋ More designs</button></div></div><div id="templateGrid" class="template-grid"></div><div class="template-tip">The same template ID drives the live preview and the published card. Selecting a generated design never changes the card text or contact information.</div>`;
+  box.querySelectorAll('[data-zc-recipe]').forEach(b=>b.addEventListener('click',()=>zcApplyRecipe(b.dataset.zcRecipe)));
+  const grid=$('templateGrid');
+  const render=()=>{
+    let items;
+    if(mode==='generated'){
+      const base=page*12;
+      items=Array.from({length:12},(_,i)=>{const id=chooseGeneratedTemplate(selectedType,base+i+1+(Math.abs(hashCode(selectedType))%9973));return [id,'Generated · '+templateLabel(selectedType,id),'Unique multi-axis design']});
+    }else items=list.slice();
+    if(designTemplate&&!items.some(x=>sanitizeDesignTemplate(selectedType,x[0])===designTemplate))items.unshift([designTemplate,'Current design','Selected recipe / saved design']);
+    grid.innerHTML=items.map(x=>`<button type="button" class="template-option ${sanitizeDesignTemplate(selectedType,x[0])===designTemplate?'selected':''}" data-tpl-id="${escapeHtml(x[0])}">${templateThumbMarkup(selectedType,x[0],x[1])}<div class="template-meta"><b>${escapeHtml(x[1])}</b><span>${escapeHtml(x[2])}</span></div><span class="template-checkmark">✓</span></button>`).join('');
+    grid.querySelectorAll('.template-option').forEach(b=>b.addEventListener('click',()=>{
+      const keepCustomAccent=zcAccentUserTouched;
+      designTemplate=sanitizeDesignTemplate(selectedType,b.dataset.tplId);if($('designTemplate'))$('designTemplate').value=designTemplate;
+      if(!keepCustomAccent){const a=readAppearance();a.accent=designVariant(selectedType,designTemplate).pal[3];applyAppearanceControls(a);zcAccentUserTouched=false;}
+      grid.querySelectorAll('.template-option').forEach(x=>x.classList.toggle('selected',x===b));
+      box.querySelectorAll('.zc-recipe-card').forEach(x=>{const active=zcOneTapDesignId(selectedType,ZC_ONE_TAP_RECIPES.find(r=>r.key===x.dataset.zcRecipe))===designTemplate;x.classList.toggle('selected',active);x.setAttribute('aria-pressed',active?'true':'false')});
+      updatePreview();
+    }));
+  };
+  box.querySelectorAll('[data-tpl-filter]').forEach(b=>b.addEventListener('click',()=>{box.querySelectorAll('[data-tpl-filter]').forEach(x=>x.classList.toggle('active',x===b));mode=b.dataset.tplFilter;page=0;render()}));
+  $('randomTemplateBtn')?.addEventListener('click',()=>{designTemplate=chooseGeneratedTemplate(selectedType,Date.now()+Math.floor(Math.random()*999999));if($('designTemplate'))$('designTemplate').value=designTemplate;mode='generated';page=0;box.querySelectorAll('[data-tpl-filter]').forEach(x=>x.classList.toggle('active',x.dataset.tplFilter==='generated'));box.querySelectorAll('.zc-recipe-card').forEach(x=>{x.classList.remove('selected');x.setAttribute('aria-pressed','false')});render();updatePreview();const status=$('formStatus');if(status){status.textContent='A new design was generated. Your card content is unchanged.';status.classList.remove('error')}});
+  $('moreTemplateBtn')?.addEventListener('click',()=>{mode='generated';page++;box.querySelectorAll('[data-tpl-filter]').forEach(x=>x.classList.toggle('active',x.dataset.tplFilter==='generated'));render()});
+  if($('designTemplate'))$('designTemplate').value=designTemplate;
+  render();
+}
+function applyTemplateStyle(el,type,id){
+  if(!el||!type)return;
+  _zcV47ApplyTemplateStyle(el,type,id||defaultTemplate(type));
+  if(typeof v49ApplyVariationClass==='function')v49ApplyVariationClass(el,type,id||defaultTemplate(type));
+  for(const cls of Array.from(el.classList)){if(cls.startsWith('zc-recipe-'))el.classList.remove(cls)}
+  const recipe=ZC_ONE_TAP_RECIPES.find(r=>zcOneTapDesignId(type,r)===sanitizeDesignTemplate(type,id||defaultTemplate(type)));
+  if(recipe)el.classList.add('zc-recipe-'+recipe.key);
+}
+
+
+function buildAppearanceControls(prefill={}){
+  const panel=$('customStylePanel');if(!panel)return;
+  const saved=(prefill&&typeof prefill==='object')?(prefill._appearance||prefill.appearance||null):null;
+  const type=selectedType||'visiting';
+  const id=sanitizeDesignTemplate(type,prefill?.design_template||designTemplate||defaultTemplate(type));
+  const paletteAccent=designVariant(type,id).pal[3]||'#a58a5a';
+  const a=saved?sanitizeAppearance(saved):sanitizeAppearance({accent:paletteAccent,font:'system',density:'normal',radius:'default'});
+  if(!saved)a.accent=paletteAccent;
+  applyAppearanceControls(a);
+  zcAccentUserTouched=!!(saved&&String(a.accent).toLowerCase()!==String(paletteAccent).toLowerCase());
+  if(panel.dataset.bound==='1')return;
+  panel.dataset.bound='1';
+  ['customAccent','customFont','customDensity','customRadius'].forEach(id=>{
+    const el=$(id);if(!el)return;
+    el.addEventListener('input',()=>{if(id==='customAccent'){const current=designVariant(selectedType,designTemplate||defaultTemplate(selectedType)).pal[3];zcAccentUserTouched=String(el.value).toLowerCase()!==String(current).toLowerCase()}updatePreview()});
+    el.addEventListener('change',()=>{if(id==='customAccent'){const current=designVariant(selectedType,designTemplate||defaultTemplate(selectedType)).pal[3];zcAccentUserTouched=String(el.value).toLowerCase()!==String(current).toLowerCase()}updatePreview()});
+  });
+  $('resetCustomStyle')?.addEventListener('click',()=>{
+    const idNow=designTemplate||defaultTemplate(selectedType);
+    applyAppearanceControls({accent:designVariant(selectedType,idNow).pal[3],font:'system',density:'normal',radius:'default'});
+    zcAccentUserTouched=false;updatePreview();
+  });
+}
+function applyCardAppearance(el,c={}){
+  if(!el)return;
+  const src=(c&&typeof c==='object')?(c._appearance||c.appearance||{}):{};
+  const p=sanitizeAppearance(src);
+  el.style.setProperty('--zc-accent',p.accent);
+  el.classList.remove('zc-customized','zc-font-system','zc-font-serif','zc-font-rounded','zc-font-mono','zc-density-normal','zc-density-compact','zc-density-spacious','zc-radius-default','zc-radius-soft','zc-radius-sharp','zc-accent-custom');
+  el.classList.add(...appearanceClasses(p).split(' '));
+  const types=['visiting','menu','wedding','identity','catalog','event','product','property'];
+  const type=types.find(t=>el.classList.contains('card-'+t))||selectedType||'visiting';
+  const templateId=sanitizeDesignTemplate(type,c.design_template||designTemplate||defaultTemplate(type));
+  const paletteAccent=(designVariant(type,templateId).pal[3]||'#a58a5a').toLowerCase();
+  if(src&&src.accent&&String(src.accent).toLowerCase()!==paletteAccent)el.classList.add('zc-accent-custom');
 }
 
 </script>
