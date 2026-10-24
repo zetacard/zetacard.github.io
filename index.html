@@ -1,4 +1,4 @@
-<!-- ZetaCard v61.2 merged build: original card studio + Networking Suite + enterprise overview (existing modules, no sample CRM records). -->
+<!-- ZetaCard v62.0 Free Card Studio: traditional template-first card builder; no ZetaCard payment gateway or card-creation paywall. Existing modules retained. -->
 <!-- ZetaCard v52: Professional UI refinement on top of v51; application logic intentionally preserved. -->
 <!-- Base application: ZetaCard v49, with prior feature markers retained below. -->
 <!-- ZetaCard v44: Smart Forms + Enquiry Inbox -->
@@ -21,8 +21,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<meta name="description" content="Create premium digital and printable cards, invitations, menus, catalogs, QR profiles, storefronts and networking tools with ZetaCard.">
-<title>ZetaCard — Premium Card & Networking Studio</title>
+<meta name="description" content="Create free, professional digital and printable cards, invitations, menus, catalogs, QR profiles, storefronts and networking tools with ZetaCard.">
+<title>ZetaCard — Free Traditional Card & Networking Studio</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.3.1/model-viewer.min.js"></script>
@@ -3032,10 +3032,10 @@ input,select,textarea{border-radius:10px!important;border-color:#dce4ef!importan
       </div>
 
       <div id="manualPathStep" class="step-pane">
-        <div class="step-title"><div><h2>Manual Mode · Choose your starting point</h2><p>Start with a professionally composed template, or build your own look from a clean base.</p></div><span class="pill">Your choice</span></div>
+        <div class="step-title"><div><h2>Manual Mode · Choose a traditional template</h2><p>Pick a ready-made professional layout, then enter your card details. Cards are free to create for now.</p></div><span class="pill">Free for now</span></div>
         <div class="zc-manual-path-grid">
           <button id="manualFromTemplateBtn" class="zc-manual-path-card" type="button"><span class="zc-manual-path-icon">▦</span><span class="zc-manual-path-label">FROM TEMPLATE</span><strong>Choose a ready-made design</strong><p>Choose a traditional ready-made layout, then enter your details.</p><span class="zc-manual-path-cta">Browse templates →</span></button>
-          <button id="manualBuildYourselfBtn" class="zc-manual-path-card zc-self-card" type="button"><span class="zc-manual-path-icon">✳</span><span class="zc-manual-path-label">BUILD YOURSELF</span><strong>Start with a clean canvas</strong><p>Use the card-specific form, then customize its color, typography, spacing and finish yourself.</p><span class="zc-manual-path-cta">Start from scratch →</span></button>
+          <button id="manualBuildYourselfBtn" class="zc-manual-path-card zc-self-card" type="button"><span class="zc-manual-path-icon">✳</span><span class="zc-manual-path-label">BUILD YOURSELF</span><strong>More templates coming later</strong><p>For now, choose a ready-made traditional design and enter your details.</p><span class="zc-manual-path-cta">Start from scratch →</span></button>
         </div>
         <div class="zc-template-source-note">Every template is rendered natively by ZetaCard and remains editable. The visual directions are original combinations informed by public design-category references, not copied third-party artwork.</div>
       </div>
@@ -3665,7 +3665,7 @@ function zcV60BuildTemplateCatalog(type){
   return byFamily;
 }
 function zcV60Pane(activeId){['modeStep','manualPathStep','typeStep','templatePickerStep','formStep'].forEach(id=>$(id)?.classList.toggle('active',id===activeId))}
-function showManualPathStep(){zcV60Pane('manualPathStep');$('previewBox').style.display='none';$('aiWorkspace').style.display='none';$('stepIndicator').textContent='Manual Mode · choose path';$('builderTitle').textContent='How do you want to design it?';$('builderSubtitle').textContent='Pick one of two workflows. Both keep your card information editable.';$('builderBack').textContent='← Modes';updateBackButton();window.scrollTo(0,0)}
+function showManualPathStep(){zcV60Pane('manualPathStep');$('previewBox').style.display='none';$('aiWorkspace').style.display='none';$('stepIndicator').textContent='Manual Mode · choose path';$('builderTitle').textContent='Choose a traditional card template';$('builderSubtitle').textContent='Start with a ready-made layout. Your card details remain editable.';$('builderBack').textContent='← Modes';updateBackButton();window.scrollTo(0,0)}
 function zcV60StartManualPath(path){window.zcManualCreationMode=path;selectedType=null;designTemplate='';window.zcTemplatePickerPage=0;window.zcTemplatePickerSearchText='';window.zcTemplatePickerCategoryName='All';document.querySelectorAll('.type-option').forEach(b=>{b.classList.remove('selected');b.setAttribute('aria-pressed','false')});$('continueBtn').disabled=true;$('typePill').textContent='Choose a type';$('dynamicForm').innerHTML='';if($('designTemplate'))$('designTemplate').value='';showTypeStep()}
 function zcV60TemplateIdForBlank(type){const axes=variationAxes(type),layouts=V46_LAYOUTS[type]||V46_LAYOUTS.visiting,palettes=V46_PALETTE_HINTS[type]||V46_PALETTE_HINTS.visiting;const layoutIndex=Math.max(0,layouts.findIndex(x=>/minimal|clean|classic|editorial/i.test(x)));const preferred=type==='wedding'?'ivory':type==='visiting'?'cream':type==='menu'?'cream':type==='identity'?'cream':type==='catalog'?'cream':type==='event'?'cream':type==='product'?'ivory':'cream';const pi=Math.max(0,palettes.indexOf(preferred));return `gen2:${type}:${[pi,layoutIndex,0,0,0,0,0,2,0,0].map((v,i)=>positiveMod(v,[axes.palette,axes.layout,axes.ornament,axes.frame,axes.font,axes.surface,axes.align,axes.density,axes.title,axes.image][i])).join('-')}`}
 function zcV60ApplyTemplate(id){if(!selectedType)return;designTemplate=sanitizeDesignTemplate(selectedType,id);if($('designTemplate'))$('designTemplate').value=designTemplate;const d=designVariant(selectedType,designTemplate);zcAccentUserTouched=false;applyAppearanceControls({accent:d.pal[3]||'#a58a5a',font:'system',density:'normal',radius:'default'});updatePreview()}
