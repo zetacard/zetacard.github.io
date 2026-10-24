@@ -1,4 +1,4 @@
-<!-- ZetaCard v61.0 candidate: premium templates + Networking Suite (local-first with optional Supabase migration). -->
+<!-- ZetaCard v61.2 merged build: original card studio + Networking Suite + enterprise overview (existing modules, no sample CRM records). -->
 <!-- ZetaCard v52: Professional UI refinement on top of v51; application logic intentionally preserved. -->
 <!-- Base application: ZetaCard v49, with prior feature markers retained below. -->
 <!-- ZetaCard v44: Smart Forms + Enquiry Inbox -->
@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<meta name="description" content="Create premium digital and printable cards, invitations, menus, catalogs, QR profiles and networking tools with ZetaCard.">
+<meta name="description" content="Create premium digital and printable cards, invitations, menus, catalogs, QR profiles, storefronts and networking tools with ZetaCard.">
 <title>ZetaCard — Premium Card & Networking Studio</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -2435,6 +2435,279 @@ html{scroll-behavior:smooth}body{background:#f7f8fb;color:var(--zc-v54-ink);-web
 @media(max-width:620px){.template-studio .template-grid,.zc-template-picker-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}}
 </style>
 
+
+<style id="zc-enterprise-merge">
+/* ZetaCard enterprise overview: a static-page integration of the useful dashboard layout from the supplied TSX. */
+.zc-enterprise-page{display:none;min-height:100vh;padding:20px clamp(12px,3vw,32px) 44px;background:radial-gradient(ellipse at 5% 0%,rgba(83,109,254,.14),transparent 34%),#f4f6fb;color:#172033;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.zc-enterprise-page.show{display:block}
+.zc-enterprise-shell{max-width:1320px;margin:0 auto}
+.zc-enterprise-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:5px 0 22px}
+.zc-enterprise-brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:-.04em;font-size:22px;color:#111a30}
+.zc-enterprise-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#4f46e5,#06b6d4);color:white;font-weight:950;box-shadow:0 7px 20px #4f46e533}
+.zc-enterprise-actions{display:flex;gap:8px;flex-wrap:wrap}
+.zc-enterprise-btn{border:1px solid #d9dfeb;background:#fff;color:#27334b;border-radius:10px;padding:9px 13px;font:inherit;font-size:12px;font-weight:800;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.zc-enterprise-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px #1c2d5014}
+.zc-enterprise-btn.primary{background:#4f46e5;color:#fff;border-color:#4f46e5}
+.zc-enterprise-hero{display:flex;justify-content:space-between;gap:24px;align-items:flex-end;padding:25px 26px;border-radius:22px;background:linear-gradient(120deg,#11182d,#202c4d 70%,#164e63);color:white;box-shadow:0 18px 42px #1b29451c}
+.zc-enterprise-hero h1{font-size:clamp(25px,4vw,36px);line-height:1.12;letter-spacing:-.045em;margin:8px 0 10px}
+.zc-enterprise-hero p{color:#c2cbe0;max-width:690px;margin:0;font-size:13px;line-height:1.7}
+.zc-enterprise-eyebrow{font-size:10px;letter-spacing:.17em;text-transform:uppercase;font-weight:900;color:#aebdff}
+.zc-enterprise-mode{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;padding:7px 10px;border:1px solid #ffffff2c;background:#ffffff0c;border-radius:999px;color:#dce5ff;font-size:10px;font-weight:800}
+.zc-enterprise-dot{width:7px;height:7px;border-radius:50%;background:#fbbf24;display:inline-block}
+.zc-enterprise-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:15px 0 25px}
+.zc-enterprise-kpi{background:#fff;border:1px solid #e4e8f0;border-radius:15px;padding:16px;min-width:0;box-shadow:0 5px 18px #17203306}
+.zc-enterprise-kpi span{display:block;color:#66728a;font-size:11px;font-weight:750}
+.zc-enterprise-kpi strong{display:block;color:#172033;font-size:28px;line-height:1.2;margin:8px 0 3px;letter-spacing:-.04em}
+.zc-enterprise-kpi small{font-size:10px;color:#7a8497}
+.zc-enterprise-section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+.zc-enterprise-section-head h2{font-size:17px;letter-spacing:-.025em;margin:0;color:#172033}
+.zc-enterprise-section-head p{font-size:11px;color:#707b90;margin:5px 0 0}
+.zc-enterprise-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.zc-enterprise-module{display:flex;align-items:flex-start;gap:12px;text-align:left;width:100%;min-height:130px;padding:17px;background:#fff;border:1px solid #e2e7f0;border-radius:16px;color:#172033;cursor:pointer;box-shadow:0 5px 18px #17203305;transition:transform .16s,border-color .16s,box-shadow .16s}
+.zc-enterprise-module:hover{transform:translateY(-2px);border-color:#b7c2ff;box-shadow:0 12px 26px #24365b12}
+.zc-enterprise-icon{width:38px;height:38px;display:grid;place-items:center;flex:0 0 auto;border-radius:12px;background:#eef0ff;color:#4f46e5;font-size:18px}
+.zc-enterprise-module h3{font-size:13px;margin:1px 0 6px;font-weight:900}
+.zc-enterprise-module p{font-size:11px;line-height:1.6;color:#68748a;margin:0}
+.zc-enterprise-module .zc-enterprise-arrow{display:block;margin-top:10px;color:#4f46e5;font-size:10px;font-weight:900}
+.zc-enterprise-note{margin-top:18px;border:1px solid #e5d9ae;background:#fffaf0;color:#6f5722;padding:13px 15px;border-radius:13px;font-size:11px;line-height:1.6}
+.zc-enterprise-note strong{color:#624a12}
+@media(max-width:850px){.zc-enterprise-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.zc-enterprise-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.zc-enterprise-hero{align-items:flex-start;flex-direction:column}}
+@media(max-width:520px){.zc-enterprise-grid{grid-template-columns:1fr}.zc-enterprise-module{min-height:0}.zc-enterprise-hero{padding:20px}.zc-enterprise-kpi{padding:13px}.zc-enterprise-kpi strong{font-size:24px}}
+</style>
+
+<style id="zc-premium-full-platform-polish">
+/* ZetaCard full-platform visual polish. Styling only: feature logic, navigation and integrations remain untouched. */
+:root{--zc-ink:#15233b;--zc-muted:#68758c;--zc-line:#e0e6ef;--zc-soft:#f6f8fc;--zc-brand:#315cf5;--zc-brand2:#6747e8;--zc-radius:18px}
+html{scroll-behavior:smooth}body{font-family:Inter,"DM Sans",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:-.012em;color:var(--zc-ink);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button,input,select,textarea{font:inherit}button{transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #8ca5ff;outline-offset:3px}
+.landing-nav{background:rgba(255,255,255,.94)!important;backdrop-filter:blur(16px);border-bottom:1px solid #e8edf5!important;box-shadow:0 3px 18px rgba(22,38,70,.035)}
+.landing-brand{font-weight:850!important;letter-spacing:-.045em!important;color:var(--zc-ink)!important}.landing-brand>span{color:var(--zc-brand)!important}.landing-wrap{max-width:1180px!important}
+.hero{max-width:850px!important;padding-top:clamp(42px,7vw,86px)!important;padding-bottom:30px!important}.hero-kicker{font-weight:800!important;letter-spacing:.14em!important;color:var(--zc-brand)!important;font-size:11px!important}.hero h1{max-width:800px;font-size:clamp(38px,6.2vw,72px)!important;line-height:1.02!important;letter-spacing:-.065em!important;font-weight:820!important;color:#14213b!important;text-wrap:balance}.hero>p{max-width:700px!important;font-size:clamp(16px,2vw,19px)!important;line-height:1.75!important;color:#65738a!important}
+.btn.primary{background:linear-gradient(135deg,var(--zc-brand),var(--zc-brand2))!important;box-shadow:0 9px 22px rgba(65,86,230,.2)!important;border:1px solid transparent!important}.btn.primary:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(65,86,230,.25)!important}.btn.ghost,.btn.secondary{border-color:#dfe6f1!important;background:#fff!important;color:#253450!important}.btn.ghost:hover,.btn.secondary:hover{border-color:#b8c7e3!important;background:#f8faff!important}
+.hero-points{gap:10px 18px!important;color:#52627b!important;font-size:13px!important}.hero-points span{line-height:1.6}
+.type-option{position:relative!important;border:1px solid #e1e7f0!important;border-radius:17px!important;background:#fff!important;box-shadow:0 4px 15px rgba(23,42,76,.035)!important;min-height:160px!important;padding:20px!important;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important}.type-option:hover{transform:translateY(-3px);border-color:#a9baff!important;box-shadow:0 12px 28px rgba(35,61,120,.09)!important}.type-option.selected{border-color:var(--zc-brand)!important;box-shadow:0 0 0 3px rgba(49,92,245,.10)!important;background:#f8faff!important}.type-option .type-icon{border-radius:13px!important;background:#eef2ff!important}.type-option strong{font-weight:780!important;letter-spacing:-.025em}
+.step-pane,.form-panel,.preview-panel,.dashboard-card,.zc-enterprise-panel{border-radius:20px!important;border-color:#e2e8f1!important;box-shadow:0 8px 28px rgba(23,42,76,.045)!important}.step-title h2,.form-head strong{letter-spacing:-.035em!important;font-weight:800!important}.help,.step-title p{color:#6b7890!important;line-height:1.65!important}
+input,select,textarea{border-radius:10px!important;border-color:#dce4ef!important}input:focus,select:focus,textarea:focus{border-color:#8098ff!important;box-shadow:0 0 0 3px rgba(49,92,245,.09)!important}
+@media(max-width:760px){.landing-nav{padding:12px 16px!important;gap:12px!important;flex-wrap:wrap}.auth-bar{gap:7px!important;flex-wrap:wrap}.hero{padding-left:18px!important;padding-right:18px!important}.hero h1{font-size:clamp(36px,10vw,54px)!important}.type-option{min-height:140px!important;padding:15px!important}.landing-wrap{padding-left:14px!important;padding-right:14px!important}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+<style id="zc-v62-physical-business-card">
+/* ZetaCard v62: real landscape business-card proportions, traditional information hierarchy, and print-safe sizing. */
+#mainCard.card-visiting,
+#shared #sharedCard.card-visiting{
+  box-sizing:border-box!important;
+  width:100%!important;
+  aspect-ratio:3.5 / 2!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:hidden!important;
+  border-radius:4px!important;
+  box-shadow:0 12px 28px rgba(20,29,46,.14)!important;
+  isolation:isolate;
+}
+#mainCard.card-visiting>.zc-trad-visiting,
+#shared #sharedCard.card-visiting>.zc-trad-visiting{
+  box-sizing:border-box!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:none!important;
+  padding:clamp(12px,2.1vw,24px)!important;
+  border-radius:inherit!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:space-between!important;
+  gap:0!important;
+  overflow:hidden!important;
+  background-image:linear-gradient(135deg,rgba(255,255,255,.035),transparent 45%)!important;
+}
+#mainCard.card-visiting .zc-visit-top,
+#shared #sharedCard.card-visiting .zc-visit-top{
+  display:flex!important;align-items:center!important;gap:10px!important;
+  padding:0 0 9px!important;margin:0!important;
+  border-bottom:1px solid color-mix(in srgb,var(--tpl-accent,#c7a96b) 68%,transparent)!important;
+  min-width:0!important;
+}
+#mainCard.card-visiting .zc-monogram,
+#shared #sharedCard.card-visiting .zc-monogram{
+  width:38px!important;height:38px!important;min-width:38px!important;flex:0 0 38px!important;
+  border-radius:3px!important;font-size:13px!important;box-shadow:none!important;
+}
+#mainCard.card-visiting .zc-visit-brand,
+#shared #sharedCard.card-visiting .zc-visit-brand{min-width:0!important;gap:2px!important}
+#mainCard.card-visiting .zc-visit-brand .preview-kicker,
+#shared #sharedCard.card-visiting .zc-visit-brand .preview-kicker{font-size:6px!important;letter-spacing:1.5px!important;line-height:1.2!important}
+#mainCard.card-visiting .zc-visit-brand strong,
+#shared #sharedCard.card-visiting .zc-visit-brand strong{font-size:12px!important;line-height:1.2!important;overflow-wrap:anywhere!important}
+#mainCard.card-visiting .zc-visit-brand small,
+#shared #sharedCard.card-visiting .zc-visit-brand small{font-size:7px!important;line-height:1.25!important;overflow-wrap:anywhere!important}
+#mainCard.card-visiting .zc-visit-stamp,
+#shared #sharedCard.card-visiting .zc-visit-stamp{margin-left:auto!important;font-size:8px!important;flex:0 0 auto!important}
+#mainCard.card-visiting .zc-visit-person,
+#shared #sharedCard.card-visiting .zc-visit-person{padding:10px 0 7px!important;margin:0!important;min-width:0!important}
+#mainCard.card-visiting .zc-visit-person h2,
+#shared #sharedCard.card-visiting .zc-visit-person h2{font-size:clamp(18px,3.2vw,29px)!important;line-height:1.02!important;letter-spacing:-.35px!important;margin:0!important;overflow-wrap:anywhere!important}
+#mainCard.card-visiting .zc-visit-role,
+#shared #sharedCard.card-visiting .zc-visit-role{font-size:8px!important;line-height:1.25!important;margin-top:4px!important;letter-spacing:.25px!important}
+#mainCard.card-visiting .zc-visit-person p,
+#shared #sharedCard.card-visiting .zc-visit-person p{font-size:7px!important;line-height:1.25!important;margin:4px 0 0!important;max-width:75ch!important;display:-webkit-box!important;-webkit-line-clamp:1!important;-webkit-box-orient:vertical!important;overflow:hidden!important}
+#mainCard.card-visiting .zc-visit-divider,
+#shared #sharedCard.card-visiting .zc-visit-divider{display:flex!important;align-items:center!important;gap:6px!important;margin:0 0 2px!important;font-size:6px!important;letter-spacing:1.2px!important;line-height:1!important}
+#mainCard.card-visiting .zc-visit-divider span,
+#shared #sharedCard.card-visiting .zc-visit-divider span{height:1px!important;flex:1!important;background:color-mix(in srgb,var(--tpl-accent,#c7a96b) 58%,transparent)!important}
+#mainCard.card-visiting .zc-contact-list,
+#shared #sharedCard.card-visiting .zc-contact-list{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:0 12px!important;margin:0!important;min-width:0!important}
+#mainCard.card-visiting .zc-contact-item,
+#shared #sharedCard.card-visiting .zc-contact-item{display:flex!important;align-items:baseline!important;gap:5px!important;min-width:0!important;padding:4px 0!important;border-bottom:1px solid color-mix(in srgb,currentColor 13%,transparent)!important;overflow:hidden!important}
+#mainCard.card-visiting .zc-contact-item b,
+#shared #sharedCard.card-visiting .zc-contact-item b{font-size:5.5px!important;letter-spacing:.6px!important;flex:0 0 auto!important;opacity:.72!important}
+#mainCard.card-visiting .zc-contact-item span,
+#shared #sharedCard.card-visiting .zc-contact-item span{font-size:7px!important;line-height:1.15!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+#mainCard.card-visiting .zc-visit-footer,
+#shared #sharedCard.card-visiting .zc-visit-footer{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:8px!important;margin:6px 0 0!important;padding:5px 0 0!important;border-top:1px solid color-mix(in srgb,var(--tpl-accent,#c7a96b) 60%,transparent)!important;font-size:6px!important;line-height:1.1!important;letter-spacing:.8px!important}
+#mainCard.card-visiting .zc-visit-footer b,
+#shared #sharedCard.card-visiting .zc-visit-footer b{font-size:6.5px!important;letter-spacing:.2px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+@media(max-width:520px){
+ #mainCard.card-visiting>.zc-trad-visiting{padding:10px!important}
+ #mainCard.card-visiting .zc-visit-top{gap:7px!important;padding-bottom:6px!important}
+ #mainCard.card-visiting .zc-monogram{width:30px!important;height:30px!important;min-width:30px!important;flex-basis:30px!important}
+ #mainCard.card-visiting .zc-visit-person{padding:7px 0 5px!important}
+ #mainCard.card-visiting .zc-visit-person h2{font-size:clamp(15px,4vw,22px)!important}
+ #mainCard.card-visiting .zc-contact-list{column-gap:7px!important}
+ #mainCard.card-visiting .zc-contact-item b{font-size:5px!important}
+ #mainCard.card-visiting .zc-contact-item span{font-size:6px!important}
+}
+@media print{
+ @page{size:A4 portrait;margin:12mm}
+ #shared .shared-layout #sharedCard.card-visiting{
+   width:89mm!important;min-width:89mm!important;max-width:89mm!important;
+   height:50.8mm!important;min-height:50.8mm!important;max-height:50.8mm!important;
+   aspect-ratio:3.5 / 2!important;margin:30mm auto 0!important;
+   border-radius:1mm!important;box-shadow:none!important;overflow:hidden!important;
+   print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important;
+ }
+ #shared .shared-layout #sharedCard.card-visiting>.zc-trad-visiting{
+   width:89mm!important;height:50.8mm!important;min-height:50.8mm!important;max-height:50.8mm!important;
+   padding:4mm!important;overflow:hidden!important;box-sizing:border-box!important;
+ }
+ #shared .shared-layout #sharedCard.card-visiting .zc-visit-top{padding-bottom:2mm!important}
+ #shared .shared-layout #sharedCard.card-visiting .zc-monogram{width:9mm!important;height:9mm!important;min-width:9mm!important;flex-basis:9mm!important}
+ #shared .shared-layout #sharedCard.card-visiting .zc-visit-person{padding:2.5mm 0 1.5mm!important}
+ #shared .shared-layout #sharedCard.card-visiting .zc-visit-person h2{font-size:16pt!important}
+ #shared .shared-layout #sharedCard.card-visiting .zc-visit-role{font-size:6.5pt!important}
+ #shared .shared-layout #sharedCard.card-visiting .zc-visit-person p{font-size:5pt!important}
+ #shared .shared-layout #sharedCard.card-visiting .zc-contact-item{padding:1mm 0!important}
+ #shared .shared-layout #sharedCard.card-visiting .zc-contact-item b{font-size:4.5pt!important}
+ #shared .shared-layout #sharedCard.card-visiting .zc-contact-item span{font-size:5.5pt!important}
+ #shared .shared-layout #sharedCard.card-visiting .zc-visit-footer{margin-top:1mm!important;padding-top:1mm!important;font-size:4.5pt!important}
+ #shared .shared-layout #sharedCard.card-visiting .zc-visit-footer b{font-size:5pt!important}
+}
+</style>
+
+<!-- ZetaCard premium physical-card design refresh v1 -->
+
+<style id="zc-premium-physical-card-refresh">
+/* ZetaCard premium physical-card refresh: refined hierarchy, print-safe details, and consistent business-card proportions. */
+.card-preview.card-visiting{
+  --zc-card-ink:var(--v46-ink,var(--tpl-ink,#f7f5ef));
+  --zc-card-accent:var(--v46-accent,var(--tpl-accent,#c8a96b));
+  aspect-ratio:3.5/2!important;
+  min-height:0!important;height:auto!important;max-height:none!important;
+  border-radius:14px!important;isolation:isolate;
+  background-image:radial-gradient(ellipse at 100% 0%,color-mix(in srgb,var(--zc-card-accent) 24%,transparent),transparent 42%),linear-gradient(132deg,var(--v46-bg,var(--tpl-bg,#111a2e)),var(--v46-bg2,var(--tpl-bg2,#293958)))!important;
+  color:var(--zc-card-ink)!important;
+  box-shadow:0 18px 44px rgba(16,27,48,.18),inset 0 0 0 1px color-mix(in srgb,var(--zc-card-accent) 52%,transparent)!important;
+}
+#mainCard.card-visiting>.zc-trad-visiting,#shared #sharedCard.card-visiting>.zc-trad-visiting{
+  position:relative!important;isolation:isolate!important;
+  background:linear-gradient(115deg,rgba(255,255,255,.045),transparent 42%)!important;
+}
+#mainCard.card-visiting>.zc-trad-visiting:before,#shared #sharedCard.card-visiting>.zc-trad-visiting:before{
+  content:"";position:absolute;inset:7px;border:1px solid color-mix(in srgb,var(--zc-card-accent,var(--tpl-accent,#c8a96b)) 58%,transparent);
+  border-radius:8px;pointer-events:none;z-index:0;
+}
+#mainCard.card-visiting .zc-visit-top,#shared #sharedCard.card-visiting .zc-visit-top{
+  border-bottom:1px solid color-mix(in srgb,var(--zc-card-accent,var(--tpl-accent,#c8a96b)) 52%,transparent)!important;
+}
+#mainCard.card-visiting .zc-monogram,#shared #sharedCard.card-visiting .zc-monogram{
+  border:1px solid color-mix(in srgb,var(--zc-card-accent,var(--tpl-accent,#c8a96b)) 78%,transparent)!important;
+  background:color-mix(in srgb,var(--zc-card-accent,var(--tpl-accent,#c8a96b)) 13%,transparent)!important;
+  color:inherit!important;box-shadow:0 2px 8px rgba(0,0,0,.08)!important;
+}
+#mainCard.card-visiting .zc-visit-brand strong,#shared #sharedCard.card-visiting .zc-visit-brand strong{
+  font-weight:850!important;letter-spacing:.01em!important;
+}
+#mainCard.card-visiting .zc-visit-stamp,#shared #sharedCard.card-visiting .zc-visit-stamp{
+  border:1px solid color-mix(in srgb,var(--zc-card-accent,var(--tpl-accent,#c8a96b)) 66%,transparent)!important;
+  color:inherit!important;background:color-mix(in srgb,var(--zc-card-accent,var(--tpl-accent,#c8a96b)) 10%,transparent)!important;
+}
+#mainCard.card-visiting .zc-visit-person h2,#shared #sharedCard.card-visiting .zc-visit-person h2{
+  text-wrap:balance;overflow-wrap:anywhere;
+}
+#mainCard.card-visiting .zc-visit-role,#shared #sharedCard.card-visiting .zc-visit-role{
+  color:var(--zc-card-accent,var(--tpl-accent,#c8a96b))!important;font-weight:750!important;
+}
+#mainCard.card-visiting .zc-visit-divider,#shared #sharedCard.card-visiting .zc-visit-divider{
+  color:var(--zc-card-accent,var(--tpl-accent,#c8a96b))!important;letter-spacing:.18em!important;
+}
+#mainCard.card-visiting .zc-contact-item,#shared #sharedCard.card-visiting .zc-contact-item{
+  min-width:0!important;overflow-wrap:anywhere!important;
+}
+#mainCard.card-visiting .zc-contact-item span,#shared #sharedCard.card-visiting .zc-contact-item span{
+  opacity:.72;letter-spacing:.08em!important;
+}
+#mainCard.card-visiting .zc-contact-item b,#shared #sharedCard.card-visiting .zc-contact-item b{
+  overflow-wrap:anywhere!important;word-break:break-word!important;
+}
+#mainCard.card-visiting .zc-visit-footer,#shared #sharedCard.card-visiting .zc-visit-footer{
+  border-top:1px solid color-mix(in srgb,var(--zc-card-accent,var(--tpl-accent,#c8a96b)) 34%,transparent)!important;
+}
+/* Screen preview uses the real 3.5 × 2 inch card ratio; other card types retain their purpose-specific layouts. */
+@media(max-width:620px){
+ #mainCard.card-visiting{border-radius:8px!important}
+ #mainCard.card-visiting>.zc-trad-visiting{padding:10px!important}
+ #mainCard.card-visiting .zc-visit-person h2{font-size:clamp(14px,4.4vw,23px)!important;line-height:1.02!important}
+ #mainCard.card-visiting .zc-visit-role{font-size:clamp(7px,1.8vw,10px)!important}
+ #mainCard.card-visiting .zc-contact-list{grid-template-columns:repeat(2,minmax(0,1fr))!important;column-gap:7px!important}
+ #mainCard.card-visiting .zc-contact-item span{font-size:5px!important}
+ #mainCard.card-visiting .zc-contact-item b{font-size:6px!important}
+}
+@media print{
+ @page{size:A4 portrait;margin:12mm}
+ #shared .shared-layout #sharedCard.card-visiting{
+   width:90mm!important;min-width:90mm!important;max-width:90mm!important;
+   height:50.8mm!important;min-height:50.8mm!important;max-height:50.8mm!important;
+   aspect-ratio:3.5/2!important;margin:24mm auto 0!important;border-radius:1mm!important;
+   box-shadow:none!important;overflow:hidden!important;break-inside:avoid!important;page-break-inside:avoid!important;
+   print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important;
+ }
+ #shared .shared-layout #sharedCard.card-visiting>.zc-trad-visiting{
+   width:90mm!important;height:50.8mm!important;min-height:50.8mm!important;max-height:50.8mm!important;
+   box-sizing:border-box!important;padding:4mm!important;overflow:hidden!important;
+ }
+ #shared .shared-layout #sharedCard.card-visiting .zc-visit-person h2{font-size:16pt!important;line-height:1.02!important}
+ #shared .shared-layout #sharedCard.card-visiting .zc-visit-role{font-size:6.5pt!important}
+ #shared .shared-layout #sharedCard.card-visiting .zc-visit-person p{font-size:5pt!important;line-height:1.2!important}
+ #shared .shared-layout #sharedCard.card-visiting .zc-contact-item{padding:.7mm 0!important}
+ #shared .shared-layout #sharedCard.card-visiting .zc-contact-item span{font-size:4.5pt!important}
+ #shared .shared-layout #sharedCard.card-visiting .zc-contact-item b{font-size:5.5pt!important;line-height:1.15!important}
+ #shared .shared-layout #sharedCard.card-visiting .zc-visit-footer{padding-top:1.2mm!important;font-size:5pt!important}
+}
+</style>
+
+<style id="zc-traditional-template-only">
+/* ZetaCard: simplify card creation to traditional ready-made templates. */
+#styleGrid,#customStylePanel,#manualBuildHint,.zc-self-card,.zc-one-tap,
+#zcLibrarySearch,#zcLibraryCategory,#zcLibraryRandom,
+#templatePickerSearch,#templatePickerCategory{display:none!important}
+#templateStudio .template-grid,#templatePickerGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#templateStudio .template-thumb,#templatePickerGrid .template-thumb{aspect-ratio:1.75/1!important;height:auto!important;min-height:0!important}
+#templateStudio .template-option,#templatePickerGrid .template-option{border-radius:12px;background:#fff;box-shadow:0 3px 12px rgba(25,35,55,.05)}
+#templateStudio .template-meta b,#templatePickerGrid .template-meta b{font-size:12px}
+#templateStudio .template-meta span,#templatePickerGrid .template-meta span{font-size:10px}
+@media(max-width:620px){#templateStudio .template-grid,#templatePickerGrid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 
@@ -2447,13 +2720,14 @@ html{scroll-behavior:smooth}body{background:#f7f8fb;color:var(--zc-v54-ink);-web
       <button id="signOutBtn" class="btn ghost" type="button" style="display:none">Sign out</button>
       <button id="dashboardNavBtn" class="btn ghost" type="button" style="display:none">My Cards</button>
       <button id="networkingHubBtn" class="btn ghost" type="button">Networking Hub</button>
+      <button id="enterpriseDashboardBtn" class="btn ghost" type="button">Enterprise Overview</button>
       <button id="landingCreateTop" class="btn primary" type="button">Create a card</button>
     </div>
   </nav>
   <div class="landing-wrap">
     <div class="hero">
       <div class="hero-kicker">THE CARD SHOULD FIT THE MOMENT</div>
-      <h1>A different design for every kind of card.</h1>
+      <h1>Your identity. Your network. One ZetaCard.</h1>
       <p>Traditional wedding invitations. Refined visiting cards. Restaurant menus people can actually read. Product and property showcases made to present the details that matter. Start with the purpose—not a generic template.</p>
       <div class="hero-actions"><button id="landingCreate" class="btn primary" type="button">Design your first card <span aria-hidden="true">→</span></button></div>
       <div class="hero-points"><span>✓ Purpose-built forms</span><span>✓ Curated design library</span><span>✓ One shareable link</span><span>✓ QR + optional 3D / AR</span></div>
@@ -2471,8 +2745,48 @@ html{scroll-behavior:smooth}body{background:#f7f8fb;color:var(--zc-v54-ink);-web
   <div class="features"><div class="feature"><div>🧩</div><h3>Forms that fit</h3><p>Only show the fields that make sense for the card type. Keep creating clear and focused.</p></div><div class="feature"><div>🎨</div><h3>Designs with purpose</h3><p>Choose a layout that suits the job, from a business profile to an invitation or product catalog.</p></div><div class="feature"><div>✨</div><h3>More than a card</h3><p>Add sharing, QR codes, enquiries, booking or product experiences where they are relevant.</p></div></div>
 </section>
 
+
+<section id="enterpriseDashboard" class="zc-enterprise-page" aria-label="ZetaCard enterprise overview">
+  <div class="zc-enterprise-shell">
+    <header class="zc-enterprise-top">
+      <div class="zc-enterprise-brand"><span class="zc-enterprise-mark">Z</span><span>ZetaCard <span style="font-size:10px;letter-spacing:.1em;color:#66728a;vertical-align:middle">OVERVIEW</span></span></div>
+      <div class="zc-enterprise-actions">
+        <button class="zc-enterprise-btn" id="enterpriseHomeBtn" type="button">← Home</button>
+        <button class="zc-enterprise-btn" id="enterpriseNetworkingBtn" type="button">Networking Hub</button>
+        <button class="zc-enterprise-btn primary" id="enterpriseMyCardsBtn" type="button">My Cards ↗</button>
+      </div>
+    </header>
+    <section class="zc-enterprise-hero">
+      <div><div class="zc-enterprise-eyebrow">ZetaCard workspace</div><h1>Your cards. Your contacts. One workspace.</h1><p>Quick access to the existing ZetaCard card studio, orders, leads, contacts, QR/NFC tools, campaigns and team workspace. This overview uses your current app modules instead of replacing them with sample enterprise data.</p></div>
+      <div class="zc-enterprise-mode"><span class="zc-enterprise-dot"></span><span id="enterpriseDataMode">Live status not yet checked</span></div>
+    </section>
+    <div class="zc-enterprise-kpis" aria-label="Current account summary">
+      <div class="zc-enterprise-kpi"><span>My digital cards</span><strong id="enterpriseCardsCount">—</strong><small>From the current signed-in account</small></div>
+      <div class="zc-enterprise-kpi"><span>Leads & enquiries</span><strong id="enterpriseLeadsCount">—</strong><small>Loaded records only</small></div>
+      <div class="zc-enterprise-kpi"><span>Orders</span><strong id="enterpriseOrdersCount">—</strong><small>Loaded records only</small></div>
+      <div class="zc-enterprise-kpi"><span>Contacts</span><strong id="enterpriseContactsCount">—</strong><small>Networking Hub records</small></div>
+    </div>
+    <div class="zc-enterprise-section-head"><div><h2>Workspace modules</h2><p>Open the existing feature directly. Sign-in and backend requirements still apply.</p></div></div>
+    <div class="zc-enterprise-grid">
+      <button class="zc-enterprise-module" type="button" data-enterprise-route="cards"><span class="zc-enterprise-icon">▤</span><span><h3>Digital business cards</h3><p>Create, edit, publish, share or delete your existing ZetaCards.</p><span class="zc-enterprise-arrow">OPEN MY CARDS ↗</span></span></button>
+      <button class="zc-enterprise-module" type="button" data-enterprise-route="contacts"><span class="zc-enterprise-icon">♙</span><span><h3>Contacts & CRM</h3><p>Manage contacts, tags, notes, CSV imports and vCard exports.</p><span class="zc-enterprise-arrow">OPEN CONTACTS ↗</span></span></button>
+      <button class="zc-enterprise-module" type="button" data-enterprise-route="leads"><span class="zc-enterprise-icon">◎</span><span><h3>Leads & enquiries</h3><p>Review lead submissions received through your cards and campaigns.</p><span class="zc-enterprise-arrow">OPEN LEADS ↗</span></span></button>
+      <button class="zc-enterprise-module" type="button" data-enterprise-route="orders"><span class="zc-enterprise-icon">▣</span><span><h3>Products & orders</h3><p>Open your current order management and storefront requests.</p><span class="zc-enterprise-arrow">OPEN ORDERS ↗</span></span></button>
+      <button class="zc-enterprise-module" type="button" data-enterprise-route="bookings"><span class="zc-enterprise-icon">▦</span><span><h3>Appointments & bookings</h3><p>Manage booking requests and update their status.</p><span class="zc-enterprise-arrow">OPEN BOOKINGS ↗</span></span></button>
+      <button class="zc-enterprise-module" type="button" data-enterprise-route="campaigns"><span class="zc-enterprise-icon">➤</span><span><h3>Campaigns & sharing</h3><p>Create lead campaigns and use existing QR, sharing and NFC tools.</p><span class="zc-enterprise-arrow">OPEN CAMPAIGNS ↗</span></span></button>
+      <button class="zc-enterprise-module" type="button" data-enterprise-route="team"><span class="zc-enterprise-icon">♧</span><span><h3>Team workspace</h3><p>Open workspace and invite tools; cloud access requires configured Supabase tables.</p><span class="zc-enterprise-arrow">OPEN TEAM ↗</span></span></button>
+      <button class="zc-enterprise-module" type="button" data-enterprise-route="integrations"><span class="zc-enterprise-icon">⛓</span><span><h3>Integrations</h3><p>Check the existing integration information and setup requirements.</p><span class="zc-enterprise-arrow">VIEW INTEGRATIONS ↗</span></span></button>
+      <button class="zc-enterprise-module" type="button" data-enterprise-route="print"><span class="zc-enterprise-icon">▧</span><span><h3>Physical card prototype</h3><p>Open your card list, then open a card to use its print/PNG options.</p><span class="zc-enterprise-arrow">PREPARE A CARD ↗</span></span></button>
+      <button class="zc-enterprise-module" type="button" data-enterprise-route="meetings"><span class="zc-enterprise-icon">✎</span><span><h3>Meetings & follow-ups</h3><p>Keep meeting notes, summaries and follow-up dates in the Networking Hub.</p><span class="zc-enterprise-arrow">OPEN MEETINGS ↗</span></span></button>
+      <button class="zc-enterprise-module" type="button" data-enterprise-route="signature"><span class="zc-enterprise-icon">✉</span><span><h3>Email signature</h3><p>Generate and download an HTML email signature from your details.</p><span class="zc-enterprise-arrow">OPEN SIGNATURE ↗</span></span></button>
+      <button class="zc-enterprise-module" type="button" data-enterprise-route="forms"><span class="zc-enterprise-icon">☷</span><span><h3>Custom forms</h3><p>Review form submissions attached to your published cards.</p><span class="zc-enterprise-arrow">OPEN FORMS ↗</span></span></button>
+    </div>
+    <div class="zc-enterprise-note"><strong>Security & feature status:</strong> this is a navigation and summary layer over ZetaCard's existing features—not a claim that every external integration is connected. Salesforce/HubSpot OAuth, SSO/SCIM, wallet pass issuance and physical NFC writing require real provider setup or supported hardware. Verify Supabase Row Level Security and test with separate accounts before production use.</div>
+  </div>
+</section>
+
 <section id="dashboardPage" class="container dashboard-page">
-  <div class="topbar"><button id="dashboardBack" class="nav-btn" type="button">← Home</button><div class="brand">ZetaCard</div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button id="dashboardNetworkingHubBtn" class="nav-btn" type="button">Networking Hub</button><div id="dashboardAccountEmail" style="font-size:11px;color:var(--muted);font-weight:850"></div></div></div>
+  <div class="topbar"><button id="dashboardBack" class="nav-btn" type="button">← Home</button><div class="brand">ZetaCard</div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button id="dashboardNetworkingHubBtn" class="nav-btn" type="button">Networking Hub</button><button id="dashboardEnterpriseBtn" class="nav-btn" type="button">Enterprise Overview</button><div id="dashboardAccountEmail" style="font-size:11px;color:var(--muted);font-weight:850"></div></div></div>
   <div class="dashboard-head"><div><div class="eyebrow">MY ZETACARDS</div><h2>Your card dashboard</h2><p>Manage every ZetaCard from one account. Create multiple cards for different roles, products, menus and campaigns.</p></div><div class="dashboard-actions"><button id="dashboardCreateBtn" class="btn primary" type="button">+ Create new card</button><button id="dashboardRefreshBtn" class="btn ghost" type="button">Refresh</button></div></div>
   <div class="dashboard-tabs">
     <button id="dashboardCardsTab" class="dashboard-tab active" type="button">My Cards</button>
@@ -2603,7 +2917,7 @@ html{scroll-behavior:smooth}body{background:#f7f8fb;color:var(--zc-v54-ink);-web
 
 
 <section id="networkingHub" class="container" style="display:none" aria-label="ZetaCard Networking Hub">
-  <div class="topbar"><button id="zcnetBackHome" class="nav-btn" type="button">← Home</button><div class="brand">ZetaCard · Networking</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="zcnetMyCards" class="nav-btn" type="button">My Cards</button><button id="zcnetRefresh" class="nav-btn" type="button">Refresh</button></div></div>
+  <div class="topbar"><button id="zcnetBackHome" class="nav-btn" type="button">← Home</button><div class="brand">ZetaCard · Networking</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="zcnetMyCards" class="nav-btn" type="button">My Cards</button><button id="zcnetRefresh" class="nav-btn" type="button">Refresh</button><button id="zcnetEnterprise" class="nav-btn" type="button">Overview</button></div></div>
   <div class="zcnet-hero"><div class="zcnet-row"><div><div style="font-size:10px;letter-spacing:2px;font-weight:950;color:#aebdff">ZETACARD NETWORKING SUITE</div><h1>One hub for every connection.</h1><p>Manage contacts, capture event leads, create email signatures, prepare meeting follow-ups, share profile links and connect your networking tools.</p></div><div style="font-size:48px" aria-hidden="true">◈</div></div></div>
   <div id="zcnetStatus" class="zcnet-status" role="status" data-state="local">Local-first mode: data is saved in this browser. Sign in and apply the included Supabase migration to enable cloud contacts, campaigns and team workspaces.</div>
   <div class="zcnet-kpis"><div class="zcnet-kpi"><strong id="zcnetKpiContacts">0</strong><span>Saved contacts</span></div><div class="zcnet-kpi"><strong id="zcnetKpiCampaigns">0</strong><span>Lead campaigns</span></div><div class="zcnet-kpi"><strong id="zcnetKpiMeetings">0</strong><span>Meeting notes</span></div><div class="zcnet-kpi"><strong id="zcnetKpiLeads">0</strong><span>Captured leads</span></div></div>
@@ -2720,7 +3034,7 @@ html{scroll-behavior:smooth}body{background:#f7f8fb;color:var(--zc-v54-ink);-web
       <div id="manualPathStep" class="step-pane">
         <div class="step-title"><div><h2>Manual Mode · Choose your starting point</h2><p>Start with a professionally composed template, or build your own look from a clean base.</p></div><span class="pill">Your choice</span></div>
         <div class="zc-manual-path-grid">
-          <button id="manualFromTemplateBtn" class="zc-manual-path-card" type="button"><span class="zc-manual-path-icon">▦</span><span class="zc-manual-path-label">FROM TEMPLATE</span><strong>Choose a ready-made design</strong><p>Browse 100 original style combinations for every card type, preview them, then fill in your details.</p><span class="zc-manual-path-cta">Browse templates →</span></button>
+          <button id="manualFromTemplateBtn" class="zc-manual-path-card" type="button"><span class="zc-manual-path-icon">▦</span><span class="zc-manual-path-label">FROM TEMPLATE</span><strong>Choose a ready-made design</strong><p>Choose a traditional ready-made layout, then enter your details.</p><span class="zc-manual-path-cta">Browse templates →</span></button>
           <button id="manualBuildYourselfBtn" class="zc-manual-path-card zc-self-card" type="button"><span class="zc-manual-path-icon">✳</span><span class="zc-manual-path-label">BUILD YOURSELF</span><strong>Start with a clean canvas</strong><p>Use the card-specific form, then customize its color, typography, spacing and finish yourself.</p><span class="zc-manual-path-cta">Start from scratch →</span></button>
         </div>
         <div class="zc-template-source-note">Every template is rendered natively by ZetaCard and remains editable. The visual directions are original combinations informed by public design-category references, not copied third-party artwork.</div>
@@ -2734,7 +3048,7 @@ html{scroll-behavior:smooth}body{background:#f7f8fb;color:var(--zc-v54-ink);-web
       </div>
 
       <div id="templatePickerStep" class="step-pane">
-        <div class="step-title"><div><h2>Choose your template</h2><p id="templatePickerSubtitle">100 original templates, designed for this card type. Select any thumbnail to preview it on the right.</p></div><span id="templatePickerCount" class="pill">100 templates</span></div>
+        <div class="step-title"><div><h2>Choose your template</h2><p id="templatePickerSubtitle">100 original templates, designed for this card type. Select any thumbnail to preview it on the right.</p></div><span id="templatePickerCount" class="pill">traditional templates</span></div>
         <div id="templatePickerStudio" class="template-studio zc-template-picker-studio">
           <div class="zc-template-picker-toolbar">
             <label class="zc-template-search-wrap"><span>⌕</span><input id="templatePickerSearch" type="search" placeholder="Search styles, e.g. royal, minimal, floral" autocomplete="off"></label>
@@ -3273,7 +3587,7 @@ function getToken(u){try{return localStorage.getItem(editKey(u))||""}catch(e){re
 function makeToken(){const a=new Uint8Array(24);crypto.getRandomValues(a);return Array.from(a,b=>b.toString(16).padStart(2,"0")).join("")}
 async function hash(v){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(v));return Array.from(new Uint8Array(b),x=>x.toString(16).padStart(2,"0")).join("")}
 async function verifyOwner(u,t){if(!initDb()||!u||!t)return false;try{const r=await db.rpc("verify_profile_owner",{p_username:u,p_token_hash:await hash(t)});return !r.error&&r.data===true}catch(e){console.warn(e);return false}}
-function showOnly(id){["landing","builder","shared","dashboardPage","networkingHub","campaignCapturePage"].forEach(x=>{const el=$(x);if(el)el.style.display="none"});const el=$(id);if(el)el.style.display="block";if(id==="dashboardPage")el.classList.add("show")}
+function showOnly(id){["landing","builder","shared","dashboardPage","networkingHub","campaignCapturePage","enterpriseDashboard"].forEach(x=>{const el=$(x);if(el)el.style.display="none"});const el=$(id);if(el)el.style.display="block";if(id==="dashboardPage")el.classList.add("show");if(id==="enterpriseDashboard")el.classList.add("show")}
 function showLanding(){showOnly("landing");window.scrollTo(0,0)}
 function showBuilder(){showOnly("builder");window.scrollTo(0,0)}
 function showShared(){showOnly("shared");window.scrollTo(0,0)}
@@ -3355,8 +3669,29 @@ function showManualPathStep(){zcV60Pane('manualPathStep');$('previewBox').style.
 function zcV60StartManualPath(path){window.zcManualCreationMode=path;selectedType=null;designTemplate='';window.zcTemplatePickerPage=0;window.zcTemplatePickerSearchText='';window.zcTemplatePickerCategoryName='All';document.querySelectorAll('.type-option').forEach(b=>{b.classList.remove('selected');b.setAttribute('aria-pressed','false')});$('continueBtn').disabled=true;$('typePill').textContent='Choose a type';$('dynamicForm').innerHTML='';if($('designTemplate'))$('designTemplate').value='';showTypeStep()}
 function zcV60TemplateIdForBlank(type){const axes=variationAxes(type),layouts=V46_LAYOUTS[type]||V46_LAYOUTS.visiting,palettes=V46_PALETTE_HINTS[type]||V46_PALETTE_HINTS.visiting;const layoutIndex=Math.max(0,layouts.findIndex(x=>/minimal|clean|classic|editorial/i.test(x)));const preferred=type==='wedding'?'ivory':type==='visiting'?'cream':type==='menu'?'cream':type==='identity'?'cream':type==='catalog'?'cream':type==='event'?'cream':type==='product'?'ivory':'cream';const pi=Math.max(0,palettes.indexOf(preferred));return `gen2:${type}:${[pi,layoutIndex,0,0,0,0,0,2,0,0].map((v,i)=>positiveMod(v,[axes.palette,axes.layout,axes.ornament,axes.frame,axes.font,axes.surface,axes.align,axes.density,axes.title,axes.image][i])).join('-')}`}
 function zcV60ApplyTemplate(id){if(!selectedType)return;designTemplate=sanitizeDesignTemplate(selectedType,id);if($('designTemplate'))$('designTemplate').value=designTemplate;const d=designVariant(selectedType,designTemplate);zcAccentUserTouched=false;applyAppearanceControls({accent:d.pal[3]||'#a58a5a',font:'system',density:'normal',radius:'default'});updatePreview()}
-function zcV60RenderTemplatePicker(){const host=$('templatePickerGrid');if(!host||!selectedType)return;const catalog=zcV60BuildTemplateCatalog(selectedType);const query=String(window.zcTemplatePickerSearchText||'').trim().toLowerCase();const category=window.zcTemplatePickerCategoryName||'All';const filtered=catalog.filter(t=>(category==='All'||t.category===category)&&(!query||`${t.name} ${t.family} ${t.finish} ${t.category} ${t.note}`.toLowerCase().includes(query)));const perPage=12;const totalPages=Math.max(1,Math.ceil(filtered.length/perPage));window.zcTemplatePickerPage=Math.max(0,Math.min(Number(window.zcTemplatePickerPage)||0,totalPages-1));const start=window.zcTemplatePickerPage*perPage;const items=filtered.slice(start,start+perPage);host.innerHTML=items.map(t=>`<button type="button" class="template-option ${designTemplate===t.id?'selected':''}" data-zc-v60-template="${escapeHtml(t.id)}" aria-pressed="${designTemplate===t.id?'true':'false'}">${templateThumbMarkup(selectedType,t.id,t.name)}<div class="template-meta"><b>${escapeHtml(t.name)}</b><span>${escapeHtml(t.note)}</span></div><span class="template-checkmark">✓</span></button>`).join('');host.querySelectorAll('[data-zc-v60-template]').forEach(button=>button.addEventListener('click',()=>{const t=catalog.find(x=>x.id===button.dataset.zcV60Template);if(!t)return;zcV60ApplyTemplate(t.id);host.querySelectorAll('.template-option').forEach(x=>{const on=x===button;x.classList.toggle('selected',on);x.setAttribute('aria-pressed',on?'true':'false')});const status=$('templatePickerStatus');if(status)status.textContent=`Selected ${t.name}. Your card's text and details stay unchanged.`}));$('templatePickerCount').textContent=`100 templates · ${TYPES[selectedType].label}`;$('templatePickerPageInfo').textContent=filtered.length?`${start+1}–${Math.min(start+perPage,filtered.length)} of ${filtered.length} · page ${window.zcTemplatePickerPage+1}/${totalPages}`:'No matching templates';$('templatePickerPrev').disabled=window.zcTemplatePickerPage===0;$('templatePickerNext').disabled=window.zcTemplatePickerPage>=totalPages-1;}
-function zcV60ShowTemplateStep(){if(!selectedType){msg('typeStatus','Choose a card type first.',true);showTypeStep();return}window.zcManualCreationMode='template';zcV60Pane('templatePickerStep');$('previewBox').style.display='block';$('stepIndicator').textContent='Template library · 100 designs';$('builderTitle').textContent=`Choose a ${TYPES[selectedType].label.toLowerCase()} design`;$('builderSubtitle').textContent='Browse 100 original templates. Click any thumbnail to see the full live preview, then continue to personalize the details.';$('builderBack').textContent='← Card types';$('templatePickerSubtitle').textContent=`100 original layouts and finishes for ${TYPES[selectedType].label.toLowerCase()}. These are editable design compositions, not flat preview images.`;const catalog=zcV60BuildTemplateCatalog(selectedType);if(!catalog.some(t=>t.id===designTemplate))zcV60ApplyTemplate(catalog[0].id);else zcV60ApplyTemplate(designTemplate);zcV60RenderTemplatePicker();updateBackButton();window.scrollTo(0,0)}
+function zcV60RenderTemplatePicker(){
+  const host=$('templatePickerGrid');
+  if(!host||!selectedType)return;
+  const catalog=zcV60BuildTemplateCatalog(selectedType);
+  const filtered=catalog.filter(t=>t.category==='Traditional');
+  const perPage=12;
+  const totalPages=Math.max(1,Math.ceil(filtered.length/perPage));
+  window.zcTemplatePickerPage=Math.max(0,Math.min(Number(window.zcTemplatePickerPage)||0,totalPages-1));
+  const start=window.zcTemplatePickerPage*perPage;
+  const items=filtered.slice(start,start+perPage);
+  host.innerHTML=items.map(t=>`<button type="button" class="template-option ${designTemplate===t.id?'selected':''}" data-zc-v60-template="${escapeHtml(t.id)}" aria-pressed="${designTemplate===t.id?'true':'false'}">${templateThumbMarkup(selectedType,t.id,t.name)}<div class="template-meta"><b>${escapeHtml(t.name)}</b><span>Traditional visiting-card layout · ${escapeHtml(t.finish)}</span></div><span class="template-checkmark">✓</span></button>`).join('');
+  host.querySelectorAll('[data-zc-v60-template]').forEach(button=>button.addEventListener('click',()=>{
+    const t=filtered.find(x=>x.id===button.dataset.zcV60Template);if(!t)return;
+    zcV60ApplyTemplate(t.id);
+    host.querySelectorAll('.template-option').forEach(x=>{const on=x===button;x.classList.toggle('selected',on);x.setAttribute('aria-pressed',on?'true':'false')});
+    const status=$('templatePickerStatus');if(status)status.textContent=`Selected ${t.name}. Your details stay unchanged.`;
+  }));
+  const count=$('templatePickerCount');if(count)count.textContent=`${filtered.length} traditional templates · ${TYPES[selectedType].label}`;
+  const info=$('templatePickerPageInfo');if(info)info.textContent=filtered.length?`${start+1}–${Math.min(start+perPage,filtered.length)} of ${filtered.length} traditional templates`:'No traditional templates available';
+  const prev=$('templatePickerPrev');if(prev)prev.disabled=window.zcTemplatePickerPage===0;
+  const next=$('templatePickerNext');if(next)next.disabled=window.zcTemplatePickerPage>=totalPages-1;
+} 
+function zcV60ShowTemplateStep(){if(!selectedType){msg('typeStatus','Choose a card type first.',true);showTypeStep();return}window.zcManualCreationMode='template';zcV60Pane('templatePickerStep');$('previewBox').style.display='block';$('stepIndicator').textContent='Traditional template library';$('builderTitle').textContent=`Choose a ${TYPES[selectedType].label.toLowerCase()} design`;$('builderSubtitle').textContent='Choose a traditional, ready-made card layout, add your details, preview it, then download or print.';$('builderBack').textContent='← Card types';$('templatePickerSubtitle').textContent=`Choose from traditional ${TYPES[selectedType].label.toLowerCase()} layouts. No complicated design controls — just select a template and enter your details.`;const catalog=zcV60BuildTemplateCatalog(selectedType).filter(t=>t.category==='Traditional');if(!catalog.some(t=>t.id===designTemplate))zcV60ApplyTemplate((catalog[0]||zcV60BuildTemplateCatalog(selectedType)[0]).id);else zcV60ApplyTemplate(designTemplate);zcV60RenderTemplatePicker();updateBackButton();window.scrollTo(0,0)}
 function zcV60ContinueFromType(){if(!selectedType){msg('typeStatus','Please select a card type first.',true);return}if(window.zcManualCreationMode==='template'){zcV60ShowTemplateStep();return}designTemplate=zcV60TemplateIdForBlank(selectedType);if($('designTemplate'))$('designTemplate').value=designTemplate;showFormStep()}
 function zcV60BackAction(){if($('templatePickerStep').classList.contains('active')){showTypeStep();return}if($('formStep').classList.contains('active')){if(window.zcManualCreationMode==='template'){zcV60ShowTemplateStep();return}if(window.zcManualCreationMode==='ai'){showModeStep();return}showTypeStep();return}if($('typeStep').classList.contains('active')){showManualPathStep();return}if($('manualPathStep').classList.contains('active')){showModeStep();return}if($('modeStep').classList.contains('active')){showLanding();return}showLanding()}
 
@@ -5289,6 +5624,7 @@ window.addEventListener("DOMContentLoaded",async()=>{
   $("authNavBtn").onclick=()=>openAuth("signup");
   $("signOutBtn").onclick=signOut;
   $("dashboardNavBtn").onclick=showDashboard;
+  $("dashboardEnterpriseBtn")?.addEventListener("click",openEnterpriseDashboard);
   $("dashboardBack").onclick=showLanding;
   $("dashboardCreateBtn").onclick=openBuilder;
   $("dashboardRefreshBtn").onclick=loadDashboard;
@@ -5418,21 +5754,14 @@ function zcApplyRecipe(recipeKey){
 function renderTemplateStudio(prefill={}){
   const box=$('templateStudio');if(!box||!selectedType)return;
   designTemplate=sanitizeDesignTemplate(selectedType,prefill.design_template||designTemplate||defaultTemplate(selectedType));
-  const recipeButtons=ZC_ONE_TAP_RECIPES.map(r=>{const id=zcOneTapDesignId(selectedType,r),selected=designTemplate===id;const sample=templateThumbMarkup(selectedType,id,r.name);return `<button type="button" class="zc-recipe-card ${selected?'selected':''}" data-zc-recipe="${r.key}" aria-pressed="${selected?'true':'false'}"><div class="zc-recipe-swatch zc-recipe-swatch-preview" aria-hidden="true" style="--recipe-swatch:${r.swatch};--recipe-ink:${r.ink}">${sample}</div><span class="zc-recipe-info"><strong>${escapeHtml(r.name)}</strong><small>${escapeHtml(r.note)}</small></span><span class="zc-recipe-tick" aria-hidden="true">✓</span></button>`}).join('');
-  box.innerHTML=`<section class="zc-one-tap"><div class="zc-one-tap-head"><div><h4>One-tap design recipes</h4><p>Instantly apply a complete art direction: palette, layout, typography, frame, ornament and spacing. Your text stays unchanged.</p></div><span class="zc-one-tap-count">12 styles</span></div><div class="zc-recipe-grid">${recipeButtons}</div><div class="zc-one-tap-tip">Start with a preset, then tune the design. Choosing a new style never clears your card details.</div></section><div class="template-studio-head"><div><h3>Design Library</h3><p>100 curated original templates for ${escapeHtml(TYPES[selectedType].label)}. Each combines a card-specific layout family with a finish, typography and ornament system.</p></div><span class="template-count-pill">100 templates</span></div><div class="zc-template-picker-toolbar"><label class="zc-template-search-wrap"><span>⌕</span><input id="zcLibrarySearch" type="search" placeholder="Search templates…" autocomplete="off"></label><select id="zcLibraryCategory" aria-label="Filter template category"><option value="All">All styles</option><option value="Traditional">Traditional</option><option value="Luxury">Luxury</option><option value="Minimal">Minimal</option><option value="Modern">Modern</option><option value="Creative">Creative</option></select><button type="button" class="btn secondary" id="zcLibraryRandom">✨ New variation</button></div><div id="templateGrid" class="template-grid"></div><div class="zc-template-pagination"><button id="zcLibraryPrev" class="btn ghost" type="button">← Previous</button><span id="zcLibraryPageInfo" aria-live="polite">Page 1 of 9</span><button id="zcLibraryNext" class="btn secondary" type="button">Next 12 →</button></div><div class="template-tip">Choose a template to apply it to the actual preview and saved design ID. These are editable ZetaCard compositions, not flattened images.</div>`;
-  box.querySelectorAll('[data-zc-recipe]').forEach(b=>b.addEventListener('click',()=>zcApplyRecipe(b.dataset.zcRecipe)));
-  const grid=$('templateGrid'),catalog=zcV60BuildTemplateCatalog(selectedType);let page=0,query='',category='All';
-  const draw=()=>{
-    let list=catalog.filter(t=>(category==='All'||t.category===category)&&(!query||`${t.name} ${t.category} ${t.note}`.toLowerCase().includes(query)));
-    if(!catalog.some(t=>t.id===designTemplate)&&!query&&category==='All')list=[{id:designTemplate,name:'Current style',category:'Creative',note:'Currently selected design'},...list];
-    const pages=Math.max(1,Math.ceil(list.length/12));page=Math.max(0,Math.min(page,pages-1));const shown=list.slice(page*12,page*12+12);
-    grid.innerHTML=shown.map(t=>`<button type="button" class="template-option ${sanitizeDesignTemplate(selectedType,t.id)===designTemplate?'selected':''}" data-tpl-id="${escapeHtml(t.id)}" aria-pressed="${sanitizeDesignTemplate(selectedType,t.id)===designTemplate?'true':'false'}">${templateThumbMarkup(selectedType,t.id,t.name)}<div class="template-meta"><b>${escapeHtml(t.name)}</b><span>${escapeHtml(t.note)}</span></div><span class="template-checkmark">✓</span></button>`).join('');
-    grid.querySelectorAll('.template-option').forEach(b=>b.addEventListener('click',()=>{zcV60ApplyTemplate(b.dataset.tplId);grid.querySelectorAll('.template-option').forEach(x=>{const on=x===b;x.classList.toggle('selected',on);x.setAttribute('aria-pressed',on?'true':'false')});box.querySelectorAll('.zc-recipe-card').forEach(x=>{const recipe=ZC_ONE_TAP_RECIPES.find(r=>r.key===x.dataset.zcRecipe),active=!!recipe&&zcOneTapDesignId(selectedType,recipe)===designTemplate;x.classList.toggle('selected',active);x.setAttribute('aria-pressed',active?'true':'false')});const status=$('formStatus');if(status){status.textContent=(b.querySelector('.template-meta b')?.textContent||'Template')+' applied. Your details were kept.';status.classList.remove('error')}}));
-    $('zcLibraryPageInfo').textContent=list.length?`${page*12+1}–${Math.min((page+1)*12,list.length)} of ${list.length}`:'No matching templates';$('zcLibraryPrev').disabled=page===0;$('zcLibraryNext').disabled=page>=pages-1;
-  };
-  $('zcLibrarySearch').addEventListener('input',e=>{query=e.target.value.trim().toLowerCase();page=0;draw()});$('zcLibraryCategory').addEventListener('change',e=>{category=e.target.value;page=0;draw()});$('zcLibraryPrev').addEventListener('click',()=>{page=Math.max(0,page-1);draw()});$('zcLibraryNext').addEventListener('click',()=>{page++;draw()});
-  $('zcLibraryRandom').addEventListener('click',()=>{let id=chooseGeneratedTemplate(selectedType,Date.now()+Math.floor(Math.random()*999999));if(id===designTemplate)id=chooseGeneratedTemplate(selectedType,Date.now()+3333333);zcV60ApplyTemplate(id);draw();const status=$('formStatus');if(status){status.textContent='A fresh multi-axis design variation was applied.';status.classList.remove('error')}});
-  if($('designTemplate'))$('designTemplate').value=designTemplate;draw();
+  const catalog=zcV60BuildTemplateCatalog(selectedType).filter(t=>t.category==='Traditional');
+  if(!catalog.some(t=>t.id===designTemplate)&&catalog[0])designTemplate=catalog[0].id;
+  box.innerHTML=`<div class="template-studio-head"><div><h3>Traditional card templates</h3><p>Choose a ready-made professional layout. Your job is only to enter your details — the layout, typography and spacing are preset.</p></div><span class="template-count-pill">${catalog.length} templates</span></div><div id="templateGrid" class="template-grid"></div><div class="template-tip">Select a template to update the live card preview. Traditional landscape visiting-card proportions are used for business cards.</div>`;
+  const grid=$('templateGrid');
+  if(!catalog.some(t=>t.id===designTemplate)&&catalog[0])designTemplate=catalog[0].id;
+  grid.innerHTML=catalog.map(t=>`<button type="button" class="template-option ${sanitizeDesignTemplate(selectedType,t.id)===designTemplate?'selected':''}" data-tpl-id="${escapeHtml(t.id)}" aria-pressed="${sanitizeDesignTemplate(selectedType,t.id)===designTemplate?'true':'false'}">${templateThumbMarkup(selectedType,t.id,t.name)}<div class="template-meta"><b>${escapeHtml(t.name)}</b><span>Traditional · ${escapeHtml(t.finish)}</span></div><span class="template-checkmark">✓</span></button>`).join('');
+  grid.querySelectorAll('.template-option').forEach(b=>b.addEventListener('click',()=>{zcV60ApplyTemplate(b.dataset.tplId);grid.querySelectorAll('.template-option').forEach(x=>{const on=x===b;x.classList.toggle('selected',on);x.setAttribute('aria-pressed',on?'true':'false')});const status=$('formStatus');if(status){status.textContent=(b.querySelector('.template-meta b')?.textContent||'Template')+' applied. Your details were kept.';status.classList.remove('error')}}));
+  if($('designTemplate'))$('designTemplate').value=designTemplate;
 }
 
 function applyTemplateStyle(el,type,id){
@@ -5687,7 +6016,7 @@ document.getElementById('printCardBtn')?.addEventListener('click',zcPrintCardPDF
   async function handleCaptureRoute(){const params=new URLSearchParams(location.search);const token=max(params.get('zcCampaign'),160);const invite=max(params.get('zcInvite'),160);if(invite){if(!signedIn()&&typeof refreshAuth==='function'){try{await refreshAuth()}catch(e){}}if(!signedIn()){showHub();switchTab('team');stateMessage('Sign in with the invited email, then reopen the invitation link.','local');return;}try{const r=await db.rpc('zc_suite_accept_invite',{p_token:invite});if(r.error)throw r.error;history.replaceState(null,'',location.pathname);showHub();switchTab('team');await loadWorkspaces();stateMessage('Workspace invitation accepted.','cloud');}catch(e){showHub();switchTab('team');stateMessage('Invitation could not be accepted: '+(e.message||e),'error');}return;}
     if(!token)return;let campaign=state.campaigns.find(c=>c.token===token)||null;if(initDb()){try{const r=await db.rpc('zc_suite_get_public_campaign',{p_campaign_token:token});if(!r.error&&r.data){const row=Array.isArray(r.data)?r.data[0]:r.data;if(row)campaign={name:row.name,description:row.description||'',fields:row.fields||'basic',active:row.is_active!==false,token};}}catch(e){console.warn('Public campaign metadata unavailable',e)}}$n('zcnetCaptureToken').value=token;$n('zcnetCaptureTitle').textContent=campaign?.name||'Connect with us';$n('zcnetCaptureDescription').textContent=campaign?.description||'Share your details and choose how you would like to be contacted.';if(campaign?.active===false){$n('zcnetCaptureForm').style.display='none';statusText('This campaign is no longer active.','error');}else{$n('zcnetCaptureForm').style.display='';}if(campaign?.fields==='business'){$n('zcnetCaptureCompanyField').style.display='';$n('zcnetCaptureRoleField').style.display='';}else{$n('zcnetCaptureCompanyField').style.display='none';$n('zcnetCaptureRoleField').style.display='none';}if(campaign?.fields==='message')$n('zcnetCaptureMessage').required=true;else $n('zcnetCaptureMessage').required=false;showOnly('campaignCapturePage');window.scrollTo(0,0);}
   function bindEvents(){
-    $n('networkingHubBtn')?.addEventListener('click',showHub);$n('dashboardNetworkingHubBtn')?.addEventListener('click',showHub);$n('zcnetBackHome')?.addEventListener('click',()=>showLanding());$n('zcnetMyCards')?.addEventListener('click',()=>{if(typeof showDashboard==='function')showDashboard();else showLanding()});$n('zcnetRefresh')?.addEventListener('click',async()=>{loadLocal();await syncCloud();renderAll()});
+    $n('zcnetEnterprise')?.addEventListener('click',()=>{if(typeof openEnterpriseDashboard==='function')openEnterpriseDashboard()});$n('networkingHubBtn')?.addEventListener('click',showHub);$n('dashboardNetworkingHubBtn')?.addEventListener('click',showHub);$n('zcnetBackHome')?.addEventListener('click',()=>showLanding());$n('zcnetMyCards')?.addEventListener('click',()=>{if(typeof showDashboard==='function')showDashboard();else showLanding()});$n('zcnetRefresh')?.addEventListener('click',async()=>{loadLocal();await syncCloud();renderAll()});
     qan('[data-zcnet-tab]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.zcnetTab)));
     $n('zcnetContactForm')?.addEventListener('submit',async e=>{e.preventDefault();const id=$n('zcnetContactId').value||uid();const tags=max($n('zcnetContactTags').value,500).split(',').map(s=>s.trim()).filter(Boolean).slice(0,30);const c={id,name:max($n('zcnetContactName').value,160),email:max($n('zcnetContactEmail').value,254),phone:max($n('zcnetContactPhone').value,50),company:max($n('zcnetContactCompany').value,160),role:max($n('zcnetContactRole').value,160),website:safeUrl($n('zcnetContactWebsite').value),tags,notes:max($n('zcnetContactNotes').value,5000)};if(!c.name){stateMessage('Full name is required.','error');return;}await saveContact(c);resetContactForm();});
     $n('zcnetResetContact')?.addEventListener('click',resetContactForm);$n('zcnetContactSearch')?.addEventListener('input',renderContacts);
@@ -5713,6 +6042,51 @@ document.getElementById('printCardBtn')?.addEventListener('click',zcPrintCardPDF
   init();
 })();
 
+/* ZetaCard enterprise dashboard merge: routes to the existing app modules and avoids demo-only records. */
+function refreshEnterpriseOverview(){
+  const cards=Array.isArray(dashboardCards)?dashboardCards.length:0;
+  const leads=Array.isArray(dashboardLeads)?dashboardLeads.length:0;
+  const orders=Array.isArray(dashboardOrders)?dashboardOrders.length:0;
+  const contactsEl=document.getElementById('zcnetKpiContacts');
+  const contacts=contactsEl?String(contactsEl.textContent||'0').trim():'0';
+  const put=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=String(value)};
+  put('enterpriseCardsCount',authUser?cards:'Sign in');
+  put('enterpriseLeadsCount',authUser?leads:'Sign in');
+  put('enterpriseOrdersCount',authUser?orders:'Sign in');
+  put('enterpriseContactsCount',contacts);
+  const mode=document.getElementById('enterpriseDataMode');
+  if(mode)mode.textContent=authUser?'Signed in · counts reflect records loaded in this session':'Guest view · sign in to load account records';
+}
+function openEnterpriseDashboard(){
+  showOnly('enterpriseDashboard');
+  refreshEnterpriseOverview();
+  window.scrollTo(0,0);
+  if(authUser){Promise.resolve(loadDashboard()).then(()=>refreshEnterpriseOverview()).catch(()=>refreshEnterpriseOverview())}
+}
+function openEnterpriseRoute(route){
+  if(route==='cards'||route==='print'){showDashboard();if(route==='print'&&authUser){setTimeout(()=>{const first=document.querySelector('#dashboardCards .dash-open');if(first)first.focus()},0)}return}
+  if(['leads','orders','bookings','forms'].includes(route)){
+    if(!authUser){openAuth('login');return}
+    showDashboard();
+    const mode={leads:'leads',orders:'orders',bookings:'bookings',forms:'forms'}[route];
+    setDashboardMode(mode);
+    return;
+  }
+  showOnly('networkingHub');
+  window.scrollTo(0,0);
+  const tab={contacts:'contacts',campaigns:'campaigns',team:'team',integrations:'integrations',meetings:'meetings',signature:'signature'}[route]||'contacts';
+  const tabButton=document.querySelector(`[data-zcnet-tab="${tab}"]`);
+  if(tabButton)tabButton.click();
+  refreshEnterpriseOverview();
+}
+document.getElementById('enterpriseDashboardBtn')?.addEventListener('click',openEnterpriseDashboard);
+document.getElementById('enterpriseHomeBtn')?.addEventListener('click',showLanding);
+document.getElementById('enterpriseNetworkingBtn')?.addEventListener('click',()=>{showOnly('networkingHub');window.scrollTo(0,0)});
+document.getElementById('enterpriseMyCardsBtn')?.addEventListener('click',showDashboard);
+document.querySelectorAll('[data-enterprise-route]').forEach(button=>button.addEventListener('click',()=>openEnterpriseRoute(button.dataset.enterpriseRoute)));
+
 </script>
+
+<!-- ZetaCard v61.1: restores existing card types and dashboard entry points; preserves original app logic. -->
 </body>
 </html>
