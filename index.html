@@ -1,4 +1,5 @@
-<!-- ZetaCard v60.1 candidate: public card/QR layout hotfix and menu spacing improvements. -->
+
+<!-- ZetaCard v60.4 candidate: premium curated templates expanded for all eight supported card types. -->
 <!-- ZetaCard v52: Professional UI refinement on top of v51; application logic intentionally preserved. -->
 <!-- Base application: ZetaCard v49, with prior feature markers retained below. -->
 <!-- ZetaCard v44: Smart Forms + Enquiry Inbox -->
@@ -2278,7 +2279,7 @@ html{scroll-behavior:smooth}body{background:#f7f8fb;color:var(--zc-v54-ink);-web
 </style>
 
 
-<!-- ZetaCard v60.1 hotfix: isolate public-card and QR layout; improve menu readability. -->
+<!-- ZetaCard v60.1 hotfix retained; v60.4 adds expanded category-specific premium design recipes. -->
 <style id="zc-v601-public-layout-hotfix">
 /* Public card and QR must occupy separate grid rows. Older v58-v60 rules
    alternated between flex and two-column grid, allowing the QR panel to sit
@@ -2345,6 +2346,34 @@ html{scroll-behavior:smooth}body{background:#f7f8fb;color:var(--zc-v54-ink);-web
   #shared #sharedCard.card-menu .zc-menu-price{font-size:11px!important;padding:5px 7px!important}
 }
 </style>
+<style id="zc-v604-premium-template-polish">
+/* Consistent premium storefront for every template category; design recipes remain editable. */
+:root{--zc-premium-ink:#182033;--zc-premium-line:#dfe4ed}
+.template-studio .template-option,.zc-template-picker-studio .template-option{background:linear-gradient(180deg,#fff 0%,#fbfcff 100%)!important;border-color:#dfe4ed!important;box-shadow:0 4px 14px rgba(20,31,55,.045);}
+.template-studio .template-option:hover,.zc-template-picker-studio .template-option:hover{box-shadow:0 12px 26px rgba(20,31,55,.12)!important;transform:translateY(-2px)}
+.template-studio .template-meta b,.zc-template-picker-studio .template-meta b{font-size:11px!important;line-height:1.35;letter-spacing:-.01em;color:#1c2740}
+.template-studio .template-meta span,.zc-template-picker-studio .template-meta span{font-size:9px!important;line-height:1.4;color:#68748a}
+.template-studio .v46-thumb,.zc-template-picker-studio .v46-thumb{min-height:118px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.28)}
+/* Each family keeps its own visual language in the template picker. */
+.v46-thumb.visiting{aspect-ratio:1.62/1}
+.v46-thumb.menu{background-image:linear-gradient(180deg,rgba(20,15,12,.04),rgba(20,15,12,.12)),var(--tb-pattern),linear-gradient(145deg,var(--tb-bg),var(--tb-paper))!important}
+.v46-thumb.wedding{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--tb-accent) 25%,transparent),transparent 38%),radial-gradient(ellipse at 92% 92%,color-mix(in srgb,var(--tb-accent) 22%,transparent),transparent 36%),var(--tb-pattern),linear-gradient(145deg,var(--tb-bg),var(--tb-paper))!important}
+.v46-thumb.identity{border-radius:8px!important}
+.v46-thumb.catalog{background-image:var(--tb-pattern),linear-gradient(135deg,var(--tb-bg),var(--tb-paper))!important}
+.v46-thumb.event{background-image:radial-gradient(ellipse at 90% 0%,color-mix(in srgb,var(--tb-accent) 35%,transparent),transparent 42%),var(--tb-pattern),linear-gradient(145deg,var(--tb-bg),var(--tb-paper))!important}
+.v46-thumb.product{background-image:radial-gradient(ellipse at 50% 36%,color-mix(in srgb,var(--tb-accent) 28%,transparent),transparent 42%),var(--tb-pattern),linear-gradient(145deg,var(--tb-bg),var(--tb-paper))!important}
+.v46-thumb.property{background-image:linear-gradient(180deg,transparent 45%,color-mix(in srgb,var(--tb-ink) 10%,transparent)),var(--tb-pattern),linear-gradient(145deg,var(--tb-bg),var(--tb-paper))!important}
+/* Print-safe prototype: hide editor-only controls and preserve template colours. */
+@media print{
+ @page{size:A4 portrait;margin:0}
+ #shared .shared-top,#shared .shared-actions,#shared .qr-box,#shared .analytics,#shared .owner-actions,#shared .owner-note{display:none!important}
+ #shared .shared-wrap{width:100%!important;max-width:none!important;margin:0!important;padding:0!important}
+ #shared .shared-layout{display:block!important;width:100%!important;margin:0!important;padding:0!important}
+ #shared .shared-layout #sharedCard{print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
+}
+@media(max-width:620px){.template-studio .template-grid,.zc-template-picker-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}}
+</style>
+
 </head>
 <body>
 
@@ -3585,6 +3614,23 @@ function variationAxes(type){return {...TEMPLATE_VARIATION_AXES,palette:(V46_PAL
 function variantCount(type){const a=variationAxes(type);return a.palette*a.layout*a.ornament*a.frame*a.font*a.surface*a.align*a.density*a.title*a.image}
 function formatVariationCount(n){if(n>=1e9)return (n/1e9).toFixed(n%1e9?1:0)+'B+';if(n>=1e6)return (n/1e6).toFixed(n%1e6?1:0)+'M+';if(n>=1e3)return (n/1e3).toFixed(n%1e3?1:0)+'K+';return n+'+'}
 function templateCount(type){return variantCount(type)}
+/* ZetaCard v60.4 — expanded premium curated collection for every supported card type.
+   These are original, editable design recipes using the existing shared renderer. */
+const ZC_V604_PREMIUM_TEMPLATES={
+ visiting:[['visiting-onyx-gold-foil','Onyx Gold Foil','Luxury · gold-accented executive'],['visiting-architect-grid','Architect Grid','Editorial · structured grid'],['visiting-modernist-white','Modernist White','Minimal · clean typography'],['visiting-heritage-monogram','Heritage Monogram','Classic · ornamental identity'],['visiting-creative-studio','Creative Studio','Bold · expressive layout']],
+ menu:[['menu-fire-and-ember','Fire & Ember','Food photography · warm dark menu'],['menu-bistro-editorial','Bistro Editorial','Editorial · refined dining'],['menu-market-fresh','Market Fresh','Botanical · fresh ingredients'],['menu-gold-foil-dining','Gold Foil Dining','Luxury · dark restaurant menu'],['menu-street-food-poster','Street Food Poster','Bold · high-energy specials']],
+ wedding:[['wedding-botanical-crest','Botanical Crest','Floral · formal invitation'],['wedding-royal-ivory-gold','Royal Ivory Gold','Luxury · ceremonial frame'],['wedding-midnight-florals','Midnight Florals','Dark · elegant invitation'],['wedding-modern-editorial','Modern Editorial','Minimal · typography-led'],['wedding-indian-heritage','Indian Heritage','Traditional · ornamental']],
+ identity:[['identity-executive-photo','Executive Photo ID','Corporate · portrait-first'],['identity-secure-access','Secure Access','High-contrast · access badge'],['identity-healthcare-clean','Healthcare Clean','Bright · calm professional'],['identity-campus-modern','Campus Modern','Student · contemporary'],['identity-premium-member','Premium Member','Luxury · membership style']],
+ catalog:[['catalog-interior-lookbook','Interior Lookbook','Editorial · image-led collection'],['catalog-black-label','Black Label','Premium · dark product grid'],['catalog-modern-retail','Modern Retail','Clean · shoppable products'],['catalog-heritage-craft','Heritage Craft','Warm · artisan collection'],['catalog-tech-specsheet','Tech Spec Sheet','Technical · feature-led']],
+ event:[['event-all-access','All Access','Premium · dark ticket pass'],['event-gala-night','Gala Night','Formal · elegant event'],['event-festival-colour','Festival Colour','Vibrant · promotional poster'],['event-conference-pro','Conference Pro','Corporate · schedule-ready'],['event-cultural-heritage','Cultural Heritage','Traditional · ornate event']],
+ product:[['product-studio-black','Studio Black','Luxury · dramatic product stage'],['product-neon-tech','Neon Tech','Technology · bold contrast'],['product-natural-lifestyle','Natural Lifestyle','Organic · lifestyle-led'],['product-editorial-price','Editorial Price','Retail · clear pricing'],['product-premium-gold','Premium Gold','Luxury · gold-accented product']],
+ property:[['property-signature-estate','Signature Estate','Luxury · real-estate editorial'],['property-modern-villa','Modern Villa','Architecture · image-led'],['property-investment-grid','Investment Grid','Data-led · property highlights'],['property-brochure-ivory','Brochure Ivory','Elegant · light brochure style'],['property-night-luxe','Night Luxe','Dark · premium property listing']]
+};
+for(const [type,items] of Object.entries(ZC_V604_PREMIUM_TEMPLATES)){
+  if(!Array.isArray(TEMPLATE_LIBRARY[type]))TEMPLATE_LIBRARY[type]=[];
+  const known=new Set(TEMPLATE_LIBRARY[type].map(x=>x[0]));
+  for(const item of items)if(!known.has(item[0]))TEMPLATE_LIBRARY[type].push(item);
+}
 function defaultTemplate(type){return TEMPLATE_LIBRARY[type]?.[0]?.[0]||type+'-classic'}
 function hashCode(str){let h=0;for(let i=0;i<str.length;i++)h=((h<<5)-h)+str.charCodeAt(i)|0;return h}
 function positiveMod(n,m){return ((n%m)+m)%m}
