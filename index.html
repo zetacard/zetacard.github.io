@@ -1,4 +1,4 @@
-<!-- ZetaCard v63.0 Professional Design Refresh: traditional template-first card builder; no ZetaCard payment gateway or card-creation paywall. Existing modules retained. -->
+<!-- ZetaCard v64.0 Art-Directed Template Refresh: traditional template-first card builder; no ZetaCard payment gateway or card-creation paywall. Existing modules retained. -->
 <!-- ZetaCard v52: Professional UI refinement on top of v51; application logic intentionally preserved. -->
 <!-- Base application: ZetaCard v49, with prior feature markers retained below. -->
 <!-- ZetaCard v44: Smart Forms + Enquiry Inbox -->
@@ -2888,6 +2888,69 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 @media(max-width:700px){.landing-nav{padding:10px 4%!important;align-items:flex-start!important}.auth-bar{max-width:70%;justify-content:flex-end;gap:6px!important}.auth-bar .btn{padding:8px 10px;font-size:10px;min-height:35px}.landing-wrap{padding-top:32px!important}.hero h1{font-size:clamp(36px,10vw,52px)!important}.hero-points{display:grid!important;grid-template-columns:1fr 1fr;gap:8px!important}.features{grid-template-columns:1fr!important;padding-bottom:40px!important}.feature{padding:18px!important}.type-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}.type-option{min-height:118px!important;padding:13px!important}.type-icon{width:37px;height:37px;font-size:20px!important}.step-card{padding:15px!important}.step-title{gap:8px!important}.step-title .pill{font-size:10px;padding:6px 8px}.field-grid{grid-template-columns:1fr!important}.field.full{grid-column:auto!important}.template-studio{padding:12px!important}.template-studio-head{align-items:flex-start!important;flex-direction:column!important}.template-studio .template-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}.template-studio .template-thumb{min-height:0!important;aspect-ratio:1.55/1!important}.template-studio .template-meta b{font-size:10px!important}.template-studio .template-meta span{font-size:8px!important}.preview-box{padding:12px!important}.topbar{gap:7px!important;flex-wrap:wrap}.topbar .brand{font-size:16px}.nav-btn{padding:8px 10px;font-size:10px}}
 @media(max-width:420px){.landing-brand{font-size:18px!important}.auth-bar{max-width:75%}.auth-bar #networkingHubBtn,.auth-bar #enterpriseDashboardBtn{display:none}.hero-card-gallery{gap:8px!important}.hero-art{min-height:150px!important}.template-studio .template-grid{grid-template-columns:1fr 1fr!important}.template-studio .template-thumb{aspect-ratio:1.45/1!important}.template-actions{width:100%}.template-actions .btn{flex:1;padding:9px 8px;font-size:10px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+</style>
+<style id="zc-v64-art-directed-template-refresh">
+
+/* ZetaCard v64 — art-directed template refresh: distinct editorial families, not simple recolors */
+.template-studio{background:linear-gradient(145deg,#fff 0%,#f6f7fb 58%,#f0f2f8 100%);border-color:#d7deea;box-shadow:0 18px 44px rgba(20,33,61,.055)}
+.template-studio-head h3{font-size:17px;letter-spacing:-.035em}
+.template-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.template-option{border-radius:17px;padding:8px;background:linear-gradient(160deg,#fff,#fafbfe);box-shadow:0 3px 10px rgba(18,30,55,.035)}
+.template-option.selected{border-color:#536dfe;box-shadow:0 0 0 3px #536dfe20,0 12px 26px #27364d12}
+.template-thumb{height:142px;border-radius:12px;box-shadow:inset 0 0 0 1px #00000008;transition:transform .22s ease,filter .22s ease}
+.template-option:hover .template-thumb{transform:scale(.985);filter:saturate(1.08)}
+.template-thumb::after{inset:9px;border-radius:8px}
+.template-meta{padding:7px 3px 2px}.template-meta b{font-size:11px;letter-spacing:-.01em}.template-meta span{font-size:9px;line-height:1.4}
+.template-tip{margin-top:12px;padding:11px 12px;border-radius:12px;background:#eef2f9;color:#59657b;font-size:10px;line-height:1.55}
+/* Shared physical-print sensibility */
+.card-preview{isolation:isolate;overflow:hidden;box-shadow:0 24px 65px rgba(14,23,43,.19),0 3px 10px rgba(14,23,43,.08);transition:box-shadow .2s ease,background .2s ease}
+.card-preview::before{content:"";position:absolute;inset:10px;border:1px solid color-mix(in srgb,var(--v47-accent,#c6a15c) 48%,transparent);pointer-events:none;z-index:5;opacity:.62}
+.card-preview .preview-inner{position:relative;z-index:1}
+.card-preview .preview-title{letter-spacing:-.035em}
+.card-preview .preview-sub{line-height:1.65}
+/* Visiting cards: contemporary offset composition and refined foil accents */
+.card-visiting .zc-trad-visiting{background-image:radial-gradient(circle at 100% 0,rgba(208,171,98,.18),transparent 35%),linear-gradient(135deg,rgba(255,255,255,.025),transparent 55%)}
+.card-visiting .zc-visit-top{padding-bottom:20px;border-bottom-color:color-mix(in srgb,var(--v47-accent,#c9b98d) 55%,transparent)}
+.card-visiting .zc-monogram{border-radius:4px;border-color:var(--v47-accent,#c9b98d);box-shadow:4px 4px 0 rgba(201,185,141,.14)}
+.card-visiting .zc-visit-person h2{font-size:clamp(28px,4vw,38px);line-height:1.05;letter-spacing:-.055em}
+.card-visiting .zc-visit-role{text-transform:uppercase;letter-spacing:.14em;font-size:10px}
+.card-visiting .zc-contact-list{display:grid;grid-template-columns:1fr 1fr;gap:9px 14px}
+.card-visiting .zc-visit-footer{border-top:1px solid #ffffff28;padding-top:13px;letter-spacing:1.5px}
+.card-visiting.v47-family-noir,.card-visiting.v47-family-artdeco{background-image:linear-gradient(115deg,transparent 0 65%,rgba(207,169,94,.13) 65% 66%,transparent 66%),radial-gradient(ellipse at 100% 0,rgba(207,169,94,.22),transparent 42%)}
+.card-visiting.v47-family-minimal .zc-trad-visiting{background-image:linear-gradient(90deg,rgba(255,255,255,.10) 0 27%,transparent 27%)}
+.card-visiting.v47-family-bold .zc-visit-person{border-left:4px solid var(--v47-accent,#6387ff);padding-left:14px}
+/* Restaurant menus: printed menu hierarchy with quiet rules and editorial spacing */
+.card-menu .zc-trad-menu{background-image:linear-gradient(90deg,transparent 0 8%,rgba(155,119,62,.12) 8% 8.3%,transparent 8.3% 91.7%,rgba(155,119,62,.12) 91.7% 92%,transparent 92%)}
+.card-menu .zc-menu-brand{font-size:clamp(27px,4vw,39px);line-height:1.05;letter-spacing:-.04em}
+.card-menu .zc-menu-heading{letter-spacing:.22em;font-size:11px}
+.card-menu .zc-menu-rule{margin:17px auto 13px;max-width:190px}
+.card-menu .zc-menu-items{margin-top:18px;gap:13px}
+.card-menu.v47-family-editorial .zc-trad-menu{background-image:linear-gradient(90deg,#2d302b 0 6px,transparent 6px),linear-gradient(180deg,transparent 0 72%,rgba(155,119,62,.12) 72% 72.2%,transparent 72.2%)}
+.card-menu.v47-family-noir .zc-trad-menu,.card-menu.v47-family-artdeco .zc-trad-menu{background-image:radial-gradient(ellipse at top,rgba(207,169,94,.17),transparent 50%)}
+.card-menu.v47-family-minimal .zc-menu-crest{display:none}
+/* Wedding stationery: deckled-paper impression, fine inner border, and intentional whitespace */
+.card-wedding .zc-trad-wedding{background-image:radial-gradient(ellipse at 0 0,rgba(192,151,104,.12),transparent 38%),radial-gradient(ellipse at 100% 100%,rgba(192,151,104,.13),transparent 38%)}
+.card-wedding .zc-wedding-border{inset:15px;border-style:double;border-width:3px;opacity:.72}
+.card-wedding .zc-wedding-couple{line-height:1.1;letter-spacing:-.045em}
+.card-wedding .zc-wedding-seal{box-shadow:0 0 0 4px color-mix(in srgb,var(--v47-accent,#bd9657) 16%,transparent),0 5px 15px #0000000c}
+.card-wedding.v47-family-temple .zc-trad-wedding,.card-wedding.v47-family-royal .zc-trad-wedding{background-image:radial-gradient(circle at 50% 0,rgba(214,172,88,.20),transparent 45%),linear-gradient(180deg,rgba(91,39,28,.06),transparent)}
+.card-wedding.v47-family-minimal .zc-wedding-border{inset:24px;border-style:solid;opacity:.45}
+.card-wedding.v47-family-pastel .zc-trad-wedding{background-image:radial-gradient(ellipse at 0 0,rgba(214,157,171,.20),transparent 42%),radial-gradient(ellipse at 100% 100%,rgba(143,177,147,.18),transparent 42%)}
+/* Product and catalog: image-led editorial art direction */
+.card-product .zc-trad-product,.card-catalog .zc-trad-catalog{background-image:linear-gradient(145deg,rgba(255,255,255,.24),transparent 42%),radial-gradient(ellipse at 100% 0,rgba(255,255,255,.22),transparent 36%)}
+.card-product .zc-card-image img,.card-catalog .zc-card-image img{filter:saturate(1.04) contrast(1.02)}
+.card-catalog .zc-trad-catalog{border-radius:2px}
+.card-catalog.v47-family-editorial .zc-trad-catalog{background-image:linear-gradient(90deg,rgba(24,35,28,.07) 0 33%,transparent 33%),linear-gradient(180deg,transparent 0 70%,rgba(24,35,28,.06) 70%)}
+.card-product.v47-family-bold .zc-trad-product{background-image:linear-gradient(135deg,rgba(255,255,255,.18) 0 28%,transparent 28%),linear-gradient(315deg,rgba(0,0,0,.09) 0 18%,transparent 18%)}
+/* Event, membership, identity and property layouts gain category-specific finishing */
+.card-event .zc-trad,.card-membership .zc-trad,.card-identity .zc-trad{background-image:linear-gradient(135deg,rgba(255,255,255,.13),transparent 42%)}
+.card-identity .zc-trad-identity{border-radius:10px}
+.card-event.v47-family-corporate .zc-trad{background-image:linear-gradient(90deg,rgba(255,255,255,.14) 0 28%,transparent 28%)}
+.card-property .zc-trad-property{background-image:linear-gradient(180deg,rgba(255,255,255,.16),transparent 38%)}
+/* Print: keep artwork intact and suppress UI-only shadows */
+@media print{.card-preview{box-shadow:none!important;break-inside:avoid;print-color-adjust:exact;-webkit-print-color-adjust:exact}.card-preview::before{opacity:.75}.template-studio,.template-toolbar,.template-tip{display:none!important}}
+@media(max-width:700px){.template-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.template-thumb{height:126px}.card-visiting .zc-contact-list{grid-template-columns:1fr}}
 
 </style>
 </head>
