@@ -3903,10 +3903,10 @@ async function applyAiPlan(plan){plan=normalizeAiPlan(plan);selectedType=plan.ca
 async function generateCardFromPrompt(){const prompt=clean($("aiPrompt").value),status=$("aiStatus"),btn=$("generateCardAiBtn");if(!prompt){status.className="ai-status error";status.textContent="Describe the card you want first.";return}btn.disabled=true;status.className="ai-status";status.textContent="Preparing your ZetaCard…";try{let plan=null,source="local";if(initDb()){try{const r=await db.functions.invoke("generate-card-from-prompt",{body:{prompt}});if(!r.error&&r.data){plan=normalizeAiPlan(r.data.plan||r.data);source="edge"}}catch(e){console.warn("AI Edge Function unavailable; using local draft",e)}}if(!plan)plan=localPlanFromPrompt(prompt);renderAiPlan(plan,source);status.className="ai-status "+(source==="edge"?"ok":"");status.textContent=source==="edge"?"AI card plan ready.":"Draft prepared. Review the fields before publishing.";await new Promise(r=>setTimeout(r,250));await applyAiPlan(plan)}catch(e){console.error(e);status.className="ai-status error";status.textContent=e.message||"Could not prepare the card."}finally{btn.disabled=false}}
 
 
-/* ZetaCard v60: 100 distinct, editable original compositions for each of the eight card types. */
+/* ZetaCard v66: exactly 20 curated, editable compositions for each of the eight card types. */
 window.zcManualCreationMode = window.zcManualCreationMode || 'template';
 window.zcTemplatePickerPage = 0;
-window.zcTemplateCatalogCache = window.zcTemplateCatalogCache || {};
+window.zcTemplateCatalogCache = {}; // v66 invalidates the previous 100-variant catalog
 window.zcTemplatePickerSelected = '';
 window.zcTemplatePickerSearchText = '';
 window.zcTemplatePickerCategoryName = 'All';
@@ -3933,35 +3933,35 @@ const ZC_V60_FINISHES = {
 };
 function zcV60CategoryForFamily(index){return index<4?'Traditional':index<8?'Luxury':index<12?'Minimal':index<16?'Modern':'Creative'}
 function zcV60BuildTemplateCatalog(type){
+  /* v66: replace the old 100 near-duplicate variants with exactly 20 curated compositions per card type. */
   if(window.zcTemplateCatalogCache[type])return window.zcTemplateCatalogCache[type];
   const families=ZC_V60_TEMPLATE_FAMILIES[type]||ZC_V60_TEMPLATE_FAMILIES.visiting;
   const finishes=ZC_V60_FINISHES[type]||ZC_V60_FINISHES.visiting;
   const axes=variationAxes(type);const paletteNames=V46_PALETTE_HINTS[type]||V46_PALETTE_HINTS.visiting;const seen=new Set();const out=[];
-  for(let finishIndex=0;finishIndex<5;finishIndex++){
-    const finish=finishes[finishIndex];let paletteIndex=paletteNames.indexOf(finish[0]);if(paletteIndex<0)paletteIndex=finishIndex%paletteNames.length;
-    for(let familyIndex=0;familyIndex<20;familyIndex++){
-      const vals=[paletteIndex,
-        familyIndex%axes.layout,
-        positiveMod(familyIndex*3+finishIndex*5+1,axes.ornament),
-        positiveMod(familyIndex*5+finishIndex*3,axes.frame),
-        positiveMod(familyIndex+finishIndex*3,axes.font),
-        positiveMod(familyIndex*2+finishIndex*3,axes.surface),
-        positiveMod(familyIndex+finishIndex*2,axes.align),
-        positiveMod(familyIndex*3+finishIndex,axes.density),
-        positiveMod(familyIndex*5+finishIndex*2,axes.title),
-        positiveMod(familyIndex*2+finishIndex,axes.image)];
-      let id=`gen2:${type}:${vals.join('-')}`;
-      /* The family/layout digit guarantees uniqueness within a finish; the palette digit differentiates finishes. */
-      if(seen.has(id)){let seed=10000+finishIndex*1000+familyIndex;do{id=chooseGeneratedTemplate(type,seed++)}while(seen.has(id));}
-      seen.add(id);
-      out.push({id,name:`${families[familyIndex]} · ${finish[1]}`,family:families[familyIndex],finish:finish[1],category:zcV60CategoryForFamily(familyIndex),index:out.length,note:`${type==='wedding'?'Invitation design':type==='visiting'?'Business identity':type==='menu'?'Restaurant menu':type==='identity'?'ID layout':type==='catalog'?'Collection layout':type==='event'?'Event pass':type==='product'?'Product showcase':'Property listing'} · ${zcV60CategoryForFamily(familyIndex).toLowerCase()}`});
-    }
+  const typeLabel={wedding:'Wedding invitation',visiting:'Business identity',menu:'Restaurant menu',identity:'Identity card',catalog:'Collection layout',event:'Event pass',product:'Product showcase',property:'Property listing'}[type]||'Card design';
+  for(let familyIndex=0;familyIndex<20;familyIndex++){
+    /* Each named family gets its own composition recipe and one deliberate finish, not five recolours of the same template. */
+    const finishIndex=familyIndex%finishes.length;const finish=finishes[finishIndex];
+    let paletteIndex=paletteNames.indexOf(finish[0]);if(paletteIndex<0)paletteIndex=finishIndex%paletteNames.length;
+    const vals=[
+      positiveMod(paletteIndex,axes.palette),
+      positiveMod(familyIndex*3+Math.floor(familyIndex/4),axes.layout),
+      positiveMod(familyIndex*5+2,axes.ornament),
+      positiveMod(familyIndex*3+Math.floor(familyIndex/2),axes.frame),
+      positiveMod(familyIndex*2+Math.floor(familyIndex/3),axes.font),
+      positiveMod(familyIndex*3+finishIndex,axes.surface),
+      positiveMod(familyIndex+Math.floor(familyIndex/5),axes.align),
+      positiveMod(familyIndex*2+1,axes.density),
+      positiveMod(familyIndex*3+finishIndex,axes.title),
+      positiveMod(familyIndex*5+1,axes.image)
+    ];
+    let id=`gen2:${type}:${vals.join('-')}`;
+    if(seen.has(id)){let seed=20000+familyIndex;do{id=chooseGeneratedTemplate(type,seed++)}while(seen.has(id));}
+    seen.add(id);
+    out.push({id,name:families[familyIndex],family:families[familyIndex],finish:finish[1],category:zcV60CategoryForFamily(familyIndex),index:familyIndex,note:`${typeLabel} · ${zcV60CategoryForFamily(familyIndex).toLowerCase()} composition`});
   }
-  /* The picker order is style-family first, then finish. */
-  const byFamily=[];for(let familyIndex=0;familyIndex<20;familyIndex++){for(let finishIndex=0;finishIndex<5;finishIndex++){byFamily.push(out[finishIndex*20+familyIndex])}}
-  byFamily.forEach((item,index)=>{item.index=index});
-  window.zcTemplateCatalogCache[type]=byFamily;
-  return byFamily;
+  window.zcTemplateCatalogCache[type]=out;
+  return out;
 }
 function zcV60Pane(activeId){['modeStep','manualPathStep','typeStep','templatePickerStep','formStep'].forEach(id=>$(id)?.classList.toggle('active',id===activeId))}
 function showManualPathStep(){zcV60Pane('manualPathStep');$('previewBox').style.display='none';$('aiWorkspace').style.display='none';$('stepIndicator').textContent='Manual Mode · choose path';$('builderTitle').textContent='Choose a traditional card template';$('builderSubtitle').textContent='Start with a ready-made layout. Your card details remain editable.';$('builderBack').textContent='← Modes';updateBackButton();window.scrollTo(0,0)}
@@ -3972,25 +3972,27 @@ function zcV60RenderTemplatePicker(){
   const host=$('templatePickerGrid');
   if(!host||!selectedType)return;
   const catalog=zcV60BuildTemplateCatalog(selectedType);
-  const filtered=catalog.filter(t=>t.category==='Traditional');
+  const search=(window.zcTemplatePickerSearchText||'').trim().toLowerCase();
+  const category=window.zcTemplatePickerCategoryName||'All';
+  const filtered=catalog.filter(t=>(category==='All'||t.category===category)&&(!search||(t.name+' '+t.finish+' '+t.category).toLowerCase().includes(search)));
   const perPage=12;
   const totalPages=Math.max(1,Math.ceil(filtered.length/perPage));
   window.zcTemplatePickerPage=Math.max(0,Math.min(Number(window.zcTemplatePickerPage)||0,totalPages-1));
   const start=window.zcTemplatePickerPage*perPage;
   const items=filtered.slice(start,start+perPage);
-  host.innerHTML=items.map(t=>`<button type="button" class="template-option ${designTemplate===t.id?'selected':''}" data-zc-v60-template="${escapeHtml(t.id)}" aria-pressed="${designTemplate===t.id?'true':'false'}">${templateThumbMarkup(selectedType,t.id,t.name)}<div class="template-meta"><b>${escapeHtml(t.name)}</b><span>Traditional visiting-card layout · ${escapeHtml(t.finish)}</span></div><span class="template-checkmark">✓</span></button>`).join('');
+  host.innerHTML=items.map(t=>`<button type="button" class="template-option ${designTemplate===t.id?'selected':''}" data-zc-v60-template="${escapeHtml(t.id)}" aria-pressed="${designTemplate===t.id?'true':'false'}">${templateThumbMarkup(selectedType,t.id,t.name)}<div class="template-meta"><b>${escapeHtml(t.name)}</b><span>${escapeHtml(t.category)} · ${escapeHtml(t.finish)}</span></div><span class="template-checkmark">✓</span></button>`).join('');
   host.querySelectorAll('[data-zc-v60-template]').forEach(button=>button.addEventListener('click',()=>{
     const t=filtered.find(x=>x.id===button.dataset.zcV60Template);if(!t)return;
     zcV60ApplyTemplate(t.id);
     host.querySelectorAll('.template-option').forEach(x=>{const on=x===button;x.classList.toggle('selected',on);x.setAttribute('aria-pressed',on?'true':'false')});
     const status=$('templatePickerStatus');if(status)status.textContent=`Selected ${t.name}. Your details stay unchanged.`;
   }));
-  const count=$('templatePickerCount');if(count)count.textContent=`${filtered.length} traditional templates · ${TYPES[selectedType].label}`;
-  const info=$('templatePickerPageInfo');if(info)info.textContent=filtered.length?`${start+1}–${Math.min(start+perPage,filtered.length)} of ${filtered.length} traditional templates`:'No traditional templates available';
+  const count=$('templatePickerCount');if(count)count.textContent=`${filtered.length} curated templates · ${TYPES[selectedType].label}`;
+  const info=$('templatePickerPageInfo');if(info)info.textContent=filtered.length?`${start+1}–${Math.min(start+perPage,filtered.length)} of ${filtered.length} templates`:'No templates match your filters';
   const prev=$('templatePickerPrev');if(prev)prev.disabled=window.zcTemplatePickerPage===0;
   const next=$('templatePickerNext');if(next)next.disabled=window.zcTemplatePickerPage>=totalPages-1;
 } 
-function zcV60ShowTemplateStep(){if(!selectedType){msg('typeStatus','Choose a card type first.',true);showTypeStep();return}window.zcManualCreationMode='template';zcV60Pane('templatePickerStep');$('previewBox').style.display='block';$('stepIndicator').textContent='Traditional template library';$('builderTitle').textContent=`Choose a ${TYPES[selectedType].label.toLowerCase()} design`;$('builderSubtitle').textContent='Choose a traditional, ready-made card layout, add your details, preview it, then download or print.';$('builderBack').textContent='← Card types';$('templatePickerSubtitle').textContent=`Choose from traditional ${TYPES[selectedType].label.toLowerCase()} layouts. No complicated design controls — just select a template and enter your details.`;const catalog=zcV60BuildTemplateCatalog(selectedType).filter(t=>t.category==='Traditional');if(!catalog.some(t=>t.id===designTemplate))zcV60ApplyTemplate((catalog[0]||zcV60BuildTemplateCatalog(selectedType)[0]).id);else zcV60ApplyTemplate(designTemplate);zcV60RenderTemplatePicker();updateBackButton();window.scrollTo(0,0)}
+function zcV60ShowTemplateStep(){if(!selectedType){msg('typeStatus','Choose a card type first.',true);showTypeStep();return}window.zcManualCreationMode='template';zcV60Pane('templatePickerStep');$('previewBox').style.display='block';$('stepIndicator').textContent='Curated template library';$('builderTitle').textContent=`Choose a ${TYPES[selectedType].label.toLowerCase()} design`;$('builderSubtitle').textContent='Choose one of 20 distinct designs for this card type, add your details, preview it, then download or print.';$('builderBack').textContent='← Card types';$('templatePickerSubtitle').textContent=`Choose from 20 distinct ${TYPES[selectedType].label.toLowerCase()} layouts across Traditional, Luxury, Minimal, Modern and Creative styles.`;const catalog=zcV60BuildTemplateCatalog(selectedType);if(!catalog.some(t=>t.id===designTemplate))zcV60ApplyTemplate((catalog[0]||zcV60BuildTemplateCatalog(selectedType)[0]).id);else zcV60ApplyTemplate(designTemplate);zcV60RenderTemplatePicker();updateBackButton();window.scrollTo(0,0)}
 function zcV60ContinueFromType(){if(!selectedType){msg('typeStatus','Please select a card type first.',true);return}if(window.zcManualCreationMode==='template'){zcV60ShowTemplateStep();return}designTemplate=zcV60TemplateIdForBlank(selectedType);if($('designTemplate'))$('designTemplate').value=designTemplate;showFormStep()}
 function zcV60BackAction(){if($('templatePickerStep').classList.contains('active')){showTypeStep();return}if($('formStep').classList.contains('active')){if(window.zcManualCreationMode==='template'){zcV60ShowTemplateStep();return}if(window.zcManualCreationMode==='ai'){showModeStep();return}showTypeStep();return}if($('typeStep').classList.contains('active')){showManualPathStep();return}if($('manualPathStep').classList.contains('active')){showModeStep();return}if($('modeStep').classList.contains('active')){showLanding();return}showLanding()}
 
@@ -6053,12 +6055,12 @@ function zcApplyRecipe(recipeKey){
 function renderTemplateStudio(prefill={}){
   const box=$('templateStudio');if(!box||!selectedType)return;
   designTemplate=sanitizeDesignTemplate(selectedType,prefill.design_template||designTemplate||defaultTemplate(selectedType));
-  const catalog=zcV60BuildTemplateCatalog(selectedType).filter(t=>t.category==='Traditional');
+  const catalog=zcV60BuildTemplateCatalog(selectedType);
   if(!catalog.some(t=>t.id===designTemplate)&&catalog[0])designTemplate=catalog[0].id;
-  box.innerHTML=`<div class="template-studio-head"><div><h3>Traditional card templates</h3><p>Choose a ready-made professional layout. Your job is only to enter your details — the layout, typography and spacing are preset.</p></div><span class="template-count-pill">${catalog.length} templates</span></div><div id="templateGrid" class="template-grid"></div><div class="template-tip">Select a template to update the live card preview. Traditional landscape visiting-card proportions are used for business cards.</div>`;
+  box.innerHTML=`<div class="template-studio-head"><div><h3>20 curated card templates</h3><p>Every template has a distinct layout family for this card type. Choose a design, then add your details — the layout and typography are preset.</p></div><span class="template-count-pill">${catalog.length} templates</span></div><div id="templateGrid" class="template-grid"></div><div class="template-tip">Select a template to update the live preview. Each card type has 20 distinct design families; business cards keep traditional landscape proportions.</div>`;
   const grid=$('templateGrid');
   if(!catalog.some(t=>t.id===designTemplate)&&catalog[0])designTemplate=catalog[0].id;
-  grid.innerHTML=catalog.map(t=>`<button type="button" class="template-option ${sanitizeDesignTemplate(selectedType,t.id)===designTemplate?'selected':''}" data-tpl-id="${escapeHtml(t.id)}" aria-pressed="${sanitizeDesignTemplate(selectedType,t.id)===designTemplate?'true':'false'}">${templateThumbMarkup(selectedType,t.id,t.name)}<div class="template-meta"><b>${escapeHtml(t.name)}</b><span>Traditional · ${escapeHtml(t.finish)}</span></div><span class="template-checkmark">✓</span></button>`).join('');
+  grid.innerHTML=catalog.map(t=>`<button type="button" class="template-option ${sanitizeDesignTemplate(selectedType,t.id)===designTemplate?'selected':''}" data-tpl-id="${escapeHtml(t.id)}" aria-pressed="${sanitizeDesignTemplate(selectedType,t.id)===designTemplate?'true':'false'}">${templateThumbMarkup(selectedType,t.id,t.name)}<div class="template-meta"><b>${escapeHtml(t.name)}</b><span>${escapeHtml(t.category)} · ${escapeHtml(t.finish)}</span></div><span class="template-checkmark">✓</span></button>`).join('');
   grid.querySelectorAll('.template-option').forEach(b=>b.addEventListener('click',()=>{zcV60ApplyTemplate(b.dataset.tplId);grid.querySelectorAll('.template-option').forEach(x=>{const on=x===b;x.classList.toggle('selected',on);x.setAttribute('aria-pressed',on?'true':'false')});const status=$('formStatus');if(status){status.textContent=(b.querySelector('.template-meta b')?.textContent||'Template')+' applied. Your details were kept.';status.classList.remove('error')}}));
   if($('designTemplate'))$('designTemplate').value=designTemplate;
 }
