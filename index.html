@@ -122,8 +122,71 @@ async function submitBooking(e){e.preventDefault();if(!currentProfile||!db)retur
 async function submitCustomForm(e){e.preventDefault();if(!currentProfile||!db)return;const name=clean($('customName').value),email=clean($('customEmail').value),phone=clean($('customPhone').value),message=clean($('customMessage').value);if(!name||(!email&&!phone)){setStatus('customFormStatus','Enter a name and an email address or phone number.','error');return}try{const r=await db.rpc('submit_card_form',{p_username:currentProfile.username,p_answers:{name,email,phone,message},p_consent:$('customConsent').checked});if(r.error)throw r.error;$('customPublicForm').reset();setStatus('customFormStatus',currentProfile.card_data?.custom_form_settings?.successMessage||'Details submitted.','good')}catch(e){console.error(e);setStatus('customFormStatus',`Could not submit details: ${e.message||'Unknown error'}`,'error')}}
 async function submitLead(e){e.preventDefault();if(!currentProfile||!db)return;const name=clean($('leadName').value),email=clean($('leadEmail').value),phone=clean($('leadPhone').value),company=clean($('leadCompany').value),message=clean($('leadMessage').value);if(!name||(!email&&!phone)||!$('leadConsent').checked){setStatus('leadSubmitStatus','Enter your name, email or phone, and give consent.','error');return}try{const r=await db.rpc('submit_card_lead',{p_username:currentProfile.username,p_name:name,p_email:email,p_phone:phone,p_company:company,p_message:message,p_consent:true});if(r.error)throw r.error;$('leadForm').reset();setStatus('leadSubmitStatus','Enquiry sent to the card owner.','good')}catch(e){console.error(e);setStatus('leadSubmitStatus',`Could not send enquiry: ${e.message||'Unknown error'}`,'error')}}
 async function loadBookings(){if(!db||!authUser)return;setStatus('bookingStatusMessage','Loading bookings…');let r=await db.rpc('get_my_bookings');if(r.error){console.warn('get_my_bookings not found; trying owner-readable booking table',r.error);r=await db.from('card_bookings').select('*').order('created_at',{ascending:false})}if(r.error){setStatus('bookingStatusMessage',`Could not load booking list. Your Supabase project must expose the owner booking list RPC/table. ${r.error.message||''}`,'error');$('bookingsGrid').innerHTML='';return}dashboardBookings=Array.isArray(r.data)?r.data:[];renderBookings();setStatus('bookingStatusMessage',`${dashboardBookings.length} booking requests loaded.`,'good')}
-function renderBookings(){const root=$('bookingsGrid');if(!dashboardBookings.length){root.innerHTML='<div class="empty" style="grid-column:1/-1">No bookings loaded yet.</div>';$('bookingCount').textContent='';return}$('bookingCount').textContent=`(${dashboardBookings.filter(b=>(b.status||'pending')==='pending').length})`;root.innerHTML=dashboardBookings.map((b,i)=>`<article class="record"><div class="row-actions" style="justify-content:space-between"><h3>${esc(b.guest_name||'Visitor')}</h3><span class="pill">${esc(b.status||'pending')}</span></div><div class="record-meta">${esc(b.card_name||b.username||'Card')} · ${esc(b.booking_date||'')} · ${esc(b.start_time||'')}</div><div class="record-meta">${esc(b.guest_email||'')}${b.guest_phone?` · ${esc(b.guest_phone)}`:''}</div><p>${esc(b.note||'No meeting note')}</p><div class="record-actions">${b.guest_email?`<a class="btn small" href="mailto:${esc(b.guest_email)}">Email visitor</a>`:''}${(b.status||'pending')==='pending'?`<button class="btn small primary" data-book-ok="${i}">Confirm meeting</button><button class="btn small danger" data-book-no="${i}">Reject</button>`:''}${b.status==='confirmed'?`<button class="btn small" data-book-cancel="${i}">Cancel</button>`:''}</div></article>`).join('');root.querySelectorAll('[data-book-ok]').forEach(b=>b.onclick=()=>saveBookingStatus(dashboardBookings[+b.dataset.bookOk].id,'confirmed'));root.querySelectorAll('[data-book-no]').forEach(b=>b.onclick=()=>saveBookingStatus(dashboardBookings[+b.dataset.bookNo].id,'cancelled'));root.querySelectorAll('[data-book-cancel]').forEach(b=>b.onclick=()=>saveBookingStatus(dashboardBookings[+b.dataset.bookCancel].id,'cancelled'))}
-async function saveBookingStatus(id,status){if(!authUser||!id||!db)return;const allowed=['confirmed','cancelled','completed'];if(!allowed.includes(status)){setStatus('bookingStatusMessage','Invalid meeting status.','error');return}try{setStatus('bookingStatusMessage',status==='confirmed'?'Confirming meeting…':'Updating meeting…');const r=await db.rpc('update_my_booking_status',{p_booking_id:id,p_status:status});if(r.error)throw r.error;if(r.data!==true&&r.data!==1&&r.data!==null)throw new Error('The backend did not confirm the status update.');const item=dashboardBookings.find(b=>String(b.id)===String(id));if(item)item.status=status;renderBookings();let note='Meeting status saved.';if(status==='confirmed'){try{const notify=await db.functions.invoke('quick-service',{body:{booking_id:id,status:'confirmed'}});if(notify.error)throw notify.error;if(notify.data?.sent===true)note+=' Outlook accepted the confirmation email.';else note+=` Meeting is confirmed, but email was not confirmed as sent: ${notify.data?.reason||'check the quick-service logs'}.`}catch(e){console.error('Confirmation email failed after status update',e);note+=' The meeting is confirmed, but the email function reported an error. Check quick-service logs.'}}setStatus('bookingStatusMessage',note,status==='confirmed'?'good':'')}catch(e){console.error(e);setStatus('bookingStatusMessage',`Could not update meeting: ${e.message||'Unknown error'}`,'error')}}
+function renderBookings(){const root=$('bookingsGrid');if(!dashboardBookings.length){root.innerHTML='<div class="empty" style="grid-column:1/-1">No bookings loaded yet.</div>';$('bookingCount').textContent='';return}$('bookingCount').textContent=`(${dashboardBookings.filter(b=>(b.status||'pending')==='pending').length})`;root.innerHTML=dashboardBookings.map((b,i)=>`<article class="record"><div class="row-actions" style="justify-content:space-between"><h3>${esc(b.guest_name||'Visitor')}</h3><span class="pill">${esc(b.status||'pending')}</span></div><div class="record-meta">${esc(b.card_name||b.username||'Card')} · ${esc(b.booking_date||'')} · ${esc(b.start_time||'')}</div><div class="record-meta">${esc(b.guest_email||'')}${b.guest_phone?` · ${esc(b.guest_phone)}`:''}</div><p>${esc(b.note||'No meeting note')}</p><div class="record-actions">${b.guest_email?`<a class="btn small" href="mailto:${esc(b.guest_email)}">Email visitor</a>`:''}${(b.status||'pending')==='pending'?`<button class="btn small primary" data-book-ok="${i}">Confirm meeting</button><button class="btn small danger" data-book-no="${i}">Reject</button>`:''}${b.status==='confirmed'?`<button class="btn small" data-book-email="${i}">Retry confirmation email</button><button class="btn small" data-book-cancel="${i}">Cancel</button>`:''}</div></article>`).join('');root.querySelectorAll('[data-book-ok]').forEach(b=>b.onclick=()=>saveBookingStatus(dashboardBookings[+b.dataset.bookOk].id,'confirmed'));root.querySelectorAll('[data-book-no]').forEach(b=>b.onclick=()=>saveBookingStatus(dashboardBookings[+b.dataset.bookNo].id,'cancelled'));root.querySelectorAll('[data-book-cancel]').forEach(b=>b.onclick=()=>saveBookingStatus(dashboardBookings[+b.dataset.bookCancel].id,'cancelled'));root.querySelectorAll('[data-book-email]').forEach(b=>b.onclick=()=>retryBookingEmail(dashboardBookings[+b.dataset.bookEmail]))}
+async function describeEdgeFunctionError(error){
+ const parts=[];
+ if(error?.name)parts.push(error.name);
+ if(error?.message)parts.push(error.message);
+ const ctx=error?.context;
+ if(ctx&&Number.isFinite(ctx.status))parts.push(`HTTP ${ctx.status}${ctx.statusText?' '+ctx.statusText:''}`);
+ if(ctx&&typeof ctx.clone==='function'){
+  try{const body=await ctx.clone().text();if(body)parts.push(`Response: ${body.slice(0,700)}`)}catch(_e){}
+ }else if(ctx&&typeof ctx==='object'){
+  try{const body=JSON.stringify(ctx);if(body&&body!=='{}')parts.push(`Context: ${body.slice(0,500)}`)}catch(_e){}
+ }
+ return [...new Set(parts)].join(' | ')||'Unknown Edge Function error. No HTTP response details were available.';
+}
+async function callQuickService(bookingId,status='confirmed'){
+ if(!db)throw new Error('Supabase client is unavailable.');
+ console.info('[ZetaCard] Calling quick-service', {booking_id:bookingId,status,project:new URL(SUPABASE_URL).host});
+ const result=await db.functions.invoke('quick-service',{body:{booking_id:bookingId,status}});
+ if(result.error){const detail=await describeEdgeFunctionError(result.error);console.error('[ZetaCard] quick-service request failed:',detail,result.error);throw new Error(detail)}
+ console.info('[ZetaCard] quick-service response:',result.data);
+ if(result.data?.sent===true||result.data?.success===true||result.data?.ok===true)return result.data;
+ if(result.data?.error||result.data?.reason)throw new Error(String(result.data.error||result.data.reason));
+ throw new Error(`quick-service returned HTTP success but did not confirm sending. Response: ${JSON.stringify(result.data??null).slice(0,500)}`);
+}
+async function retryBookingEmail(booking){
+ if(!authUser||!db||!booking?.id)return;
+ if((booking.status||'').toLowerCase()!=='confirmed'){setStatus('bookingStatusMessage','Only confirmed meetings can resend confirmation email.','error');return}
+ if(!clean(booking.guest_email)){setStatus('bookingStatusMessage','This booking has no visitor email address. Ask the visitor to add an email or contact them manually.','error');return}
+ setStatus('bookingStatusMessage','Retrying confirmation email…');
+ try{
+  const data=await callQuickService(booking.id,'confirmed');
+  setStatus('bookingStatusMessage',`Confirmation email function reported success for ${booking.guest_email}.`, 'good');
+ }catch(e){
+  console.error('[ZetaCard] Retry confirmation email failed',e);
+  setStatus('bookingStatusMessage',`Meeting remains confirmed. Confirmation email retry failed: ${e.message||'Unknown error'}. Check that quick-service is deployed in Supabase project ${new URL(SUPABASE_URL).host}.`, 'error');
+ }
+}
+async function saveBookingStatus(id,status){
+ if(!authUser||!id||!db)return;
+ const allowed=['confirmed','cancelled','completed'];
+ if(!allowed.includes(status)){setStatus('bookingStatusMessage','Invalid meeting status.','error');return}
+ try{
+  setStatus('bookingStatusMessage',status==='confirmed'?'Confirming meeting…':'Updating meeting…');
+  const r=await db.rpc('update_my_booking_status',{p_booking_id:id,p_status:status});
+  if(r.error)throw r.error;
+  if(r.data!==true&&r.data!==1&&r.data!==null)throw new Error('The backend did not confirm the status update.');
+  const item=dashboardBookings.find(b=>String(b.id)===String(id));
+  if(item)item.status=status;
+  renderBookings();
+  let note='Meeting status saved.';
+  if(status==='confirmed'){
+   try{
+    const data=await callQuickService(id,'confirmed');
+    note+=' quick-service confirmed email processing: '+JSON.stringify(data).slice(0,250);
+   }catch(e){
+    console.error('[ZetaCard] Confirmation email failed after status update',e);
+    note+=` Email error: ${e.message||'Unknown error'}`;
+   }
+  }
+  setStatus('bookingStatusMessage',note,status==='confirmed'?'good':'');
+ }catch(e){
+  console.error('[ZetaCard] Booking status update failed',e);
+  setStatus('bookingStatusMessage',`Could not update meeting: ${e.message||'Unknown error'}`,'error');
+ }
+}
 async function loadLeads(){if(!db||!authUser)return;setStatus('leadStatusMessage','Loading leads…');try{const r=await db.rpc('get_my_leads');if(r.error)throw r.error;dashboardLeads=Array.isArray(r.data)?r.data:(r.data?.leads||[]);renderLeads();$('leadCount').textContent=dashboardLeads.length?`(${dashboardLeads.length})`:'';setStatus('leadStatusMessage',`${dashboardLeads.length} leads loaded.`,'good')}catch(e){setStatus('leadStatusMessage',`Could not load leads: ${e.message||'Unknown error'}`,'error')}}
 function renderLeads(){const root=$('leadsGrid');root.innerHTML=dashboardLeads.length?dashboardLeads.map((l,i)=>`<article class="record"><div class="row-actions" style="justify-content:space-between"><h3>${esc(l.name||'Unnamed')}</h3><span class="pill">${esc(l.status||'new')}</span></div><div class="record-meta">${esc(l.card_name||l.username||'Card')} · ${esc(l.company||'')}</div><div class="record-meta">${esc(l.email||'')}${l.phone?` · ${esc(l.phone)}`:''}</div><p>${esc(l.message||'')}</p><div class="record-actions"><select data-lead-state="${i}" style="max-width:140px"><option value="new">New</option><option value="contacted">Contacted</option><option value="qualified">Qualified</option><option value="archived">Archived</option></select><button class="btn small" data-lead-save="${i}">Save status</button></div></article>`).join(''):'<div class="empty" style="grid-column:1/-1">No leads found.</div>';root.querySelectorAll('[data-lead-state]').forEach(s=>s.value=dashboardLeads[+s.dataset.leadState].status||'new');root.querySelectorAll('[data-lead-save]').forEach(b=>b.onclick=async()=>{const l=dashboardLeads[+b.dataset.leadSave],st=root.querySelector(`[data-lead-state="${b.dataset.leadSave}"]`).value;try{const r=await db.rpc('update_my_lead',{p_lead_id:l.id,p_status:st,p_notes:l.notes||''});if(r.error)throw r.error;l.status=st;renderLeads();setStatus('leadStatusMessage','Lead updated.','good')}catch(e){setStatus('leadStatusMessage',`Could not update lead: ${e.message}`,'error')}})}
 async function loadOrders(){if(!db||!authUser)return;setStatus('orderStatusMessage','Loading orders…');try{const r=await db.rpc('get_my_orders');if(r.error)throw r.error;dashboardOrders=Array.isArray(r.data)?r.data:(r.data?.orders||[]);renderOrders();setStatus('orderStatusMessage',`${dashboardOrders.length} orders loaded.`,'good')}catch(e){setStatus('orderStatusMessage',`Could not load orders: ${e.message||'Unknown error'}`,'error')}}
