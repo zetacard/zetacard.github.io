@@ -3832,7 +3832,82 @@ function bookingStatusLabel(s){return bookingStatusClass(s).replace(/^./,c=>c.to
 function bookingDateTimeLabel(date,time,end){try{const d=new Date(`${date}T${time||"00:00"}`);const base=d.toLocaleDateString(undefined,{dateStyle:"medium"}),a=bookingTimeLabel(time||""),b=end?bookingTimeLabel(end):"";return `${base} · ${a}${b?" – "+b:""}`}catch(e){return `${date||""} ${time||""}`}}
 function filteredBookings(){const q=clean($("bookingSearchInput")?.value||"").toLowerCase(),s=$("bookingStatusFilter")?.value||"all";return dashboardBookings.filter(b=>{const hay=[b.guest_name,b.guest_email,b.guest_phone,b.note,b.card_name,b.username,b.booking_date,b.start_time].join(" ").toLowerCase();return(s==="all"||bookingStatusClass(b.status)===s)&&(!q||hay.includes(q))})}
 function renderBookings(){const box=$("bookingsGrid");if(!box)return;const counts={pending:0,confirmed:0,cancelled:0,completed:0};dashboardBookings.forEach(b=>counts[bookingStatusClass(b.status)]++);$("bookingTotalKpi").textContent=dashboardBookings.length;$("bookingPendingKpi").textContent=counts.pending;$("bookingConfirmedKpi").textContent=counts.confirmed;$("bookingCancelledKpi").textContent=counts.cancelled;const badge=$("dashboardBookingBadge");if(badge)badge.textContent=counts.pending?`(${counts.pending})`:"";const items=filteredBookings();if(!items.length){box.innerHTML='<div class="booking-empty" style="grid-column:1/-1"><h3>No bookings found</h3><p>New meeting requests from your public cards will appear here.</p></div>';return}box.innerHTML=items.map(b=>{const st=bookingStatusClass(b.status);return `<article class="booking-card" data-booking-id="${escapeHtml(b.id||"")}"><div class="booking-card-head"><div><div class="booking-guest">${escapeHtml(b.guest_name||"Unnamed guest")}</div><div class="booking-company">${escapeHtml(b.card_name||b.username||"Card")}</div></div><span class="lead-status ${st}">${escapeHtml(bookingStatusLabel(st))}</span></div><div class="booking-when">📅 ${escapeHtml(bookingDateTimeLabel(b.booking_date,b.start_time,b.end_time))}</div><div class="booking-details">${b.guest_email?`<span>✉️ ${escapeHtml(b.guest_email)}</span>`:""}${b.guest_phone?`<span>📞 ${escapeHtml(b.guest_phone)}</span>`:""}${b.note?`<span>📝 ${escapeHtml(b.note)}</span>`:""}<span>🕒 Requested ${escapeHtml(leadDate(b.created_at))}</span></div><div class="booking-card-actions">${st==="pending"?`<button type="button" class="btn primary booking-confirm">Confirm meeting</button><button type="button" class="btn ghost booking-reject">Reject</button>`:st==="confirmed"?`<button type="button" class="btn ghost booking-cancel">Cancel meeting</button><button type="button" class="btn ghost booking-complete">Mark completed</button>`:""}${b.guest_email?`<a class="btn ghost" href="mailto:${escapeHtml(b.guest_email)}">Email visitor</a>`:""}${b.guest_phone?`<a class="btn ghost" href="tel:${escapeHtml(b.guest_phone)}">Call visitor</a>`:""}</div></article>`}).join("");items.forEach(b=>{const card=box.querySelector(`[data-booking-id="${CSS.escape(String(b.id||""))}"]`);if(!card)return;card.querySelector(".booking-confirm")?.addEventListener("click",()=>saveBookingStatus(b.id,"confirmed"));card.querySelector(".booking-reject")?.addEventListener("click",()=>saveBookingStatus(b.id,"cancelled"));card.querySelector(".booking-cancel")?.addEventListener("click",()=>saveBookingStatus(b.id,"cancelled"));card.querySelector(".booking-complete")?.addEventListener("click",()=>saveBookingStatus(b.id,"completed"))})}
-async function loadBookings(){if(!authUser||!initDb())return;msg("bookingStatusMessage","Loading bookings...");try{const r=await db.rpc("get_my_bookings");if(r.error)throw r.error;dashboardBookings=Array.isArray(r.data)?r.data:(Array.isArray(r.data?.bookings)?r.data.bookings:[]);renderBookings();msg("bookingStatusMessage","")}catch(e){console.error(e);msg("bookingStatusMessage","Could not load bookings: "+(e.message||"Unknown error"),true)}}
+async function saveBookingStatus(id, status) {
+  if (!authUser || !id) return;
+
+  const allowed = ["confirmed", "cancelled", "completed"];
+  if (!allowed.includes(status)) {
+    msg("bookingStatusMessage", "Choose a valid meeting action.", true);
+    return;
+  }
+
+  try {
+    msg(
+      "bookingStatusMessage",
+      status === "confirmed" ? "Confirming meeting..." : "Updating meeting..."
+    );
+
+    // Save the meeting status first.
+    const result = await db.rpc("update_my_booking_status", {
+      p_booking_id: id,
+      p_status: status
+    });
+
+    if (result.error) throw result.error;
+
+    if (result.data !== true) {
+      throw new Error("Meeting status was not updated. Please refresh.");
+    }
+
+    const booking = dashboardBookings.find(
+      item => String(item.id) === String(id)
+    );
+
+    if (booking) booking.status = status;
+    renderBookings();
+
+    let notice = "Meeting status saved.";
+
+    // Call the email function only after confirmation succeeds.
+    if (status === "confirmed") {
+      try {
+        const response = await db.functions.invoke("quick-service", {
+          body: {
+            booking_id: id,
+            status: "confirmed"
+          }
+        });
+
+        if (response.error) {
+          throw response.error;
+        }
+
+        if (response.data?.sent === true) {
+          notice += " Outlook accepted the confirmation email.";
+        } else {
+          notice += " Email not sent: " +
+            (response.data?.reason || "Check Edge Function logs.");
+        }
+      } catch (error) {
+        console.error("Outlook booking notification failed:", error);
+
+        notice += " Meeting is confirmed, but email sending failed. Check quick-service logs.";
+      }
+    }
+
+    msg("bookingStatusMessage", notice);
+
+  } catch (error) {
+    console.error("Booking status update failed:", error);
+
+    msg(
+      "bookingStatusMessage",
+      "Could not update meeting status: " +
+        (error.message || "Unknown error"),
+      true
+    );
+  }
+}
 async function saveBookingStatus(id,status){if(!authUser||!id)return;const allowed=["confirmed","cancelled","completed"];if(!allowed.includes(status)){msg("bookingStatusMessage","Choose a valid meeting action.",true);return}try{msg("bookingStatusMessage",status==="confirmed"?"Confirming meeting…":"Updating meeting…");const r=await db.rpc("update_my_booking_status",{p_booking_id:id,p_status:status});if(r.error)throw r.error;if(r.data!==true)throw new Error("The booking status was not updated. Refresh the bookings list and try again.");const b=dashboardBookings.find(x=>String(x.id)===String(id));if(b)b.status=status;renderBookings();let notice="Meeting status saved.";try{const nr=await db.functions.invoke("booking-notify",{body:{booking_id:id,status}});if(nr.error)throw nr.error;notice+=status==="confirmed"?" Visitor notification queued.":" Visitor notification queued."}catch(notifyError){console.warn("Booking status saved, but email notification could not be verified. Deploy/configure the booking-notify Supabase Edge Function.",notifyError);notice+=" Email notification is not configured or could not be verified yet."}msg("bookingStatusMessage",notice)}catch(e){console.error(e);msg("bookingStatusMessage","Could not update meeting status: "+(e.message||"Unknown error"),true)}}
 function exportBookingsCsv(){if(!dashboardBookings.length){msg("bookingStatusMessage","There are no bookings to export.",true);return}const headers=["guest_name","guest_email","guest_phone","booking_date","start_time","end_time","card_name","username","status","note","created_at"];const esc=csvEscapeCell;const csv=[headers.join(","),...dashboardBookings.map(b=>headers.map(h=>esc(b[h])).join(","))].join("\n");const blob=new Blob([csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="zetacard-bookings.csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),900);msg("bookingStatusMessage","CSV export created.")}
 
