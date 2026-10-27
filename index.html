@@ -6109,7 +6109,7 @@ if (hasCardRoute) {
         console.error("ZetaCard navigation failed:", error);
     });
 });
-
+});
 /* v54: use the purpose-built v53 renderer; the old v49 function declarations previously shadowed it. */
 function renderCardMarkup(type,c,photoUrl){
   return renderCardMarkupV53(type,c||{},photoUrl||"");
