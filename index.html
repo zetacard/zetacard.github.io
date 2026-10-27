@@ -6499,5 +6499,275 @@ document.querySelectorAll('[data-enterprise-route]').forEach(button=>button.addE
 </script>
 
 <!-- ZetaCard v61.1: restores existing card types and dashboard entry points; preserves original app logic. -->
+  <script>
+(() => {
+    "use strict";
+
+    function getCardUrl() {
+        if (
+            typeof currentProfile !== "undefined" &&
+            currentProfile &&
+            typeof profileUrl === "function"
+        ) {
+            return profileUrl(currentProfile.username);
+        }
+
+        const url = new URL(window.location.href);
+        url.hash = "";
+        return url.href;
+    }
+
+    function showMessage(text, error = false, dashboard = false) {
+        const id = dashboard ? "dashboardStatus" : "sharedStatus";
+        const el = document.getElementById(id);
+
+        if (typeof msg === "function") {
+            msg(id, text, error);
+        } else if (el) {
+            el.textContent = text;
+            el.classList.toggle("error", error);
+        }
+
+        if (error) console.error("[ZetaCard]", text);
+    }
+
+    async function copyTextSafe(text) {
+        // Modern clipboard API on secure HTTPS pages.
+        if (navigator.clipboard && window.isSecureContext) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return;
+            } catch (error) {
+                console.warn("Modern clipboard failed; trying fallback.", error);
+            }
+        }
+
+        // Compatibility fallback.
+        const input = document.createElement("textarea");
+        input.value = text;
+        input.setAttribute("readonly", "");
+        input.style.position = "fixed";
+        input.style.left = "-9999px";
+
+        document.body.appendChild(input);
+        input.select();
+        input.setSelectionRange(0, input.value.length);
+
+        let copied = false;
+
+        try {
+            copied = document.execCommand("copy");
+        } finally {
+            input.remove();
+        }
+
+        if (!copied) {
+            throw new Error(
+                "Copy was blocked by the browser. Please copy the URL manually."
+            );
+        }
+    }
+
+    function track(eventName) {
+        if (typeof trackShareEvent === "function") {
+            Promise.resolve(trackShareEvent(eventName)).catch(error => {
+                console.warn("Share analytics failed:", error);
+            });
+        }
+    }
+
+    function setShareMenu(open) {
+        const menu = document.getElementById("shareMenu");
+        if (!menu) return;
+
+        menu.classList.toggle("show", open);
+        menu.setAttribute("aria-hidden", open ? "false" : "true");
+    }
+
+    async function handleCardAction(button) {
+        const url = getCardUrl();
+        const id = button.id;
+
+        switch (id) {
+            case "copyLinkBtn": {
+                await copyTextSafe(url);
+                track("share");
+                track("copy_link");
+                showMessage("Card link copied successfully.");
+                return true;
+            }
+
+            case "shareBtn":
+                setShareMenu(true);
+                return true;
+
+            case "closeShareMenu":
+                setShareMenu(false);
+                return true;
+
+            case "nativeShareBtn": {
+                if (navigator.share) {
+                    await navigator.share({
+                        title: document.title || "ZetaCard",
+                        text: "Open this digital card",
+                        url
+                    });
+
+                    track("share");
+                    showMessage("Card shared.");
+                } else {
+                    await copyTextSafe(url);
+                    track("share");
+                    track("copy_link");
+                    showMessage("Sharing is unavailable here. Card link copied.");
+                }
+
+                return true;
+            }
+
+            case "whatsappShareBtn":
+                window.open(
+                    "https://wa.me/?text=" +
+                        encodeURIComponent("Open this digital card: " + url),
+                    "_blank",
+                    "noopener,noreferrer"
+                );
+                track("share");
+                track("share_whatsapp");
+                setShareMenu(false);
+                return true;
+
+            case "telegramShareBtn":
+                window.open(
+                    "https://t.me/share/url?url=" +
+                        encodeURIComponent(url) +
+                        "&text=" +
+                        encodeURIComponent("Open this digital card"),
+                    "_blank",
+                    "noopener,noreferrer"
+                );
+                track("share");
+                track("share_telegram");
+                setShareMenu(false);
+                return true;
+
+            case "emailShareBtn":
+                window.location.href =
+                    "mailto:?subject=" +
+                    encodeURIComponent("ZetaCard") +
+                    "&body=" +
+                    encodeURIComponent("Open this digital card: " + url);
+
+                track("share");
+                track("share_email");
+                return true;
+
+            case "saveContactBtn":
+                if (typeof saveContact === "function") {
+                    await saveContact();
+                } else {
+                    throw new Error("Contact-save function is unavailable.");
+                }
+                return true;
+
+            case "downloadCardBtn":
+                if (typeof zcDownloadCardPNG === "function") {
+                    await zcDownloadCardPNG();
+                } else {
+                    throw new Error("Card image export is unavailable.");
+                }
+                return true;
+
+            case "printCardBtn":
+                window.print();
+                return true;
+
+            case "downloadQrBtn":
+                if (typeof downloadQr === "function") {
+                    await downloadQr();
+                } else {
+                    throw new Error("QR download function is unavailable.");
+                }
+                return true;
+
+            case "copyQrBtn":
+                if (typeof copyQr === "function") {
+                    await copyQr();
+                } else {
+                    throw new Error("QR copy function is unavailable.");
+                }
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    /*
+     * Capture clicks independently of the main initialization handler.
+     * This also supports dashboard Copy Link buttons rendered dynamically.
+     */
+    document.addEventListener("click", async event => {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const isDashboardCopy = button.classList.contains("dash-copy");
+
+        const supportedIds = [
+            "copyLinkBtn",
+            "shareBtn",
+            "closeShareMenu",
+            "nativeShareBtn",
+            "whatsappShareBtn",
+            "telegramShareBtn",
+            "emailShareBtn",
+            "saveContactBtn",
+            "downloadCardBtn",
+            "printCardBtn",
+            "downloadQrBtn",
+            "copyQrBtn"
+        ];
+
+        if (!isDashboardCopy && !supportedIds.includes(button.id)) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        try {
+            if (isDashboardCopy) {
+                const index = Number(button.dataset.di);
+
+                if (
+                    typeof dashboardCards === "undefined" ||
+                    !dashboardCards[index]
+                ) {
+                    throw new Error("Could not find this card. Refresh My Cards.");
+                }
+
+                const card = dashboardCards[index];
+                const url = typeof profileUrl === "function"
+                    ? profileUrl(card.username)
+                    : new URL("?u=" + encodeURIComponent(card.username),
+                        window.location.origin).href;
+
+                await copyTextSafe(url);
+                showMessage("Card link copied successfully.", false, true);
+                return;
+            }
+
+            await handleCardAction(button);
+        } catch (error) {
+            console.error("Card action failed:", error);
+
+            showMessage(
+                error?.message || "This action could not be completed.",
+                true,
+                isDashboardCopy
+            );
+        }
+    }, true);
+})();
+</script>
 </body>
 </html>
