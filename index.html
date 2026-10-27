@@ -6015,6 +6015,22 @@ function templateThumbMarkup(type,id,title){return v47ThumbMarkup(type,id,title)
 
 
 window.addEventListener("DOMContentLoaded",async()=>{
+  // ZetaCard: load a shared card before optional UI setup.
+const routeParams = new URLSearchParams(window.location.search);
+const hasCardRoute =
+    routeParams.has("u") ||
+    window.location.hash.startsWith("#edit=");
+
+if (hasCardRoute) {
+    try {
+        initDb();
+        await openProfileFromUrl();
+    } catch (error) {
+        console.error("ZetaCard card loading failed:", error);
+    }
+} else {
+    showLanding();
+}
   setupTypeGrid();
   initDb();
   await refreshAuth();
