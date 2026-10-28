@@ -44,6 +44,28 @@ button:disabled{filter:saturate(.65)}.empty{border:1px dashed #ccd5e8;border-rad
 @media(max-width:760px){.hero{padding-top:42px;grid-template-columns:1fr;gap:22px}.hero-visual{min-height:290px}.feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.type-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.builder-layout{grid-template-columns:1fr}.preview-sticky{position:static}.nav{min-height:64px}.nav-actions{gap:6px}.nav-actions .btn{padding:8px 10px;font-size:12px}.panel{padding:16px;border-radius:19px}}
 @media(max-width:440px){.wrap{width:min(100% - 24px,1180px)}.feature-grid,.cards-grid,.records-grid,.auth-grid,.two-col,.field-grid{grid-template-columns:1fr}.hero h1{font-size:clamp(34px,10vw,48px)}.hero-visual{padding:19px}.mini-card2{right:0;width:65%}.section-head{align-items:start;flex-direction:column}.record-actions .btn{flex:1}}
 
+/* ZetaCard launch polish: accessible focus, consistent controls, responsive dashboard and safer motion. */
+:root{--bg:#f5f7fc;--surface:#fff;--ink:#17213a;--muted:#66718a;--line:#dce3ef;--brand:#4f63f5;--brand2:#7657f6;--shadow:0 18px 52px rgba(22,34,66,.075);--radius:20px}
+:focus-visible{outline:3px solid #7b8cff!important;outline-offset:3px}
+button,.btn,.type-tile,.tab,.slot{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.btn{box-shadow:0 1px 1px #17213a08}
+.btn.primary{background:linear-gradient(125deg,#4f63f5,#7657f6);box-shadow:0 8px 22px #536dfe2a}
+.btn:hover:not(:disabled){box-shadow:0 8px 20px #1a285018}
+.panel,.feature,.saved-card,.record,.type-tile{transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+.feature:hover,.saved-card:hover,.record:hover{border-color:#cbd4f4;box-shadow:0 12px 32px rgba(22,34,66,.08)}
+.type-tile:hover{border-color:#aebaf2;transform:translateY(-2px)}
+input,select,textarea{min-height:44px}
+textarea{min-height:110px}
+.status:empty{display:none}
+.status:not(:empty){padding:8px 10px;border-radius:10px;background:#f5f7fc}
+.status.error{background:#fff1f2}.status.good{background:#ecfdf5}.status.warn{background:#fff8e8}
+.panel{scroll-margin-top:88px}
+.public-layout,.builder-layout{min-width:0}
+img,video,model-viewer{max-width:100%}
+@media(max-width:900px){.hero{grid-template-columns:1fr;padding-top:38px}.hero-visual{min-height:300px}.feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.builder-layout{grid-template-columns:1fr}.preview-sticky{position:static}.type-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:620px){.wrap{width:min(100% - 24px,1180px)}.nav{min-height:62px;align-items:flex-start;padding:10px 0}.brand{font-size:17px}.brand-mark{width:32px;height:32px}.nav-actions{justify-content:flex-end;gap:5px}.nav-actions .btn{font-size:12px;padding:8px 9px;min-height:36px}.hero{padding:30px 0 24px;gap:20px}.hero h1{font-size:clamp(34px,10vw,48px)}.hero p{font-size:15px}.hero-visual{padding:18px;min-height:270px;border-radius:24px}.feature-grid,.auth-grid,.cards-grid,.records-grid,.two-col{grid-template-columns:1fr}.type-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{padding:16px;border-radius:16px}.field-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.section-head{align-items:flex-start;flex-direction:column}.dashboard-tabs{overflow-x:auto;flex-wrap:nowrap}.tab{white-space:nowrap}.card-content{padding:17px}.card-preview h2{font-size:22px}.card-data-grid{grid-template-columns:1fr}.preview-shell{padding:12px}.booking-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
 </style>
 </head>
 <body>
