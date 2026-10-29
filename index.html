@@ -185,13 +185,19 @@ async function describeEdgeFunctionError(error){
 }
 async function callQuickService(bookingId,status='confirmed'){
  if(!db)throw new Error('Supabase client is unavailable.');
+ if(!authUser)throw new Error('Your owner session is missing. Sign in again before sending a confirmation email.');
  console.info('[ZetaCard] Calling quick-service', {booking_id:bookingId,status,project:new URL(SUPABASE_URL).host});
  const result=await db.functions.invoke('quick-service',{body:{booking_id:bookingId,status}});
  if(result.error){const detail=await describeEdgeFunctionError(result.error);console.error('[ZetaCard] quick-service request failed:',detail,result.error);throw new Error(detail)}
  console.info('[ZetaCard] quick-service response:',result.data);
- if(result.data?.sent===true||result.data?.success===true||result.data?.ok===true)return result.data;
- if(result.data?.error||result.data?.reason)throw new Error(String(result.data.error||result.data.reason));
- throw new Error(`quick-service returned HTTP success but did not confirm sending. Response: ${JSON.stringify(result.data??null).slice(0,500)}`);
+ const data=result.data;
+ if(data?.sent===true||data?.success===true)return data;
+ // These are expected, explicit outcomes—not transport failures. In particular, an
+ // already-sent marker must not be shown as an email-function error.
+ if(data?.already_sent===true||(data?.ok===true&&data?.sent===false))return data;
+ if(data?.error||data?.reason)throw new Error(String(data.error||data.reason));
+ if(data?.ok===true)return data;
+ throw new Error(`quick-service returned an unexpected response. Response: ${JSON.stringify(data??null).slice(0,500)}`);
 }
 async function retryBookingEmail(booking){
  if(!authUser||!db||!booking?.id)return;
@@ -200,7 +206,10 @@ async function retryBookingEmail(booking){
  setStatus('bookingStatusMessage','Retrying confirmation email…');
  try{
   const data=await callQuickService(booking.id,'confirmed');
-  setStatus('bookingStatusMessage',`Confirmation email function reported success for ${booking.guest_email}.`, 'good');
+  if(data?.sent===true){setStatus('bookingStatusMessage',`Outlook accepted the confirmation email for ${booking.guest_email}. Check the sender's Sent Items and the visitor's Inbox/Junk folder.`, 'good')}
+  else if(data?.already_sent===true){setStatus('bookingStatusMessage','This booking is already marked as sent or is being processed. No duplicate email was sent. Check Outlook Sent Items before retrying.','warn')}
+  else if(data?.reason){setStatus('bookingStatusMessage',`Meeting remains confirmed, but no email was sent: ${data.reason}`,'warn')}
+  else{setStatus('bookingStatusMessage','The function responded, but it did not confirm that Outlook accepted the email. Check quick-service logs.','warn')}
  }catch(e){
   console.error('[ZetaCard] Retry confirmation email failed',e);
   setStatus('bookingStatusMessage',`Meeting remains confirmed. Confirmation email retry failed: ${e.message||'Unknown error'}. Check that quick-service is deployed in Supabase project ${new URL(SUPABASE_URL).host}.`, 'error');
@@ -222,7 +231,10 @@ async function saveBookingStatus(id,status){
   if(status==='confirmed'){
    try{
     const data=await callQuickService(id,'confirmed');
-    note+=' quick-service confirmed email processing: '+JSON.stringify(data).slice(0,250);
+    if(data?.sent===true){note+=' Outlook accepted the confirmation email request.';}
+    else if(data?.already_sent===true){note+=' Email was already sent or is being processed; no duplicate was sent.';}
+    else if(data?.reason){note+=' Email not sent: '+String(data.reason).slice(0,250);}
+    else{note+=' Email function responded but did not confirm delivery acceptance.';}
    }catch(e){
     console.error('[ZetaCard] Confirmation email failed after status update',e);
     note+=` Email error: ${e.message||'Unknown error'}`;
